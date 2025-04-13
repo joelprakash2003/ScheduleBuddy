@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Org Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 160px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #ddd;
+      padding: 20px 10px;
+    }
+
+    .top-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar button {
+      padding: 10px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .sidebar button:hover {
+      background-color: #ccc;
+    }
+
+    .user-icon {
+      display: flex;
+      justify-content: center;
+      padding-top: 10px;
+    }
+
+    .user-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #666;
+      cursor: pointer;
+    }
+
+    .user-icon svg:hover {
+      fill: #000;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .message {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .org-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: white;
+      padding: 16px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+      transition: background-color 0.2s;
+    }
+
+    .org-card:hover {
+      background-color: #f0f0f0;
+    }
+
+    .org-name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .org-id {
+      font-size: 14px;
+      color: #555;
+      margin-top: 4px;
+    }
+           #floating-add-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background-color: #3b82f6;
+      color: white;
+      font-size: 32px;
+      line-height: 0;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      z-index: 1000;
+    }
+    
+    #floating-add-button:hover {
+      background-color: #2563eb;
+}
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="top-buttons">
+      <button onclick="goToPage('main-org')">Dashboard</button>
+      <button onclick="goToPage('org-services')">Services</button>
+      <button onclick="goToPage('org-teams')">Teams</button>
+      <button onclick="goToPage('org-people')">People</button>
+      <button onclick="goToPage('org-messages')">Messages</button>
+    </div>
+
+    <div class="user-icon" id="user-icon-container">
+      <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+      </svg>
+
+      <div id="user-popup" style="display: none; position: absolute; bottom: 60px; left: 170px; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
+        <p style="margin-bottom: 4px;"><strong id="popup-name"></strong></p>
+        <p id="popup-email" style="margin-bottom: 12px; font-size: 14px; color: #555;"></p>
+        <button onclick="signOut()" style="padding: 6px 12px; border: none; background-color: #e74c3c; color: white; border-radius: 4px; cursor: pointer;">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="main-content">
+    <p class="message">Loading people...</p>
+  </div>
+<script>
+  function navigateTo(section) {
+    const mainContent = document.getElementById('main-content');
+    mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
+  }
+  const mainContent = document.getElementById('main-content');
+const userEmail = localStorage.getItem("user_email");
+const firstName = localStorage.getItem("user_first_name") || "";
+const lastName = localStorage.getItem("user_last_name") || "";
+
+const userIcon = document.getElementById('user-icon');
+const userPopup = document.getElementById('user-popup');
+const popupName = document.getElementById('popup-name');
+const popupEmail = document.getElementById('popup-email');
+
+popupName.textContent = `${firstName} ${lastName}`;
+popupEmail.textContent = userEmail;
+
+userIcon.addEventListener('click', (e) => {
+  e.stopPropagation();
+  userPopup.style.display = userPopup.style.display === 'none' ? 'block' : 'none';
+});
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('user-icon-container').contains(e.target)) {
+    userPopup.style.display = 'none';
+  }
+});
+
+function signOut() {
+  localStorage.removeItem("user_email");
+  localStorage.removeItem("user_first_name");
+  localStorage.removeItem("user_last_name");
+  window.location.href = "http://127.0.0.1:8000/";
+}
+const urlParams = new URLSearchParams(window.location.search);
+  const orgId = urlParams.get("org");
+
+function goToPage(page) {
+  if (!orgId) {
+    alert("Organization ID is missing.");
+    return;
+  }
+  window.location.href = `/${page}?org=${orgId}`;
+}
+async function renderPeoplePage({ isOwner, isOrgAdmin, adminTeams }) {
+  mainContent.innerHTML = `
+    <h2>People</h2>
+    <input type="text" id="people-search" placeholder="Search by name or email..." style="padding: 8px; width: 100%; max-width: 400px; margin: 16px 0; border: 1px solid #ccc; border-radius: 6px;" />
+    <div id="people-grid" style="display: flex; flex-wrap: wrap; gap: 16px;"></div>
+    <div id="pending-grid" style="margin-top: 40px;"></div>
+  `;
+
+  const container = document.getElementById("people-grid");
+  const pendingContainer = document.getElementById("pending-grid");
+  const searchInput = document.getElementById("people-search");
+
+  let users = [];
+
+  try {
+    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    users = await res.json();
+
+    if (!Array.isArray(users) || users.length === 0) {
+      container.innerHTML = `<p style="color: #555;">No users found in this organization.</p>`;
+      return;
+    }
+
+    const confirmedUsers = users.filter(u => !(u.positions || []).includes("pending"));
+    const pendingUsers = users.filter(u => (u.positions || []).includes("pending"));
+
+    renderUserCards(confirmedUsers);
+    renderPendingCards(pendingUsers);
+
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.toLowerCase().trim();
+
+      const filteredConfirmed = confirmedUsers.filter(u => {
+        const fullName = `${u.first_name} ${u.last_name}`.toLowerCase();
+        const email = u.email.toLowerCase();
+        const positions = (u.positions || []).join(" ").toLowerCase();
+        return fullName.includes(q) || email.includes(q) || positions.includes(q);
+      });
+
+      renderUserCards(filteredConfirmed);
+    });
+  } catch (err) {
+    container.innerHTML = `<p style="color: red;">Failed to load users: ${err.message}</p>`;
+  }
+
+  function renderUserCards(userList) {
+    container.innerHTML = "";
+
+    userList.forEach(user => {
+      const fullName = `${user.first_name} ${user.last_name}`;
+      const email = user.email;
+      const positions = Array.isArray(user.positions) && user.positions.length
+        ? user.positions.join(", ")
+        : "No assigned positions";
+
+      const card = document.createElement("div");
+      card.style = `
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        width: 240px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      `;
+
+      card.innerHTML = `
+        <div style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">${fullName}</div>
+        <div style="font-size: 14px; color: #555; margin-bottom: 8px;">${email}</div>
+        <div style="font-size: 13px; color: #333;"><strong>Positions:</strong><br>${positions}</div>
+      `;
+
+      card.onclick = async () => {
+        const teamRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`);
+        const allTeams = await teamRes.json();
+        const visibleTeams = isOwner || isOrgAdmin
+          ? allTeams
+          : allTeams.filter(team => adminTeams.includes(team.team_name));
+
+        showUserModal(user, visibleTeams, { isOwner, isOrgAdmin, adminTeams });
+      };
+
+      container.appendChild(card);
+    });
+  }
+
+  function renderPendingCards(pendingList) {
+    if (pendingList.length === 0) {
+      pendingContainer.innerHTML = "";
+      return;
+    }
+
+    pendingContainer.innerHTML = `
+      <h3>Pending Invites</h3>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
+        ${pendingList.map(user => `
+          <div style="background:#fff; padding:16px; border-radius:8px; border:1px solid #ccc; width:240px;">
+            <div><strong>${user.first_name} ${user.last_name}</strong></div>
+            <div style="color:#555">${user.email}</div>
+            <div style="color:#999; font-size:12px;">Pending invite</div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+}
+
+async function initPage() {
+  let userOrgData = null;
+  let currentUser = null;
+
+  try {
+    const [orgRes, usersRes] = await Promise.all([
+      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`),
+      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`)
+    ]);
+
+    userOrgData = await orgRes.json();
+    const allUsers = await usersRes.json();
+    currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
+
+    const isOwner = userOrgData?.owner?.email === userEmail;
+    const isOrgAdmin = currentUser?.org_admin === true;
+    const adminTeams = (currentUser?.team_permissions || [])
+      .filter(p => p.permissions.includes("Admin"))
+      .map(p => p.team_name);
+
+    if (isOwner || isOrgAdmin || adminTeams.length > 0) {
+      renderPeoplePage({ isOwner, isOrgAdmin, adminTeams });
+    } else {
+      mainContent.innerHTML = `<h2>Access Denied</h2><p>You do not have permission to view this page.</p>`;
+    }
+  } catch (err) {
+    console.error("Failed to fetch user/org data:", err.message);
+    mainContent.innerHTML = `<h2>Error</h2><p>Could not load user permissions.</p>`;
+  }
+}
+
+
+function showUserModal(user, teams, context) {
+  const { isOwner, isOrgAdmin, adminTeams } = context;
+  const modal = document.createElement("div");
+  modal.id = "user-modal";
+  modal.style = `
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  `;
+
+  const isSelf = user.email === userEmail;
+
+  fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`)
+    .then(res => res.json())
+    .then(org => {
+      const isOwner = org.owner?.email === userEmail;
+      const viewingOwner = org.owner?.email === user.email;
+
+      const content = document.createElement("div");
+      content.style = `
+        background: white;
+        border-radius: 10px;
+        padding: 24px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      `;
+
+      content.innerHTML = `
+        <button style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; cursor:pointer;">❌</button>
+
+        <h2>Edit User</h2>
+
+        <div style="margin-bottom: 16px;">
+          <label>First Name</label><br>
+          <input type="text" value="${user.first_name}" style="width:100%; padding:8px; margin-top:4px;">
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label>Last Name</label><br>
+          <input type="text" value="${user.last_name}" style="width:100%; padding:8px; margin-top:4px;">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label>Email</label><br>
+          <input type="text" value="${user.email}" style="width:100%; padding:8px; margin-top:4px;">
+        </div>
+
+        <h3>Org Permissions</h3>
+        <label>
+          <input type="checkbox" ${user.org_admin ? "checked" : ""}>
+          Org Admin
+        </label><br/>
+        ${viewingOwner ? `
+          <label>
+            <input type="checkbox" checked disabled>
+            Owner
+          </label>
+        ` : ""}
+        ${isOwner && !viewingOwner ? `
+          <div style="margin-top: 12px;">
+            <button onclick="initiateOwnershipTransfer('${user.email}', '${user.first_name}', '${user.last_name}')" 
+                    style="background: #f97316; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
+              Transfer Ownership
+            </button>
+          </div>
+        ` : ""}
+        
+        <h3 style="margin-top: 24px;">Team Positions</h3>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+  ${teams.map(team => `
+    <div style="border: 1px solid #ccc; border-radius: 6px; padding: 12px;">
+      <div style="font-weight: bold; margin-bottom: 8px;">${team.team_name}</div>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        ${team.positions.map(p => `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
+            <span>${p.position_name}</span>
+            <input type="checkbox"
+            ${user.positions?.includes(p.position_name) ? "checked" : ""} 
+            onchange="handlePositionToggle('${user.email}', '${p.position_name}', this.checked)">
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `).join("")}
+</div>
+
+        <h3 style="margin-top: 24px;">Team Permissions</h3>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          ${teams.map(team => {
+            const teamPerms = (user.team_permissions || [])
+  .find(tp => tp.team_name.toLowerCase() === team.team_name.toLowerCase())
+  ?.permissions || [];
+        
+            return `
+              <div style="border: 1px solid #ccc; border-radius: 6px; padding: 12px;">
+                <div style="font-weight: bold; margin-bottom: 8px;">${team.team_name}</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                  ${["Admin", "Scheduler", "Messenger", "Viewer"].map(perm => `
+                    <label>
+                      <input type="checkbox" ${teamPerms.map(p => p.toLowerCase()).includes(perm.toLowerCase()) ? "checked" : ""}
+                             onchange="handlePermissionToggle('${user.email}', '${team.team_name}', '${perm}', this.checked)">
+                      ${perm}
+                    </label>
+                  `).join("")}
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      content.querySelector("button").addEventListener("click", () => modal.remove());
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.remove();
+      });
+
+      modal.appendChild(content);
+      document.body.appendChild(modal);
+    });
+}
+
+async function handlePositionToggle(email, position, isChecked) {
+  try {
+    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    const users = await res.json();
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (!user) {
+      throw new Error("User not found.");
+    }
+
+    user.positions = user.positions || [];
+    if (isChecked) {
+      if (!user.positions.includes(position)) {
+        user.positions.push(position);
+      }
+    } else {
+      user.positions = user.positions.filter(p => p !== position);
+    }
+
+    const updateRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users/${email}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(user)
+    });
+
+    if (!updateRes.ok) {
+      throw new Error("Failed to update user positions.");
+    }
+
+    console.log(`${isChecked ? "Added" : "Removed"} ${position} for ${email}`);
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+function togglePermission(user, teamName, permission) {
+  const teamPerms = user.team_permissions || [];
+  const existing = teamPerms.find(tp => tp.team_name === teamName);
+
+  if (existing) {
+    if (existing.permissions.includes(permission)) {
+      existing.permissions = existing.permissions.filter(p => p !== permission);
+    } else {
+      existing.permissions.push(permission);
+    }
+  } else {
+    teamPerms.push({ team_name: teamName, permissions: [permission] });
+  }
+
+  user.team_permissions = teamPerms;
+}
+
+async function handlePermissionToggle(email, teamName, permission, isChecked) {
+  try {
+    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    const users = await res.json();
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (!user) throw new Error("User not found.");
+
+    user.team_permissions = user.team_permissions || [];
+    const existing = user.team_permissions.find(tp => tp.team_name === teamName);
+
+    if (existing) {
+      if (isChecked && !existing.permissions.includes(permission)) {
+        existing.permissions.push(permission);
+      } else if (!isChecked) {
+        existing.permissions = existing.permissions.filter(p => p !== permission);
+      }
+      if (existing.permissions.length === 0) {
+        user.team_permissions = user.team_permissions.filter(tp => tp.team_name !== teamName);
+      }
+    } else if (isChecked) {
+      user.team_permissions.push({ team_name: teamName, permissions: [permission] });
+    }
+
+    const updateRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users/${email}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user)
+    });
+
+    if (!updateRes.ok) throw new Error("Failed to update team permissions.");
+
+    console.log(`${isChecked ? "Granted" : "Removed"} ${permission} for ${teamName}`);
+  } catch (err) {
+    alert(+ err.message);
+  }
+}
+
+async function initiateOwnershipTransfer(newOwnerEmail, newOwnerFirst, newOwnerLast) {
+  const confirm = window.confirm(`Transfer ownership to ${newOwnerFirst} ${newOwnerLast} (${newOwnerEmail})?\nAn OTP will be sent to the current owner's email.`);
+  if (!confirm) return;
+
+  try {
+    const res = await fetch("https://api.worshipbuddy.org/auth/request-otp/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: userEmail }),
+    });
+
+    if (!res.ok) throw new Error("Failed to send OTP.");
+    const otp = prompt("Enter the OTP sent to your email:");
+
+    if (!otp) return;
+
+    const verifyRes = await fetch("https://api.worshipbuddy.org/auth/verify-otp/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: userEmail, otp }),
+    });
+
+    const verifyData = await verifyRes.json();
+    if (!verifyRes.ok) throw new Error(verifyData.detail || "OTP verification failed.");
+
+    const updateRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        owner: {
+          first_name: newOwnerFirst,
+          last_name: newOwnerLast,
+          email: newOwnerEmail
+        }
+      })
+    });
+
+    if (!updateRes.ok) throw new Error("Failed to transfer ownership.");
+    alert("Ownership transferred successfully.");
+    window.location.reload();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+initPage();
+
+  
+function showCalendar() {
+  document.getElementById("import-modal").style.display = "none";
+}
+
+function showImportModal() {
+  document.getElementById("import-modal").style.display = "flex";
+}
+
+function closeImportModal() {
+  document.getElementById("import-modal").style.display = "none";
+}
+
+function addRow() {
+  const row = `
+    <tr>
+      <td><input type="text" /></td>
+      <td><input type="text" /></td>
+      <td><input type="email" /></td>
+      <td><button onclick="removeRow(this)">🗑️</button></td>
+    </tr>
+  `;
+  document.querySelector("#import-table tbody").insertAdjacentHTML("beforeend", row);
+}
+
+function removeRow(btn) {
+  btn.closest("tr").remove();
+}
+
+function handleFileImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+
+    const tbody = document.querySelector("#import-table tbody");
+    tbody.innerHTML = '';
+
+    rows.forEach(row => {
+      const first = row["First Name"] || "";
+      const last = row["Last Name"] || "";
+      const email = row["Email"] || "";
+
+      const tr = `
+        <tr>
+          <td><input type="text" value="${first}" /></td>
+          <td><input type="text" value="${last}" /></td>
+          <td><input type="email" value="${email}" /></td>
+          <td><button onclick="removeRow(this)">🗑️</button></td>
+        </tr>
+      `;
+      tbody.insertAdjacentHTML("beforeend", tr);
+    });
+
+    document.getElementById("manual-entry-section").style.display = "block";
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+  
+  let manualMode = false;
+
+function toggleImportMode(event) {
+  event.preventDefault();
+  manualMode = !manualMode;
+
+  document.getElementById("file-upload-section").style.display = manualMode ? "none" : "block";
+  document.getElementById("manual-entry-section").style.display = manualMode ? "block" : "none";
+  document.getElementById("toggle-import-link").textContent = manualMode ? "Import from file instead" : "Enter manually instead";
+}
+
+async function submitImport() {
+  const rows = document.querySelectorAll("#import-table tbody tr");
+  const users = [];
+
+  for (let row of rows) {
+    const inputs = row.querySelectorAll("input");
+    const [first_name, last_name, email] = [...inputs].map(i => i.value.trim());
+
+    if (!first_name || !last_name || !email) continue;
+    users.push({ first_name, last_name, email });
+  }
+
+  if (users.length === 0) {
+    alert("No valid users to invite.");
+    return;
+  }
+
+  const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/invite`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(users)
+  });
+
+  if (!res.ok) {
+    alert("Failed to send invitations.");
+    return;
+  }
+
+  alert("Invitations sent successfully.");
+  closeImportModal();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const dropZone = document.getElementById("file-upload-section");
+  const fileInput = document.getElementById("import-file");
+  const dropLabel = document.getElementById("drop-label");
+
+  dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.style.backgroundColor = "#eef";
+  });
+
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.style.backgroundColor = "";
+  });
+
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.style.backgroundColor = "";
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      fileInput.files = e.dataTransfer.files;
+      handleFileImport({ target: { files: [file] } });
+    }
+  });
+
+  dropLabel.addEventListener("click", () => {
+    fileInput.click();
+  });
+});
+
+dropZone.addEventListener("dragleave", () => {
+  dropZone.style.backgroundColor = "";
+});
+
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropZone.style.backgroundColor = "";
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    fileInput.files = e.dataTransfer.files;
+    handleFileImport({ target: { files: [file] } });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const dropZone = document.getElementById("file-upload-section");
+  const fileInput = document.getElementById("import-file");
+  const dropLabel = document.getElementById("drop-label");
+
+  dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.style.backgroundColor = "#eef";
+  });
+
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.style.backgroundColor = "";
+  });
+
+  dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.style.backgroundColor = "";
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      fileInput.files = e.dataTransfer.files;
+      handleFileImport({ target: { files: [file] } });
+    }
+  });
+
+  dropLabel.addEventListener("click", () => {
+    fileInput.click();
+  });
+});
+</script>
+  
+<div class="tooltip">
+  <button onclick="showImportModal()" id="floating-add-button">+</button>
+</div>
+<div id="import-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 2000; justify-content: center; align-items: center;">
+  <div style="background: white; padding: 24px; border-radius: 8px; width: 90%; max-width: 800px; position: relative;">
+    <button onclick="closeImportModal()" style="position: absolute; top: 10px; right: 10px; font-size: 18px;">❌</button>
+    <h2>Import People</h2>
+
+    <div id="file-upload-section">
+  <label for="import-file" id="drop-label" style="display: block; border: 2px dashed #aaa; padding: 40px; text-align: center; cursor: pointer;">
+    Drag and drop or click to select a file<br/><small>(CSV or Excel)</small>
+  </label>
+  <input type="file" id="import-file" accept=".csv, .xlsx" style="display: none;" onchange="handleFileImport(event)" />
+</div>
+
+    <div id="manual-entry-section" style="display: none; margin-top: 20px;">
+      <table id="import-table" style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" /></td>
+            <td><input type="text" /></td>
+            <td><input type="email" /></td>
+            <td><button onclick="removeRow(this)">🗑️</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <button onclick="addRow()" style="margin-top: 12px;">➕ Add Row</button>
+    </div>
+
+    <p style="margin-top: 16px;">
+      <a href="#" onclick="toggleImportMode(event)" id="toggle-import-link">Enter manually instead</a>
+    </p>
+
+    <button onclick="submitImport()" style="margin-top: 16px; background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px;">Submit</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>

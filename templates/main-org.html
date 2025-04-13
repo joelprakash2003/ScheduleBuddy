@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Org Page</title>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 160px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #ddd;
+      padding: 20px 10px;
+    }
+
+    .top-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar button {
+      padding: 10px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .sidebar button:hover {
+      background-color: #ccc;
+    }
+
+    .user-icon {
+      display: flex;
+      justify-content: center;
+      padding-top: 10px;
+    }
+
+    .user-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #666;
+      cursor: pointer;
+    }
+
+    .user-icon svg:hover {
+      fill: #000;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .message {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .org-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: white;
+      padding: 16px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+      transition: background-color 0.2s;
+    }
+
+    .org-card:hover {
+      background-color: #f0f0f0;
+    }
+
+    .org-name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .org-id {
+      font-size: 14px;
+      color: #555;
+      margin-top: 4px;
+    }
+        .tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: max-content;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  position: absolute;
+  z-index: 1001;
+  bottom: 70px;
+  right: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  font-size: 14px;
+  transform: translateY(-12px);
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+       #floating-add-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background-color: #3b82f6;
+      color: white;
+      font-size: 32px;
+      line-height: 0;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      z-index: 1000;
+    }
+    
+    #floating-add-button:hover {
+      background-color: #2563eb;
+}
+    #team-scheduler-button {
+      position: fixed;
+      bottom: 24px;
+      right: 92px; 
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background-color: #10b981; 
+      border: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #team-scheduler-button:hover {
+      background-color: #059669;
+    }
+    #calendar {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+#calendar-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3100;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 1000px;
+  height: 600px;
+  overflow: hidden;
+}
+
+#calendar {
+  height: 100%;
+}
+#calendar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.2);
+  z-index: 3000;
+  display: none;
+}
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="top-buttons">
+      <button onclick="goToPage('main-org')">Dashboard</button>
+      <button onclick="goToPage('org-services')">Services</button>
+      <button onclick="goToPage('org-teams')">Teams</button>
+      <button onclick="goToPage('org-people')">People</button>
+      <button onclick="goToPage('org-messages')">Messages</button>
+    </div>
+
+    <div class="user-icon" id="user-icon-container">
+      <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+      </svg>
+
+      <div id="user-popup" style="display: none; position: absolute; bottom: 60px; left: 170px; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
+        <p style="margin-bottom: 4px;"><strong id="popup-name"></strong></p>
+        <p id="popup-email" style="margin-bottom: 12px; font-size: 14px; color: #555;"></p>
+        <button onclick="signOut()" style="padding: 6px 12px; border: none; background-color: #e74c3c; color: white; border-radius: 4px; cursor: pointer;">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="main-content">
+    <p class="message">Loading organization...</p>
+      
+  </div>
+  <div id="calendar-overlay">
+  <div id="calendar-popup">
+  <p style="font-weight: bold; margin-bottom: 16px;">Please click on the dates you are unavailable</p>
+      <div id="calendar"></div>
+</div>
+</div>
+<script>
+  function navigateTo(section) {
+    const mainContent = document.getElementById('main-content');
+    mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
+  }
+  const mainContent = document.getElementById('main-content');
+const userEmail = localStorage.getItem("user_email");
+const firstName = localStorage.getItem("user_first_name") || "";
+const lastName = localStorage.getItem("user_last_name") || "";
+
+const userIcon = document.getElementById('user-icon');
+const userPopup = document.getElementById('user-popup');
+const popupName = document.getElementById('popup-name');
+const popupEmail = document.getElementById('popup-email');
+
+popupName.textContent = `${firstName} ${lastName}`;
+popupEmail.textContent = userEmail;
+
+userIcon.addEventListener('click', (e) => {
+  e.stopPropagation();
+  userPopup.style.display = userPopup.style.display === 'none' ? 'block' : 'none';
+});
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('user-icon-container').contains(e.target)) {
+    userPopup.style.display = 'none';
+  }
+});
+
+function signOut() {
+  localStorage.removeItem("user_email");
+  localStorage.removeItem("user_first_name");
+  localStorage.removeItem("user_last_name");
+  window.location.href = "http://127.0.0.1:8000/";
+}
+const urlParams = new URLSearchParams(window.location.search);
+  const orgId = urlParams.get("org");
+
+function goToPage(page) {
+  if (!orgId) {
+    alert("Organization ID is missing.");
+    return;
+  }
+  window.location.href = `/${page}?org=${orgId}`;
+}
+
+async function loadUserDashboard() {
+  mainContent.innerHTML = `<p class="message">Loading your upcoming services...</p>`;
+
+  try {
+    const [servicesRes, usersRes] = await Promise.all([
+      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services`),
+      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`)
+    ]);
+
+    const allServices = await servicesRes.json();
+    const allUsers = await usersRes.json();
+
+    const user = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
+    const fullName = `${user.first_name} ${user.last_name}`;
+    const now = new Date();
+
+    const upcomingAssignedServices = allServices
+      .filter(service => new Date(service.end_datetime) > now)
+      .map(service => {
+        const myAssignments = [];
+
+        for (const team of service.teams || []) {
+          for (const [positionName, assigned] of Object.entries(team.positions || {})) {
+            const assignedNames = Array.isArray(assigned) ? assigned : [assigned];
+
+            const matches = assignedNames.some(email => email.toLowerCase() === userEmail.toLowerCase());
+
+            if (matches) {
+              myAssignments.push({ team: team.team_name, position: positionName });
+            }
+          }
+        }
+
+        if (myAssignments.length > 0) {
+          return {
+            ...service,
+            assignments: myAssignments
+          };
+        }
+
+        return null;
+      })
+      .filter(Boolean);
+
+    if (upcomingAssignedServices.length === 0) {
+      mainContent.innerHTML = `<p class="message">You are not scheduled for any upcoming services.</p>`;
+      return;
+    }
+
+    mainContent.innerHTML = `<h2>Your Upcoming Schedule</h2>`;
+
+    upcomingAssignedServices.forEach(service => {
+      const card = document.createElement("div");
+      card.className = "org-card";
+
+      const start = new Date(service.start_datetime).toLocaleString();
+      const end = new Date(service.end_datetime).toLocaleString();
+
+      const assignmentsText = service.assignments.map(a => `${a.team} - ${a.position}`).join("<br>");
+
+      card.innerHTML = `
+        <div class="org-name">${service.service_name}</div>
+        <div class="org-id" style="margin-top: 10px;">${assignmentsText}</div>
+        <div class="org-id">📍 ${service.location}</div>
+        <div class="org-id">🕒 ${start} → ${end}</div>
+      `;
+
+      mainContent.appendChild(card);
+    });
+  } catch (err) {
+    console.error("Failed to load dashboard:", err.message);
+    mainContent.innerHTML = `<p class="message">Error loading dashboard.</p>`;
+  }
+}
+
+window.addEventListener("DOMContentLoaded", loadUserDashboard);
+
+let calendarInstance = null;
+const selectedDates = new Set();
+  
+async function showCalendar() {
+  const overlay = document.getElementById('calendar-overlay');
+  const popup = document.getElementById('calendar-popup');
+  overlay.style.display = 'block';
+  popup.style.display = 'block';
+
+  overlay.addEventListener('click', function handler(e) {
+    if (!popup.contains(e.target)) {
+      overlay.style.display = 'none';
+      popup.style.display = 'none';
+      overlay.removeEventListener('click', handler);
+    }
+  });
+
+  selectedDates.clear();
+  try {
+    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    const users = await res.json();
+    const user = users.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
+    if (user?.inability?.length) {
+      user.inability.forEach(d => selectedDates.add(d));
+    }
+  } catch (err) {
+    console.error("Failed to load user's unavailability:", err);
+  }
+
+  if (!calendarInstance) {
+    calendarInstance = new FullCalendar.Calendar(document.getElementById('calendar'), {
+      initialView: 'dayGridMonth',
+      selectable: true,
+      datesSet(info) {
+        calendarInstance.removeAllEvents();
+        let date = new Date(info.start);
+        while (date < info.end) {
+          const dateStr = date.toISOString().split('T')[0];
+          calendarInstance.addEvent({
+            start: dateStr,
+            display: 'background',
+            backgroundColor: selectedDates.has(dateStr) ? 'red' : 'lightgreen'
+          });
+          date.setDate(date.getDate() + 1);
+        }
+      },
+      select(info) {
+  const dateStr = info.startStr;
+
+  if (selectedDates.has(dateStr)) {
+    selectedDates.delete(dateStr);
+    removeInabilityDateFromDatabase(dateStr);
+  } else {
+    selectedDates.add(dateStr);
+    saveInabilityDateToDatabase(dateStr);
+  }
+
+  calendarInstance.refetchEvents();
+},
+      events(fetchInfo, callback) {
+        const events = [];
+        let date = new Date(fetchInfo.start);
+        while (date < fetchInfo.end) {
+          const dateStr = date.toISOString().split('T')[0];
+          events.push({
+            start: dateStr,
+            display: 'background',
+            backgroundColor: selectedDates.has(dateStr) ? 'red' : 'lightgreen'
+          });
+          date.setDate(date.getDate() + 1);
+        }
+        callback(events);
+      }
+    });
+    calendarInstance.render();
+  } else {
+    calendarInstance.refetchEvents();
+  }
+}
+
+function hideCalendar() {
+  document.getElementById('calendar-overlay').style.display = 'none';
+}
+
+function saveInabilityDateToDatabase(dateStr) {
+  fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users/inability`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: userEmail,
+      date: dateStr,
+      action: 'add'
+    })
+  })
+  .then(res => {
+    if (!res.ok) {
+      console.error('Failed to save date', dateStr);
+    }
+  })
+  .catch(err => {
+    console.error('Error saving date:', err);
+  });
+}
+
+function removeInabilityDateFromDatabase(dateStr) {
+  fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users/inability`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: userEmail,
+      date: dateStr,
+      action: 'remove'
+    })
+  })
+  .then(res => {
+    if (!res.ok) {
+      console.error('Failed to remove date', dateStr);
+    }
+  })
+  .catch(err => {
+    console.error('Error removing date:', err);
+  });
+}
+</script>
+<div class="tooltip">
+  <button onclick="showCalendar()" id="floating-add-button" style="display: block;">
+    📅
+  </button>
+  <span class="tooltiptext">Schedule Your Availability</span>
+</div>
+</body>
+</html>

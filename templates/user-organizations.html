@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Org Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 160px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #ddd;
+      padding: 20px 10px;
+    }
+
+    .top-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar button {
+      padding: 10px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .sidebar button:hover {
+      background-color: #ccc;
+    }
+
+    .user-icon {
+      display: flex;
+      justify-content: center;
+      padding-top: 10px;
+    }
+
+    .user-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #666;
+      cursor: pointer;
+    }
+
+    .user-icon svg:hover {
+      fill: #000;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .message {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .org-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: white;
+      padding: 16px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+      transition: background-color 0.2s;
+    }
+
+    .org-card:hover {
+      background-color: #f0f0f0;
+    }
+
+    .org-name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .org-id {
+      font-size: 14px;
+      color: #555;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="top-buttons">
+      <button onclick="showJoinOrgPopup()">Join Org</button>
+      <button onclick="showStartOrgForm()">Start Org</button>
+    </div>
+
+    <div class="user-icon" id="user-icon-container">
+      <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+      </svg>
+
+      <div id="user-popup" style="display: none; position: absolute; bottom: 60px; left: 170px; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
+        <p style="margin-bottom: 4px;"><strong id="popup-name"></strong></p>
+        <p id="popup-email" style="margin-bottom: 12px; font-size: 14px; color: #555;"></p>
+        <button onclick="signOut()" style="padding: 6px 12px; border: none; background-color: #e74c3c; color: white; border-radius: 4px; cursor: pointer;">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="main-content">
+    <p class="message">Loading organizations...</p>
+  </div>
+  <div id="join-org-popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: white; border: 1px solid #ccc; border-radius: 8px; padding: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.2); z-index: 10;">
+  <h3 style="margin-bottom: 12px;">Join Organization</h3>
+  <input id="join-org-id" type="text" placeholder="Enter Org ID" style="padding: 8px; width: 100%; margin-bottom: 12px;" />
+  <div style="display: flex; justify-content: flex-end; gap: 10px;">
+    <button onclick="closeJoinOrgPopup()" style="padding: 6px 12px;">Cancel</button>
+    <button onclick="submitJoinOrg()" style="padding: 6px 12px; background-color: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">Join</button>
+  </div>
+  <p id="join-org-message" style="margin-top: 12px; font-size: 14px;"></p>
+</div>
+
+  <script>
+    const mainContent = document.getElementById('main-content');
+    const userEmail = localStorage.getItem("user_email");
+    const firstName = localStorage.getItem("user_first_name") || "";
+    const lastName = localStorage.getItem("user_last_name") || "";
+    
+    const userUrl = `https://worshipbuddyapi-staging.onrender.com/users/${encodeURIComponent(userEmail)}`;
+
+    async function loadOrganizations() {
+      try {
+        const userRes = await fetch(userUrl);
+        const userData = await userRes.json();
+        const orgs = userData.schedulebuddy?.organizations || [];
+    
+        mainContent.innerHTML = '';
+    
+        if (orgs.length === 0) {
+          const msg = document.createElement('p');
+          msg.className = 'message';
+          msg.textContent = "You aren't in any orgs yet, please join or start one on the left.";
+          mainContent.appendChild(msg);
+        } else {
+          for (const orgId of orgs) {
+            const orgRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`);
+            const orgData = await orgRes.json();
+    
+            const card = document.createElement('div');
+            card.className = 'org-card';
+            card.innerHTML = `
+              <div class="org-name">${orgData.name}</div>
+              <div class="org-id">${orgData._id}</div>
+            `;
+    
+            card.onclick = () => {
+              window.location.href = `/main-org/?org=${orgData._id}`;
+            };
+    
+            mainContent.appendChild(card);
+          }
+        }
+      } catch (error) {
+        mainContent.innerHTML = '<p class="message">Failed to load organizations. Please try again later.</p>';
+        console.error('Error:', error);
+      }
+    }
+    
+    if (!userEmail) {
+      mainContent.innerHTML = '<p class="message">No user found. Please log in again.</p>';
+    } else {
+      loadOrganizations();
+    }
+    
+
+    const userIcon = document.getElementById('user-icon');
+    const userPopup = document.getElementById('user-popup');
+    const popupName = document.getElementById('popup-name');
+    const popupEmail = document.getElementById('popup-email');
+
+    popupName.textContent = `${firstName} ${lastName}`;
+    popupEmail.textContent = userEmail;
+
+    userIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userPopup.style.display = userPopup.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('user-icon-container').contains(e.target)) {
+        userPopup.style.display = 'none';
+      }
+    });
+
+    function signOut() {
+      localStorage.removeItem("user_email");
+      localStorage.removeItem("user_first_name");
+      localStorage.removeItem("user_last_name");
+      window.location.href = "http://127.0.0.1:8000/";
+    }
+    function showStartOrgForm() {
+  mainContent.innerHTML = `
+    <h2 style="margin-bottom: 20px;">Start a New Organization</h2>
+    <form id="start-org-form" style="max-width: 400px;">
+      <div style="margin-bottom: 12px;">
+        <label for="orgName">Org Name</label><br/>
+        <input type="text" id="orgName" required style="width: 100%; padding: 8px;" />
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label for="orgType">Org Type</label><br/>
+        <input type="text" id="orgType" required style="width: 100%; padding: 8px;" />
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label for="address">Address</label><br/>
+        <input type="text" id="address" required style="width: 100%; padding: 8px;" />
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label for="address2">Address 2</label><br/>
+        <input type="text" id="address2" style="width: 100%; padding: 8px;" />
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label for="city">City</label><br/>
+        <input type="text" id="city" required style="width: 100%; padding: 8px;" />
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label for="state">State</label><br/>
+        <input type="text" id="state" required style="width: 100%; padding: 8px;" />
+      </div>
+      <div style="margin-bottom: 20px;">
+        <label for="zip">Zip Code</label><br/>
+        <input type="text" id="zip" required style="width: 100%; padding: 8px;" />
+      </div>
+      <button type="submit" style="padding: 10px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Submit</button>
+      <p id="org-message" style="margin-top: 16px;"></p>
+    </form>
+  `;
+
+        document.getElementById('start-org-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msgEl = document.getElementById('org-message');
+            msgEl.textContent = "Submitting...";
+            msgEl.style.color = "#333";
+
+            const orgPayload = {
+                name: document.getElementById('orgName').value,
+                org_type: document.getElementById('orgType').value,
+                address: document.getElementById('address').value,
+                address2: document.getElementById('address2').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zip_code: document.getElementById('zip').value,
+                owner: {
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: userEmail
+                },
+                user_types: [],
+                services: [],
+                teams: [],
+                users: [],
+                messages: []
+            };
+
+            try {
+              const orgRes = await fetch("https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orgPayload)
+              });
+            
+              const orgData = await orgRes.json();
+              if (!orgRes.ok) throw new Error(orgData.detail || "Failed to create organization.");
+            
+              const orgId = orgData.organization._id;
+              loadOrganizations();
+            
+            } catch (err) {
+              msgEl.textContent = err.message;
+              msgEl.style.color = "red";
+            }
+        });
+    }
+    function showJoinOrgPopup() {
+  document.getElementById('join-org-id').value = "";
+  document.getElementById('join-org-message').textContent = "";
+  document.getElementById('join-org-popup').style.display = "block";
+}
+
+function closeJoinOrgPopup() {
+  document.getElementById('join-org-popup').style.display = "none";
+}
+
+async function submitJoinOrg() {
+  const orgId = document.getElementById('join-org-id').value.trim();
+  const msgEl = document.getElementById('join-org-message');
+
+  if (!orgId) {
+    msgEl.textContent = "Please enter an organization ID.";
+    msgEl.style.color = "red";
+    return;
+  }
+
+  const joinPayload = {
+    first_name: firstName,
+    last_name: lastName,
+    email: userEmail,
+    positions: []
+  };
+
+  try {
+    const joinRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/join`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(joinPayload)
+    });
+
+    const result = await joinRes.json();
+    if (!joinRes.ok) throw new Error(result.detail || "Failed to join organization.");
+
+    closeJoinOrgPopup();
+
+
+      loadOrganizations();
+  } catch (err) {
+    msgEl.textContent = `${err.message}`;
+    msgEl.style.color = "red";
+  }
+}
+  </script>
+</body>
+</html>

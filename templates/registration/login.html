@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .login-form {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-form h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    input[readonly] {
+      background-color: #f0f0f0;
+      color: #888;
+    }
+
+    .small-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .small-buttons button {
+      background: none;
+      border: none;
+      color: #3b82f6;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+    }
+
+    .small-buttons button:hover {
+      text-decoration: underline;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #3b82f6;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #2563eb;
+    }
+
+    #otp-group,
+    #email-controls {
+      display: none;
+    }
+
+    .message {
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .message.success {
+      color: green;
+    }
+
+    .message.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-form">
+      <h2>Login</h2>
+
+      <div class="form-group" id="email-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" required />
+        <div class="small-buttons" id="email-controls">
+          <button type="button" onclick="editEmail()">Edit Email</button>
+          <button type="button" onclick="resendOtp()">Resend OTP</button>
+        </div>
+      </div>
+
+      <div class="form-group" id="otp-group">
+        <label for="otp">One-Time Password</label>
+        <input type="text" id="otp" name="otp" />
+      </div>
+
+      <div id="message" class="message"></div>
+
+      <button id="submit-btn" class="submit-btn" onclick="handleSubmit()">Request One-Time Password</button>
+    </div>
+  </div>
+
+  <script>
+  let otpRequested = false;
+  let isNewUser = false;
+
+  async function handleSubmit() {
+    const email = document.getElementById("email").value.trim();
+    const otp = document.getElementById("otp").value.trim();
+    const messageDiv = document.getElementById("message");
+    messageDiv.textContent = "";
+    messageDiv.className = "message";
+
+    if (!email) {
+      messageDiv.textContent = "Please enter your email.";
+      messageDiv.classList.add("error");
+      return;
+    }
+
+    if (!otpRequested) {
+      try {
+        const res = await fetch("https://api.worshipbuddy.org/auth/request-otp/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "OTP request failed");
+
+        document.getElementById("otp-group").style.display = "block";
+        document.getElementById("email").setAttribute("readonly", true);
+        document.getElementById("submit-btn").textContent = "Verify One-Time Password";
+        document.getElementById("email-controls").style.display = "flex";
+
+        messageDiv.textContent = data.message;
+        messageDiv.classList.add("success");
+
+        otpRequested = true;
+      } catch (err) {
+        messageDiv.textContent = err.message;
+        messageDiv.classList.add("error");
+      }
+    } else if (!isNewUser) {
+      if (!otp) {
+        messageDiv.textContent = "Please enter the OTP.";
+        messageDiv.classList.add("error");
+        return;
+      }
+
+      try {
+        const res = await fetch("https://api.worshipbuddy.org/auth/verify-otp/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "OTP verification failed");
+
+        messageDiv.textContent = data.message;
+        messageDiv.classList.add("success");
+
+        isNewUser = data.is_new_user;
+
+        if (isNewUser) {
+          showNewUserFields();
+          document.getElementById("submit-btn").textContent = "Complete Account";
+          document.getElementById("otp-group").style.display = "none";
+          document.getElementById("email-controls").style.display = "none";
+        } else {
+              const user = data.user;
+
+
+              if (!user.schedulebuddy || !user.schedulebuddy.organizations) {
+                try {
+                  await fetch(`https://api.worshipbuddy.org/users/${email}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      schedulebuddy: { organizations: [] }
+                    }),
+                  });
+                  console.log("schedulebuddy.organizations initialized for existing user.");
+                } catch (err) {
+                  console.error("Failed to initialize schedulebuddy:", err.message);
+                }
+              }
+
+              localStorage.setItem("user_email", email);
+
+            try {
+              const userDetails = await fetch(`https://api.worshipbuddy.org/users/${email}`);
+              const userInfo = await userDetails.json();
+
+              localStorage.setItem("user_first_name", userInfo.first_name || "");
+              localStorage.setItem("user_last_name", userInfo.last_name || "");
+              console.log("User info fetched and saved.");
+            } catch (err) {
+              console.error("Could not fetch full user info:", err.message);
+            }
+
+              console.log("Login successful. Token:", data.token);
+              window.location.href = "/user-organizations/";
+            }
+      } catch (err) {
+        messageDiv.textContent = err.message;
+        messageDiv.classList.add("error");
+      }
+    } else {
+      const firstName = document.getElementById("first_name").value.trim();
+      const lastName = document.getElementById("last_name").value.trim();
+      const church = document.getElementById("church").value.trim();
+
+      if (!firstName || !lastName || !church) {
+        messageDiv.textContent = "Please complete all fields.";
+        messageDiv.classList.add("error");
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://api.worshipbuddy.org/users/${email}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            first_name: firstName,
+            last_name: lastName,
+            church: church,
+            schedulebuddy: {
+              organizations: []
+            }
+          }),
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.detail || "Failed to complete profile.");
+        }
+
+        messageDiv.textContent = "Account created and profile updated!";
+        messageDiv.classList.add("success");
+        console.log("New user profile saved.");
+        localStorage.setItem("user_email", email);
+        
+        try {
+          const userDetails = await fetch(`https://api.worshipbuddy.org/users/${email}`);
+          const userInfo = await userDetails.json();
+        
+          localStorage.setItem("user_first_name", userInfo.first_name || "");
+          localStorage.setItem("user_last_name", userInfo.last_name || "");
+          console.log("User info fetched and saved.");
+        } catch (err) {
+          console.error("Could not fetch full user info:", err.message);
+        }
+        
+        console.log("Login successful.");
+        window.location.href = "/user-organizations/";
+      } catch (err) {
+        messageDiv.textContent = err.message;
+        messageDiv.classList.add("error");
+      }
+    }
+  }
+
+  function showNewUserFields() {
+    const form = document.querySelector(".login-form");
+
+    const firstNameGroup = document.createElement("div");
+    firstNameGroup.className = "form-group";
+    firstNameGroup.innerHTML = `
+      <label for="first_name">First Name</label>
+      <input type="text" id="first_name" name="first_name" />
+    `;
+
+    const lastNameGroup = document.createElement("div");
+    lastNameGroup.className = "form-group";
+    lastNameGroup.innerHTML = `
+      <label for="last_name">Last Name</label>
+      <input type="text" id="last_name" name="last_name" />
+    `;
+
+    const churchGroup = document.createElement("div");
+    churchGroup.className = "form-group";
+    churchGroup.innerHTML = `
+      <label for="church">Church</label>
+      <input type="text" id="church" name="church" />
+    `;
+
+    form.insertBefore(firstNameGroup, document.getElementById("message"));
+    form.insertBefore(lastNameGroup, document.getElementById("message"));
+    form.insertBefore(churchGroup, document.getElementById("message"));
+  }
+
+  function editEmail() {
+    const emailInput = document.getElementById("email");
+    emailInput.removeAttribute("readonly");
+    emailInput.focus();
+    document.getElementById("otp-group").style.display = "none";
+    document.getElementById("email-controls").style.display = "none";
+    document.getElementById("submit-btn").textContent = "Request One-Time Password";
+    document.getElementById("message").textContent = "";
+    otpRequested = false;
+    isNewUser = false;
+  }
+
+  async function resendOtp() {
+    const email = document.getElementById("email").value.trim();
+    const messageDiv = document.getElementById("message");
+
+    try {
+      const res = await fetch("https://api.worshipbuddy.org/auth/request-otp/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Failed to resend OTP");
+
+      messageDiv.textContent = "OTP resent!";
+      messageDiv.className = "message success";
+    } catch (err) {
+      messageDiv.textContent = err.message;
+      messageDiv.className = "message error";
+    }
+  }
+</script>
+</body>
+</html>

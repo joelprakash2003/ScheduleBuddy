@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Org Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 160px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #ddd;
+      padding: 20px 10px;
+    }
+
+    .top-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar button {
+      padding: 10px;
+      background-color: #e0e0e0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .sidebar button:hover {
+      background-color: #ccc;
+    }
+
+    .user-icon {
+      display: flex;
+      justify-content: center;
+      padding-top: 10px;
+    }
+
+    .user-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #666;
+      cursor: pointer;
+    }
+
+    .user-icon svg:hover {
+      fill: #000;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .message {
+      font-size: 18px;
+      color: #333;
+    }
+
+    .org-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: white;
+      padding: 16px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+      transition: background-color 0.2s;
+    }
+
+    .org-card:hover {
+      background-color: #f0f0f0;
+    }
+
+    .org-name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .org-id {
+      font-size: 14px;
+      color: #555;
+      margin-top: 4px;
+    }
+       #floating-add-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background-color: #3b82f6;
+      color: white;
+      font-size: 32px;
+      line-height: 0;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      z-index: 1000;
+    }
+    
+    #floating-add-button:hover {
+      background-color: #2563eb;
+}
+    #team-scheduler-button {
+      position: fixed;
+      bottom: 24px;
+      right: 92px; 
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background-color: #10b981;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #team-scheduler-button:hover {
+      background-color: #059669;
+    }
+    .tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: max-content;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  position: absolute;
+  z-index: 1001;
+  bottom: 70px;
+  right: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  font-size: 14px;
+  transform: translateY(-12px);
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="top-buttons">
+      <button onclick="goToPage('main-org')">Dashboard</button>
+      <button onclick="goToPage('org-services')">Services</button>
+      <button onclick="goToPage('org-teams')">Teams</button>
+      <button onclick="goToPage('org-people')">People</button>
+      <button onclick="goToPage('org-messages')">Messages</button>
+    </div>
+
+    <div class="user-icon" id="user-icon-container">
+      <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+      </svg>
+
+      <div id="user-popup" style="display: none; position: absolute; bottom: 60px; left: 170px; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
+        <p style="margin-bottom: 4px;"><strong id="popup-name"></strong></p>
+        <p id="popup-email" style="margin-bottom: 12px; font-size: 14px; color: #555;"></p>
+        <button onclick="signOut()" style="padding: 6px 12px; border: none; background-color: #e74c3c; color: white; border-radius: 4px; cursor: pointer;">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="main-content">
+    <p class="message">Loading services...</p>
+  </div>
+  <script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    let allTeams = [];
+    function showServiceForm() {
+  mainContent.innerHTML = `
+    <h2>Create New Service</h2>
+    <form id="service-form" style="max-width: 700px;">
+      <div style="margin-bottom: 16px;">
+        <label><strong>Service Name</strong></label><br/>
+        <input type="text" id="serviceName" required style="width: 100%; padding: 8px;" />
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label><strong>Start Date & Time</strong></label><br/>
+        <input type="datetime-local" id="startDateTime" required style="width: 100%; padding: 8px;" />
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label><strong>End Date & Time</strong></label><br/>
+        <input type="datetime-local" id="endDateTime" required style="width: 100%; padding: 8px;" />
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label><strong>Location</strong> (Optional)</label><br/>
+        <input type="text" id="location" style="width: 100%; padding: 8px;" />
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label><strong>Assign Teams</strong></label>
+        <div id="teams-list" style="margin-top: 8px;"></div>
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label><input type="checkbox" id="isRecurring" onchange="toggleRecurrence()" /> This service recurs</label>
+      </div>
+
+      <div id="recurrence-options" style="display: none; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
+        <label><strong>Recurrence Pattern</strong></label><br/>
+        <select id="recurrencePattern" style="margin-bottom: 8px;">
+          <option value="daily">Daily</option>
+          <option value="weekly" selected>Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select><br/>
+        <label>Repeat every <input type="number" id="repeatInterval" value="1" style="width: 60px;" /> week(s) on:</label><br/>
+        <div style="margin: 6px 0;">
+          <label><input type="checkbox" value="0" /> Sunday</label>
+          <label><input type="checkbox" value="1" /> Monday</label>
+          <label><input type="checkbox" value="2" /> Tuesday</label>
+          <label><input type="checkbox" value="3" /> Wednesday</label>
+          <label><input type="checkbox" value="4" /> Thursday</label>
+          <label><input type="checkbox" value="5" /> Friday</label>
+          <label><input type="checkbox" value="6" /> Saturday</label>
+        </div>
+        <label>End After <input type="number" id="endOccurrences" value="10" style="width: 60px;" /> occurrences (Max 16 weeks)</label>
+      </div>
+
+      <button type="submit" style="margin-top: 16px; padding: 10px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Create Service</button>
+      <p id="service-message" style="margin-top: 12px;"></p>
+    </form>
+  `;
+  
+
+  loadTeamsForForm();
+  
+  fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`)
+  .then(res => res.json())
+  .then(org => {
+    const address = [org.address, org.address2, org.city, org.state, org.zip_code]
+      .filter(Boolean).join(', ');
+    document.getElementById("location").value = address;
+  });
+
+  document.getElementById("service-form").addEventListener("submit", handleServiceSubmit);
+}
+  function navigateTo(section) {
+    const mainContent = document.getElementById('main-content');
+    mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
+  }
+  const mainContent = document.getElementById('main-content');
+const userEmail = localStorage.getItem("user_email");
+const firstName = localStorage.getItem("user_first_name") || "";
+const lastName = localStorage.getItem("user_last_name") || "";
+
+const userIcon = document.getElementById('user-icon');
+const userPopup = document.getElementById('user-popup');
+const popupName = document.getElementById('popup-name');
+const popupEmail = document.getElementById('popup-email');
+
+popupName.textContent = `${firstName} ${lastName}`;
+popupEmail.textContent = userEmail;
+
+userIcon.addEventListener('click', (e) => {
+  e.stopPropagation();
+  userPopup.style.display = userPopup.style.display === 'none' ? 'block' : 'none';
+});
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('user-icon-container').contains(e.target)) {
+    userPopup.style.display = 'none';
+  }
+});
+
+function signOut() {
+  localStorage.removeItem("user_email");
+  localStorage.removeItem("user_first_name");
+  localStorage.removeItem("user_last_name");
+  window.location.href = "http://127.0.0.1:8000/";
+}
+const urlParams = new URLSearchParams(window.location.search);
+  const orgId = urlParams.get("org");
+
+function goToPage(page) {
+  if (!orgId) {
+    alert("Organization ID is missing.");
+    return;
+  }
+  window.location.href = `/${page}?org=${orgId}`;
+}
+async function loadServices({ isOwner, isOrgAdmin }) {
+  if (!orgId) {
+    mainContent.innerHTML = '<p class="message">No org ID provided.</p>';
+    return;
+  }
+
+  try {
+    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services`);
+    const services = await res.json();
+    const now = new Date();
+    const upcomingServices = services.filter(service => new Date(service.end_datetime) > now);
+    upcomingServices.sort((a, b) => new Date(a.start_datetime) - new Date(b.start_datetime));
+
+    mainContent.innerHTML = '';
+
+    if (!upcomingServices.length) {
+      mainContent.innerHTML = `
+        <p class="message">No services found. <a href="#" onclick="showServiceForm()">Start by creating one</a>.</p>
+      `;
+      return;
+    }
+
+    upcomingServices.forEach(service => {
+      const card = document.createElement('div');
+      card.className = 'org-card';
+
+      const startDate = new Date(service.start_datetime).toLocaleString();
+      const endDate = new Date(service.end_datetime).toLocaleString();
+      const teamNames = service.teams?.map(t => t.team_name).join(', ') || 'No teams assigned';
+
+      card.innerHTML = `
+  <div class="org-name">${service.service_name}</div>
+  <div class="org-id">📍 ${service.location}</div>
+  <div class="org-id">🕒 ${startDate} → ${endDate}</div>
+  ${isOwner || isOrgAdmin ? `<div class="org-id">Teams: ${teamNames}</div>` : ""}
+`;
+      const userTeams = userTeamPermissions.map(tp => tp.team_name);
+    const userRoles = userTeamPermissions.reduce((acc, tp) => {
+      acc[tp.team_name] = tp.permissions;
+      return acc;
+    }, {});
+    
+    const relevantTeams = service.teams.map(t => t.team_name);
+    const hasAccess = isOwner || isOrgAdmin || relevantTeams.some(team => {
+      return userRoles[team]?.length > 0;
+    });
+    
+    if (hasAccess) {
+  card.onclick = () => {
+    editService(service, { isOwner, isOrgAdmin, userRoles });
+  };
+} else {
+      card.style.cursor = "not-allowed";
+    }
+
+      mainContent.appendChild(card);
+    });
+  } catch (err) {
+    console.error(err);
+    mainContent.innerHTML = '<p class="message">Failed to load services.</p>';
+  }
+}
+let currentUser = null;
+let isOwner = false;
+let isOrgAdmin = false;
+let userTeamPermissions = [];
+
+async function initPage() {
+  try {
+    const [orgRes, usersRes] = await Promise.all([
+      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`),
+      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`)
+    ]);
+
+    const org = await orgRes.json();
+    const allUsers = await usersRes.json();
+    currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
+    isOwner = org.owner?.email === userEmail;
+    isOrgAdmin = currentUser?.org_admin === true;
+    userTeamPermissions = currentUser?.team_permissions || [];
+
+    const showScheduleService = isOwner || isOrgAdmin;
+    const showTeamScheduler = isOwner || isOrgAdmin || userTeamPermissions.some(tp => tp.permissions.includes("Scheduler"));
+
+    document.getElementById("floating-add-button").style.display = showScheduleService ? "block" : "none";
+    document.getElementById("team-scheduler-button").style.display = showTeamScheduler ? "flex" : "none";
+    document.getElementById("calendar-view-button").style.display = showScheduleService ? "flex" : "none";
+
+    loadServices({ isOwner, isOrgAdmin });
+  } catch (err) {
+    console.error("Failed to determine user permissions:", err.message);
+    loadServices({ isOwner: false, isOrgAdmin: false });
+  }
+}
+
+initPage();
+
+function toggleRecurrence() {
+  const checked = document.getElementById("isRecurring").checked;
+  document.getElementById("recurrence-options").style.display = checked ? "block" : "none";
+}
+
+async function loadTeamsForForm() {
+  const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`);
+  const teams = await res.json();
+  const container = document.getElementById("teams-list");
+  container.innerHTML = teams.map(t =>
+    `<label><input type="checkbox" value="${t.team_name}" /> ${t.team_name}</label><br/>`
+  ).join('');
+}
+
+async function handleServiceSubmit(e) {
+  e.preventDefault();
+  const msg = document.getElementById("service-message");
+  msg.textContent = "Submitting...";
+
+  const selectedTeams = Array.from(document.querySelectorAll("#teams-list input:checked")).map(i => i.value);
+  const start = new Date(document.getElementById("startDateTime").value);
+  const end = new Date(document.getElementById("endDateTime").value);
+  const isRecurring = document.getElementById("isRecurring").checked;
+  const location = document.getElementById("location").value;
+
+  const payload = {
+    service_name: document.getElementById("serviceName").value,
+    start_datetime: start.toISOString(),
+    end_datetime: end.toISOString(),
+    teams: selectedTeams.map(name => ({ team_name: name, positions: {}, assign_with_other_team: false })),
+    location
+  };
+
+  try {
+    if (isRecurring) {
+      const pattern = document.getElementById("recurrencePattern").value;
+      const repeat = parseInt(document.getElementById("repeatInterval").value);
+      const endAfter = Math.min(16, parseInt(document.getElementById("endOccurrences").value));
+      const days = Array.from(document.querySelectorAll("#recurrence-options input[type='checkbox']:checked"))
+        .map(i => parseInt(i.value));
+
+      const meetings = [];
+
+      for (let i = 0, date = new Date(start); i < endAfter * 7; i++) {
+        const day = date.getDay();
+        if (days.includes(day)) {
+          const s = new Date(date);
+          s.setHours(start.getHours(), start.getMinutes());
+          const e = new Date(s);
+          e.setHours(end.getHours(), end.getMinutes());
+
+          meetings.push({ ...payload, start_datetime: s.toISOString(), end_datetime: e.toISOString() });
+        }
+        date.setDate(date.getDate() + 1);
+      }
+
+      const safeMeetings = meetings.slice(0, 20);
+      for (let m of safeMeetings) {
+        await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(m)
+        });
+      }
+
+      msg.textContent = `Created ${safeMeetings.length} recurring services`;
+    } else {
+      const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("Failed to create service.");
+      msg.textContent = "Service created successfully!";
+    }
+
+    msg.style.color = "green";
+    loadServices()
+  } catch (err) {
+    msg.textContent = err.message;
+    msg.style.color = "red";
+  }
+}
+
+const selectedUsers = {};
+
+async function editService(service, { isOwner, isOrgAdmin, userRoles }) {
+  const canManageOrg = isOrgAdmin || isOwner;
+
+  const relevantTeams = service.teams.map(t => t.team_name);
+  const canSchedule = relevantTeams.some(team => {
+    const perms = userRoles[team] || [];
+    return perms.includes("Admin") || perms.includes("Scheduler");
+  });
+    
+    
+  const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`);
+  allTeams = await res.json();
+  
+  function toDatetimeLocal(dtString) {
+  const dt = new Date(dtString);
+  dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+  return dt.toISOString().slice(0, 16);
+}
+  
+
+  let users = [];
+
+try {
+  const userRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+  if (!userRes.ok) throw new Error(`Failed to load users: ${userRes.status}`);
+  users = await userRes.json();
+
+  if (!Array.isArray(users)) {
+    console.warn("Expected array of users but got:", users);
+    users = [];
+  }
+} catch (err) {
+  console.error("User fetch error:", err.message);
+  users = [];
+}
+console.log("Editing service:", service);
+  mainContent.innerHTML = `
+    <h2>Edit Service</h2>
+    <form id="edit-service-form" style="max-width: 700px;">
+      <div style="margin-bottom: 16px;">
+        <label><strong>Service Name</strong></label><br/>
+        <input type="text" id="editServiceName" required value="${service.service_name}" style="width: 100%; padding: 8px;" ${!canManageOrg ? 'disabled' : ''} />
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label><strong>Start Date & Time</strong></label><br/>
+<input type="datetime-local" id="editStartDateTime" value="${toDatetimeLocal(service.start_datetime)}" required ${!canManageOrg ? 'disabled' : ''} />
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label><strong>End Date & Time</strong></label><br/>
+<input type="datetime-local" id="editEndDateTime" value="${toDatetimeLocal(service.end_datetime)}" required ${!canManageOrg ? 'disabled' : ''} />
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <label><strong>Location</strong></label><br/>
+<input type="text" id="editLocation" value="${service.location || ''}" style="width: 100%; padding: 8px;" ${!canManageOrg ? 'disabled' : ''} />
+</div>
+
+      <div style="margin-bottom: 16px;">
+        <label><strong>Teams & Assignments</strong></label>
+        <div id="team-toggle-list" style="margin-bottom: 16px;">
+          <label><strong>Enable Teams</strong></label><br/>
+        </div>
+        <div id="assignments-container"></div>
+      </div>
+
+      <button type="submit" style="padding: 10px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Update Service</button>
+      <p id="edit-service-message" style="margin-top: 12px;"></p>
+    </form>
+  `;
+  
+  if (!service.location) {
+  fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`)
+    .then(res => res.json())
+    .then(org => {
+      const address = [org.address, org.address2, org.city, org.state, org.zip_code]
+        .filter(Boolean).join(', ');
+      document.getElementById("editLocation").value = address;
+    });
+}
+  function renderTeamTogglesAndAssignments() {
+  const toggleList = document.getElementById("team-toggle-list");
+  const assignmentsContainer = document.getElementById("assignments-container");
+
+  toggleList.innerHTML = `<label><strong>Enable Teams</strong></label><br/>`;
+
+  allTeams.forEach(team => {
+    const isChecked = service.teams.some(t => t.team_name === team.team_name);
+
+    const label = document.createElement("label");
+    label.style.marginRight = "12px";
+    label.innerHTML = `
+  <input type="checkbox" value="${team.team_name}" ${isChecked ? "checked" : ""} ${!canManageOrg ? "disabled" : ""} />
+  ${team.team_name}
+`;
+
+    const checkbox = label.querySelector("input");
+
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) {
+        addTeamAssignment(team);
+      } else {
+        removeTeamAssignment(team.team_name);
+      }
+    });
+
+    toggleList.appendChild(label);
+
+    if (isChecked) addTeamAssignment(team);
+  });
+}
+  const form = document.getElementById("edit-service-form");
+if (!canManageOrg && !canSchedule) {
+  form.querySelector("button[type='submit']").disabled = true;
+  form.querySelector("button[type='submit']").style.opacity = "0.6";
+  form.querySelector("button[type='submit']").style.cursor = "not-allowed";
+}
+
+function addTeamAssignment(team) {
+    
+  if (document.getElementById(`team-box-${team.team_name}`)) return;
+
+  const serviceTeam = service.teams.find(t => t.team_name === team.team_name) || {
+    positions: {}
+  };
+  const role = userRoles[team.team_name] || [];
+  const canManageOrg = isOrgAdmin || isOwner;
+const hasAnyPermission = role.length > 0;
+if (!hasAnyPermission && !canManageOrg) return; 
+  const isViewer = role.includes("Viewer") || role.includes("Messenger");
+const isScheduler = role.includes("Scheduler");
+const isTeamAdmin = role.includes("Admin");
+
+const canViewOnly = !canManageOrg && isViewer && !isScheduler && !isTeamAdmin;
+const canSchedule = isScheduler || isTeamAdmin;
+
+    
+
+  const wrapper = document.createElement("div");
+  wrapper.id = `team-box-${team.team_name}`;
+  wrapper.style.border = "2px solid #ccc";
+  wrapper.style.borderRadius = "8px";
+  wrapper.style.padding = "12px";
+  wrapper.style.marginBottom = "24px";
+  wrapper.style.backgroundColor = "#fafafa";
+
+  const title = document.createElement("h3");
+  title.textContent = team.team_name;
+  title.style.marginBottom = "10px";
+
+  wrapper.appendChild(title);
+
+  const table = document.createElement("table");
+table.style.width = "100%";
+table.style.borderCollapse = "collapse";
+
+table.innerHTML = `
+  <thead>
+    <tr>
+      <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Position</th>
+      <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ccc;">Assign To</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+`;
+
+const tbody = table.querySelector("tbody");
+  for (let pos of team.positions) {
+  for (let i = 0; i < pos.qty; i++) {
+    const row = document.createElement("tr");
+
+    const eligibleUsers = users.filter(u =>
+      Array.isArray(u.positions) && u.positions.includes(pos.position_name)
+    );
+
+    let selectedName = null;
+    const assigned = serviceTeam.positions?.[pos.position_name];
+if (assigned) {
+  if (Array.isArray(assigned)) selectedName = assigned[i] || null;
+  else if (i === 0) selectedName = assigned;
+}
+    if (canViewOnly) {
+      row.innerHTML = `
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${pos.position_name}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${selectedName || "-"}</td>
+      `;
+    } else {
+      const userOptions = eligibleUsers.map(u => {
+        const fullName = `${u.first_name} ${u.last_name}`;
+        const selected = u.email === selectedName ? "selected" : "";
+        return `<option value="${u.email}" ${selected}>${fullName}</option>`;
+      }).join("");
+
+      row.innerHTML = `
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${pos.position_name}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">
+          <select style="padding: 6px; width: 100%;">
+            <option value="">-- Select User --</option>
+            ${userOptions}
+          </select>
+        </td>
+      `;
+
+      const select = row.querySelector("select");
+      const email = select.value;
+      if (email) {
+        if (!selectedUsers[email]) selectedUsers[email] = new Set();
+        selectedUsers[email].add(team.team_name);
+      }
+      select.addEventListener("change", () => {
+        const previousEmail = select.dataset.prevEmail;
+        const newEmail = select.value;
+
+        const teamName = team.team_name;
+
+        if (previousEmail && selectedUsers[previousEmail]) {
+          selectedUsers[previousEmail].delete(teamName);
+          if (selectedUsers[previousEmail].size === 0) {
+            delete selectedUsers[previousEmail];
+          }
+        }
+
+        select.dataset.prevEmail = newEmail;
+        if (newEmail) {
+          if (!selectedUsers[newEmail]) selectedUsers[newEmail] = new Set();
+          selectedUsers[newEmail].add(teamName);
+        }
+
+        updateDropdowns();
+      });
+    }
+
+    tbody.appendChild(row);
+  }
+}
+
+  wrapper.appendChild(table);
+  document.getElementById("assignments-container").appendChild(wrapper);
+  updateDropdowns();
+}
+
+function removeTeamAssignment(teamName) {
+  const box = document.getElementById(`team-box-${teamName}`);
+  if (box) box.remove();
+  updateDropdowns();
+}
+
+renderTeamTogglesAndAssignments();
+  document.getElementById("edit-service-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById("edit-service-message");
+    msg.textContent = "Updating...";
+    msg.style.color = "#333";
+
+    const updatedTeams = [];
+
+    document.querySelectorAll("#assignments-container > div").forEach(teamDiv => {
+      const teamName = teamDiv.querySelector("h3").textContent;
+      const teamObj = allTeams.find(t => t.team_name === teamName);
+      const assignWithOtherTeam = teamObj?.assign_with_other_team || false;
+    
+      const positionAssignments = {};
+    
+      teamDiv.querySelectorAll("tbody tr").forEach(row => {
+        const positionName = row.querySelector("td").textContent;
+        const selectedUserOption = row.querySelector("select").selectedOptions[0];
+        const email = row.querySelector("select").value;
+        const fullName = users.find(u => u.email === email);
+        if (email && fullName) {
+          const name = `${fullName.first_name} ${fullName.last_name}`;
+          if (!positionAssignments[positionName]) {
+            positionAssignments[positionName] = name;
+          } else {
+            if (!Array.isArray(positionAssignments[positionName])) {
+              positionAssignments[positionName] = [positionAssignments[positionName]];
+            }
+            positionAssignments[positionName].push(name);
+          }
+        }
+      });
+    
+      updatedTeams.push({
+        team_name: teamName,
+        positions: positionAssignments,
+        assign_with_other_team: assignWithOtherTeam
+      });
+    });
+    
+    const payload = {
+      service_name: document.getElementById("editServiceName").value,
+      start_datetime: new Date(document.getElementById("editStartDateTime").value).toISOString(),
+      end_datetime: new Date(document.getElementById("editEndDateTime").value).toISOString(),
+      location: document.getElementById("editLocation").value,
+      teams: updatedTeams
+    };
+
+    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services/${service._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      msg.textContent = "Service updated!";
+      msg.style.color = "green";
+      loadServices()
+    } else {
+      msg.textContent = "Failed to update service.";
+      msg.style.color = "red";
+    }
+  });
+}
+function updateDropdowns() {
+  const selects = document.querySelectorAll("#assignments-container select");
+
+  selects.forEach(select => {
+    const currentTeamName = select.closest("div").querySelector("h3").textContent;
+    const currentRow = select.closest("tr");
+    const positionName = currentRow.querySelector("td").textContent;
+
+    const teamObj = allTeams.find(t => t.team_name === currentTeamName);
+    const positionObj = teamObj?.positions.find(p => p.position_name === positionName);
+
+    Array.from(select.options).forEach(option => {
+      const email = option.value;
+      if (!email) return;
+
+      let isDisabled = false;
+      const userTeamSet = selectedUsers[email];
+
+      if (userTeamSet) {
+        isDisabled = [...userTeamSet].some(otherTeam =>
+          otherTeam !== currentTeamName &&
+          !canAssignWithOtherTeam(otherTeam, currentTeamName)
+        );
+      }
+
+      if (!isDisabled && userTeamSet?.has(currentTeamName)) {
+        const selectsInSameTeam = Array.from(select.closest("div").querySelectorAll("select"));
+
+        if (positionObj?.assign_with_other_position === false) {
+          const alreadyAssignedSamePosition = selectsInSameTeam.filter(sel =>
+            sel !== select &&
+            sel.closest("tr").querySelector("td").textContent === positionName &&
+            sel.value === email
+          );
+
+          if (alreadyAssignedSamePosition.length > 0) {
+            isDisabled = true;
+          }
+        }
+
+        const assignedOtherPositions = selectsInSameTeam.filter(sel =>
+          sel !== select &&
+          sel.value === email &&
+          sel.closest("tr").querySelector("td").textContent !== positionName
+        );
+
+        for (let otherSel of assignedOtherPositions) {
+          const otherPosName = otherSel.closest("tr").querySelector("td").textContent;
+          const otherPosObj = teamObj?.positions.find(p => p.position_name === otherPosName);
+
+        const currentAllows = positionObj?.assign_with_other_position === true;
+        const otherAllows = otherPosObj?.assign_with_other_position === true;
+        
+        if (!currentAllows && !otherAllows) {
+          isDisabled = true;
+          break;
+        }
+        }
+      }
+
+      option.disabled = isDisabled;
+    });
+  });
+}
+
+function canAssignWithOtherTeam(teamA, teamB) {
+  const t1 = allTeams.find(t => t.team_name === teamA);
+  const t2 = allTeams.find(t => t.team_name === teamB);
+  return t1?.assign_with_other_team || t2?.assign_with_other_team;
+}
+async function renderTeamScheduler() {
+  mainContent.innerHTML = `<h2>Schedule Team Members</h2><div id="scheduler-wrapper" style="position: relative;"></div>`;
+
+  const wrapper = document.getElementById("scheduler-wrapper");
+  wrapper.innerHTML = `<div id="scheduler-nav" style="display: flex; align-items: center; gap: 8px;">
+    <button id="prev-scheduler" style="font-size: 24px;"><-</button>
+    <div id="scheduler-container" style="display: flex; overflow-x: auto; gap: 16px;"></div>
+    <button id="next-scheduler" style="font-size: 24px;">-></button>
+  </div>`;
+
+  const container = document.getElementById("scheduler-container");
+  const now = new Date();
+
+  const [services, teams, users] = await Promise.all([
+    fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services`).then(r => r.json()),
+    fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`).then(r => r.json()),
+    fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`).then(r => r.json())
+  ]);
+
+  const upcoming = services.filter(s => new Date(s.end_datetime) > now)
+                           .sort((a, b) => new Date(a.start_datetime) - new Date(b.start_datetime));
+
+  const selectedUsers = {};
+
+  const servicesPerPage = 3;
+  let currentPage = 0;
+
+  function renderPage() {
+    container.innerHTML = '';
+    const slice = upcoming.slice(currentPage * servicesPerPage, (currentPage + 1) * servicesPerPage);
+
+    slice.forEach(service => {
+      const card = document.createElement('div');
+      const ended = new Date(service.end_datetime) < new Date();
+      card.style = `
+        border: 1px solid #ccc; border-radius: 8px; background: #fff; padding: 16px;
+        min-width: 320px; max-width: 320px;
+      `;
+
+      const userRoles = userTeamPermissions.reduce((acc, tp) => {
+      acc[tp.team_name] = tp.permissions;
+      return acc;
+    }, {});
+    
+    const visibleTeams = isOwner || isOrgAdmin
+      ? teams
+      : teams.filter(t => {
+          const perms = userRoles[t.team_name] || [];
+          return perms.includes("Admin") || perms.includes("Scheduler");
+        });
+
+const teamsHTML = visibleTeams.map(team => {
+        const assignedTeam = service.teams.find(t => t.team_name === team.team_name);
+        if (!assignedTeam) return '';
+
+        const teamBoxId = `${service.service_name}-${team.team_name}`.replace(/\s+/g, '-');
+        const positionsHTML = team.positions.map(pos => {
+const qty = pos.qty || 1;
+let assigned = assignedTeam.positions?.[pos.position_name];
+if (!Array.isArray(assigned)) assigned = assigned ? [assigned] : [];
+
+const dropdowns = [];
+for (let i = 0; i < qty; i++) {
+  const assignee = assigned[i] || "";
+  const dropdownId = `${teamBoxId}-${pos.position_name}-${i}`;
+
+  const dropdown = `<select data-team="${team.team_name}" data-position="${pos.position_name}" data-index="${i}" id="${dropdownId}" style="width: 100%;" ${ended ? 'disabled' : ''}>
+    <option value="">-- Select --</option>
+    ${users
+      .filter(u => {
+  const matchesPosition = (u.positions || []).includes(pos.position_name);
+  
+  if (!matchesPosition) return false;
+
+  const inabilityDates = u.inability || [];
+  const serviceDate = new Date(service.start_datetime).toISOString().split("T")[0];
+
+  return !inabilityDates.some(date => {
+    const d = new Date(date).toISOString().split("T")[0];
+    return d === serviceDate;
+  });
+})
+      .map(u => {
+        const fullName = `${u.first_name} ${u.last_name}`;
+        const selected = u.email === assignee ? 'selected' : '';
+        return `<option value="${u.email}" ${selected}>${fullName}</option>`;
+      }).join('')}
+  </select>`;
+
+    dropdowns.push(`<tr>
+      <td style="padding: 4px;">${pos.position_name}</td>
+      <td style="padding: 4px;">${dropdown}</td>
+    </tr>`);
+  }
+
+  return dropdowns.join('');
+}).join('');
+
+        return `
+          <h4 style="margin: 12px 0 4px;">${team.team_name}</h4>
+          <table style="width: 100%; border-collapse: collapse;">${positionsHTML}</table>
+        `;
+      }).join('');
+
+      card.innerHTML = `
+        <div><strong>${service.service_name}</strong></div>
+        <div>${new Date(service.start_datetime).toLocaleString()}</div>
+        <div>${new Date(service.end_datetime).toLocaleString()}</div>
+        <div>📍 ${service.location}</div>
+        <hr style="margin: 12px 0;">
+        ${teamsHTML}
+      `;
+
+      container.appendChild(card);
+
+      const selects = card.querySelectorAll("select");
+        selects.forEach(select => {
+          const email = select.value;
+          const teamName = select.dataset.team;
+        
+          if (email) {
+            if (!selectedUsers[email]) selectedUsers[email] = new Set();
+            selectedUsers[email].add(teamName);
+          }
+        
+          select.addEventListener("change", async () => {
+  const email = select.value;
+  const teamName = select.dataset.team;
+  const positionName = select.dataset.position;
+  const index = parseInt(select.dataset.index);
+  const serviceName = service.service_name;
+
+  if (!selectedUsers[email]) selectedUsers[email] = new Set();
+  selectedUsers[email].add(teamName);
+  updateDropdowns(selects, teams);
+
+  const user = users.find(u => u.email === email);
+  const fullName = user ? `${user.first_name} ${user.last_name}` : "";
+
+const latestRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services/${service._id}`);
+const latestService = await latestRes.json();
+
+const team = latestService.teams.find(t => t.team_name === teamName);
+if (!team) return;
+
+if (!team.positions[positionName]) team.positions[positionName] = [];
+
+team.positions[positionName] = email;
+
+await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services/${service._id}`, {
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(latestService)
+});
+});
+        });
+        
+        updateDropdowns(selects, teams);
+  });}
+
+  function updateDropdowns(selects, allTeams) {
+    selects.forEach(select => {
+      const currentTeamName = select.dataset.team;
+      const positionName = select.dataset.position;
+      const index = parseInt(select.dataset.index);
+
+      const teamObj = allTeams.find(t => t.team_name === currentTeamName);
+      const positionObj = teamObj?.positions.find(p => p.position_name === positionName);
+
+      Array.from(select.options).forEach(option => {
+        const email = option.value;
+        if (!email) return;
+
+        let isDisabled = false;
+        const userTeamSet = selectedUsers[email];
+
+        if (userTeamSet) {
+          isDisabled = [...userTeamSet].some(otherTeam =>
+            otherTeam !== currentTeamName &&
+            !canAssignWithOtherTeam(otherTeam, currentTeamName, allTeams)
+          );
+        }
+
+        if (!isDisabled && userTeamSet?.has(currentTeamName)) {
+          const selectsInSameTeam = Array.from(selects).filter(sel => sel.dataset.team === currentTeamName);
+
+          if (positionObj?.assign_with_other_position === false) {
+            const samePositionConflict = selectsInSameTeam.filter(sel =>
+              sel !== select &&
+              sel.dataset.position === positionName &&
+              sel.value === email
+            );
+            if (samePositionConflict.length > 0) isDisabled = true;
+          }
+
+          const otherPositionConflict = selectsInSameTeam.filter(sel =>
+            sel !== select &&
+            sel.value === email &&
+            sel.dataset.position !== positionName
+          );
+
+          for (let otherSel of otherPositionConflict) {
+            const otherPosName = otherSel.dataset.position;
+            const otherPosObj = teamObj?.positions.find(p => p.position_name === otherPosName);
+
+            const currentAllows = positionObj?.assign_with_other_position === true;
+            const otherAllows = otherPosObj?.assign_with_other_position === true;
+
+            if (!currentAllows && !otherAllows) {
+              isDisabled = true;
+              break;
+            }
+          }
+        }
+
+        option.disabled = isDisabled;
+      });
+    });
+  }
+
+  function canAssignWithOtherTeam(teamA, teamB, teamsList) {
+    const t1 = teamsList.find(t => t.team_name === teamA);
+    const t2 = teamsList.find(t => t.team_name === teamB);
+    return t1?.assign_with_other_team || t2?.assign_with_other_team;
+  }
+
+  renderPage();
+
+  document.getElementById('prev-scheduler').onclick = () => {
+    if (currentPage > 0) {
+      currentPage--;
+      renderPage();
+    }
+  };
+
+  document.getElementById('next-scheduler').onclick = () => {
+    if ((currentPage + 1) * servicesPerPage < upcoming.length) {
+      currentPage++;
+      renderPage();
+    }
+  };
+}
+
+async function renderCalendarView() {
+  mainContent.innerHTML = `
+    <h2>Monthly Service Calendar</h2>
+    <div class="no-print" style="margin-bottom: 16px;">
+      <button onclick="exportCalendarToPDF()" style="padding: 10px 16px; margin-right: 10px;">Export to PDF</button>
+      <button onclick="exportCalendarToWord()" style="padding: 10px 16px; margin-right: 10px;">Export to Word</button>
+      <button onclick="exportCalendarToExcel()" style="padding: 10px 16px;">Export to Excel</button>
+    </div>
+    <div id="calendar-wrapper" style="margin-top: 24px;"></div>
+  `;
+
+  const [servicesRes, teamsRes, usersRes] = await Promise.all([
+    fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services`),
+    fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`),
+    fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`)
+  ]);
+
+  const services = await servicesRes.json();
+  const teams = await teamsRes.json();
+  const users = await usersRes.json();
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const upcomingServices = services
+    .filter(s => {
+      const date = new Date(s.start_datetime);
+      return (
+        date.getMonth() === currentMonth &&
+        date.getFullYear() === currentYear &&
+        new Date(s.end_datetime) > now
+      );
+    })
+    .sort((a, b) => new Date(a.start_datetime) - new Date(b.start_datetime));
+
+  const wrapper = document.getElementById("calendar-wrapper");
+  wrapper.innerHTML = "";
+
+for (const team of teams) {
+  const relevantServices = upcomingServices.filter(s =>
+  s.teams.some(t => t.team_name === team.team_name)
+);
+
+if (relevantServices.length === 0) continue;
+
+const serviceDates = relevantServices.map(s => ({
+  label: new Date(s.start_datetime).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }),
+  dateStr: new Date(s.start_datetime).toISOString().split("T")[0],
+}));
+
+  const teamBox = document.createElement("div");
+    teamBox.className = "team-page page-break";
+    teamBox.style = "margin-bottom: 40px; border: 1px solid #ccc; border-radius: 8px; padding: 16px; background: white; overflow-x: auto;";
+    teamBox.innerHTML = `<h3 style="margin-bottom: 16px;">${team.team_name}</h3>`;
+    
+    
+
+    const table = document.createElement("table");
+    table.style = "border-collapse: collapse; width: 100%; min-width: 700px;";
+    
+    const thead = document.createElement("thead");
+    thead.innerHTML = `<tr>
+  <th style="padding: 8px; border-bottom: 2px solid #333;">Position</th>
+  ${serviceDates.map(date => `<th style="padding: 8px; border-bottom: 2px solid #333;">${date.label}</th>`).join('')}
+</tr>`;
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+
+    for (const pos of team.positions) {
+      const qty = pos.qty || 1;
+      for (let i = 0; i < qty; i++) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td style="padding: 6px; border-bottom: 1px solid #ddd;">${pos.position_name}</td>`;
+
+        for (const { dateStr, label } of serviceDates) {
+  const service = upcomingServices.find(s => new Date(s.start_datetime).toISOString().split("T")[0] === dateStr);
+  let cellValue = "-";
+
+  if (service) {
+    const assignedTeam = service.teams.find(t => t.team_name === team.team_name);
+    if (assignedTeam?.positions?.[pos.position_name]) {
+      let assigned = assignedTeam.positions[pos.position_name];
+      assigned = Array.isArray(assigned) ? assigned : [assigned];
+      const email = assigned[i];
+      const user = users.find(u => u.email === email);
+      if (user) {
+        cellValue = `${user.first_name} ${user.last_name}`;
+      } else if (email) {
+        cellValue = email;
+      }
+    }
+  }
+
+  row.innerHTML += `<td style="padding: 6px; border-bottom: 1px solid #eee; font-size: 14px; color: #333;">${cellValue}</td>`;
+}
+
+        tbody.appendChild(row);
+      }
+    }
+
+    table.appendChild(tbody);
+    teamBox.appendChild(table);
+    wrapper.appendChild(teamBox);
+  }
+}
+
+function exportCalendarToPDF() {
+  const printContent = document.getElementById("calendar-wrapper").innerHTML;
+  const style = `
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      h2, h3 { margin-bottom: 10px; }
+      .page-break { page-break-before: always; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #ccc; padding: 8px; font-size: 12px; }
+    </style>
+  `;
+  const w = window.open('', '', 'width=1000,height=900');
+  w.document.write(`<html><head><title>Service Calendar</title>${style}</head><body>${printContent}</body></html>`);
+  w.document.close();
+  w.focus();
+  setTimeout(() => w.print(), 500);
+}
+
+function exportCalendarToWord() {
+  const content = document.getElementById("calendar-wrapper").innerHTML;
+
+  const fullHTML = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          table { border-collapse: collapse; width: 100%; }
+          th, td { border: 1px solid #ccc; padding: 8px; font-size: 12px; }
+          h3 { margin-top: 20px; }
+        </style>
+      </head>
+      <body>${content}</body>
+    </html>
+  `;
+
+  const blob = window.htmlDocx.asBlob(fullHTML);
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "Service_Calendar.docx";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function exportCalendarToExcel() {
+  const tables = document.querySelectorAll("#calendar-wrapper table");
+  const wb = XLSX.utils.book_new();
+
+  tables.forEach((table, index) => {
+    const ws = XLSX.utils.table_to_sheet(table);
+    XLSX.utils.book_append_sheet(wb, ws, `Team${index + 1}`);
+  });
+
+  XLSX.writeFile(wb, "Service_Calendar.xlsx");
+}
+</script>
+
+
+<div class="tooltip">
+  <button onclick="showServiceForm()" id="floating-add-button" style="display: none;">
+    +
+  </button>
+  <span class="tooltiptext">Schedule Service</span>
+</div>
+
+<div class="tooltip">
+  <button onclick="renderTeamScheduler()" id="team-scheduler-button" style="display: none;">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: white;">
+      <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+    </svg>
+  </button>
+  <span class="tooltiptext">Schedule Team Members</span>
+</div>
+<div class="tooltip">
+  <button onclick="renderCalendarView()" id="calendar-view-button" style="display: none; position: fixed; bottom: 24px; right: 160px; width: 56px; height: 56px; border-radius: 50%; background-color: #f59e0b; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center;">
+    📅
+  </button>
+  <span class="tooltiptext">Export Schedule Calendar</span>
+</div>
+</body>
+</html>
