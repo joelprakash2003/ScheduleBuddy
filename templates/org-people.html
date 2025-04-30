@@ -208,7 +208,7 @@ async function renderPeoplePage({ isOwner, isOrgAdmin, adminTeams }) {
   let users = [];
 
   try {
-    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
     users = await res.json();
 
     if (!Array.isArray(users) || users.length === 0) {
@@ -265,7 +265,7 @@ async function renderPeoplePage({ isOwner, isOrgAdmin, adminTeams }) {
       `;
 
       card.onclick = async () => {
-        const teamRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`);
+        const teamRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`);
         const allTeams = await teamRes.json();
         const visibleTeams = isOwner || isOrgAdmin
           ? allTeams
@@ -305,8 +305,8 @@ async function initPage() {
 
   try {
     const [orgRes, usersRes] = await Promise.all([
-      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`),
-      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`)
+      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`),
+      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`)
     ]);
 
     userOrgData = await orgRes.json();
@@ -348,7 +348,7 @@ function showUserModal(user, teams, context) {
 
   const isSelf = user.email === userEmail;
 
-  fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`)
+  fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`)
     .then(res => res.json())
     .then(org => {
       const isOwner = org.owner?.email === userEmail;
@@ -462,7 +462,7 @@ function showUserModal(user, teams, context) {
 
 async function handlePositionToggle(email, position, isChecked) {
   try {
-    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
     const users = await res.json();
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
@@ -479,7 +479,7 @@ async function handlePositionToggle(email, position, isChecked) {
       user.positions = user.positions.filter(p => p !== position);
     }
 
-    const updateRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users/${email}`, {
+    const updateRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users/${email}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -516,7 +516,7 @@ function togglePermission(user, teamName, permission) {
 
 async function handlePermissionToggle(email, teamName, permission, isChecked) {
   try {
-    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
     const users = await res.json();
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
@@ -538,7 +538,7 @@ async function handlePermissionToggle(email, teamName, permission, isChecked) {
       user.team_permissions.push({ team_name: teamName, permissions: [permission] });
     }
 
-    const updateRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users/${email}`, {
+    const updateRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users/${email}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user)
@@ -577,7 +577,7 @@ async function initiateOwnershipTransfer(newOwnerEmail, newOwnerFirst, newOwnerL
     const verifyData = await verifyRes.json();
     if (!verifyRes.ok) throw new Error(verifyData.detail || "OTP verification failed.");
 
-    const updateRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`, {
+    const updateRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -692,7 +692,7 @@ async function submitImport() {
     return;
   }
 
-  const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/invite`, {
+  const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/invite`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(users)

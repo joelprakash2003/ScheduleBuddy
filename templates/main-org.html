@@ -291,8 +291,8 @@ async function loadUserDashboard() {
 
   try {
     const [servicesRes, usersRes] = await Promise.all([
-      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/services`),
-      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`)
+      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/services`),
+      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`)
     ]);
 
     const allServices = await servicesRes.json();
@@ -382,7 +382,7 @@ async function showCalendar() {
 
   selectedDates.clear();
   try {
-    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
     const users = await res.json();
     const user = users.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
     if (user?.inability?.length) {
@@ -448,7 +448,7 @@ function hideCalendar() {
 }
 
 function saveInabilityDateToDatabase(dateStr) {
-  fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users/inability`, {
+  fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users/inability`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json'
@@ -470,7 +470,7 @@ function saveInabilityDateToDatabase(dateStr) {
 }
 
 function removeInabilityDateFromDatabase(dateStr) {
-  fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users/inability`, {
+  fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users/inability`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json'

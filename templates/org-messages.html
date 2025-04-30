@@ -179,8 +179,8 @@ async function initMessengerPage() {
 
   try {
     const [orgRes, usersRes] = await Promise.all([
-      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`),
-      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`)
+      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`),
+      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`)
     ]);
 
     const orgData = await orgRes.json();
@@ -207,7 +207,7 @@ async function initMessengerPage() {
 
 async function renderMessengerView() {
   const mainContent = document.getElementById("main-content");
-  const teamRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`);
+  const teamRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`);
   const teams = await teamRes.json();
 
   const teamCheckboxes = teams.map(team => `
@@ -262,7 +262,7 @@ async function sendMessage() {
   }
 
   try {
-    const usersRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`);
+    const usersRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
     const allUsers = await usersRes.json();
 
     const recipientSet = new Set();
@@ -285,7 +285,7 @@ async function sendMessage() {
       return;
     }
 
-    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/messages/send`, {
+    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/messages/send`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

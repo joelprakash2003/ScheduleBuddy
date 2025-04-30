@@ -280,18 +280,18 @@
         messageDiv.classList.add("success");
         console.log("New user profile saved.");
         localStorage.setItem("user_email", email);
-        
+
         try {
           const userDetails = await fetch(`https://api.worshipbuddy.org/users/${email}`);
           const userInfo = await userDetails.json();
-        
+
           localStorage.setItem("user_first_name", userInfo.first_name || "");
           localStorage.setItem("user_last_name", userInfo.last_name || "");
           console.log("User info fetched and saved.");
         } catch (err) {
           console.error("Could not fetch full user info:", err.message);
         }
-        
+
         console.log("Login successful.");
         window.location.href = "/user-organizations/";
       } catch (err) {

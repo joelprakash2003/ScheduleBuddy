@@ -201,7 +201,7 @@ async function loadTeams({ isOwner, isOrgAdmin, currentUser }) {
   }
 
   try {
-    const res = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`);
+    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`);
     const teams = await res.json();
 
     mainContent.innerHTML = '';
@@ -244,8 +244,8 @@ async function loadTeams({ isOwner, isOrgAdmin, currentUser }) {
 async function initPage() {
   try {
     const [orgRes, usersRes] = await Promise.all([
-      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`),
-      fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/users`)
+      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`),
+      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`)
     ]);
 
     const org = await orgRes.json();
@@ -323,7 +323,7 @@ function showTeamForm(existingTeam = null) {
 
     try {
       const res = await fetch(
-        `https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams/${encodeURIComponent(existingTeam.team_name)}`,
+        `https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams/${encodeURIComponent(existingTeam.team_name)}`,
         { method: "DELETE" }
       );
 
@@ -392,8 +392,8 @@ function showTeamForm(existingTeam = null) {
 
     try {
       const endpoint = existingTeam
-          ? `https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams/${encodeURIComponent(existingTeam.team_name)}`
-          : `https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/teams`;
+          ? `https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams/${encodeURIComponent(existingTeam.team_name)}`
+          : `https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`;
         
         const res = await fetch(endpoint, {
           method: existingTeam ? "PUT" : "POST",

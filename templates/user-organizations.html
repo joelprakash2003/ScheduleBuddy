@@ -142,7 +142,7 @@
     const firstName = localStorage.getItem("user_first_name") || "";
     const lastName = localStorage.getItem("user_last_name") || "";
     
-    const userUrl = `https://worshipbuddyapi-staging.onrender.com/users/${encodeURIComponent(userEmail)}`;
+    const userUrl = `https://api.worshipbuddy.org/users/${encodeURIComponent(userEmail)}`;
 
     async function loadOrganizations() {
       try {
@@ -159,7 +159,7 @@
           mainContent.appendChild(msg);
         } else {
           for (const orgId of orgs) {
-            const orgRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}`);
+            const orgRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`);
             const orgData = await orgRes.json();
     
             const card = document.createElement('div');
@@ -278,7 +278,7 @@
             };
 
             try {
-              const orgRes = await fetch("https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations", {
+              const orgRes = await fetch("https://api.worshipbuddy.org/schedulebuddy/organizations", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orgPayload)
@@ -324,7 +324,7 @@ async function submitJoinOrg() {
   };
 
   try {
-    const joinRes = await fetch(`https://worshipbuddyapi-staging.onrender.com/schedulebuddy/organizations/${orgId}/join`, {
+    const joinRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/join`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(joinPayload)
