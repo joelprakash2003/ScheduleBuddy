@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-tkm#js29-ifev3&rd&jto+giebibt$47sol9^!(u_5in%eliw1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['schedulebuddy.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
