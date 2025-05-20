@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Org Page</title>
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <style>
     * {
@@ -12,12 +14,17 @@
       margin: 0;
       padding: 0;
     }
-
     body {
-      font-family: Arial, sans-serif;
+      background: linear-gradient(
+              -45deg,
+              #bae6fd 0%,
+              #bfdbfe 50%,
+              #ddd6fe 100%
+      );
+      color: #0f172a;
+      min-height: 100vh;
       display: flex;
-      height: 100vh;
-      background-color: #f5f5f5;
+      font-family: 'Outfit', system-ui, sans-serif;
     }
 
     .sidebar {
@@ -38,15 +45,16 @@
 
     .sidebar button {
       padding: 10px;
-      background-color: #e0e0e0;
+      background-color: #10245c;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
+      color: #ffffff;
     }
 
     .sidebar button:hover {
-      background-color: #ccc;
+      background-color: #273190;
     }
 
     .user-icon {
@@ -58,12 +66,12 @@
     .user-icon svg {
       width: 24px;
       height: 24px;
-      fill: #666;
+      fill: #10245c;
       cursor: pointer;
     }
 
     .user-icon svg:hover {
-      fill: #000;
+      fill: #273190;
     }
 
     .main-content {
@@ -215,6 +223,7 @@
       <button onclick="goToPage('org-teams')">Teams</button>
       <button onclick="goToPage('org-people')">People</button>
       <button onclick="goToPage('org-messages')">Messages</button>
+      <button onclick="goToPage('user-organizations')">Organizations</button>
     </div>
 
     <div class="user-icon" id="user-icon-container">
