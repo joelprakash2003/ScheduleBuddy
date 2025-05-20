@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary-blue: #10245c;
+    --primary-blue-hover: #1e2875;
+    --primary-blue-light: #dbeafe;
+    --dark-bg: #f8fafc;
+    --dark-card: #ffffff;
+    --nav-bg: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --border-color: #e2e8f0;
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: linear-gradient(
+            -45deg,
+            #bae6fd 0%,
+            #bfdbfe 50%,
+            #ddd6fe 100%
+    );
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    font-family: 'Outfit', system-ui, sans-serif;
+}
+
+.sidebar {
+    width: 160px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #ddd;
+    padding: 20px 10px;
+}
+
+.top-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sidebar button {
+    padding: 10px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    @apply px-4 py-2 rounded-xl font-medium transition-all duration-200;
+    color: var(--text-primary);
+    font-family: 'Outfit', system-ui, sans-serif;
+}
+
+.sidebar button:hover {
+    background-color: var(--primary-blue-light);
+    color: var(--primary-blue);
+}
+.sidebar button:active {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.user-icon {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+.user-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: #10245c;
+    cursor: pointer;
+}
+
+.user-icon svg:hover {
+    fill: #273190;
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.message {
+    font-size: 18px;
+    color: #333;
+}.org-card {
+     border: 1px solid #ccc;
+     border-radius: 8px;
+     background-color: white;
+     padding: 16px;
+     margin-bottom: 16px;
+     cursor: pointer;
+     box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+     transition: background-color 0.2s;
+ }
+
+.org-card:hover {
+    background-color: #f0f0f0;
+}
+
+.org-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.org-id {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+}.tooltip .tooltiptext {
+     visibility: hidden;
+     width: max-content;
+     background-color: #333;
+     color: #fff;
+     text-align: center;
+     border-radius: 6px;
+     padding: 6px 10px;
+     position: absolute;
+     z-index: 1001;
+     bottom: 70px;
+     right: 0;
+     opacity: 0;
+     transition: opacity 0.2s;
+     white-space: nowrap;
+     font-size: 14px;
+     transform: translateY(-12px);
+ }
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+#floating-add-button {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    color: white;
+    font-size: 32px;
+    line-height: 0;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    z-index: 1000;
+}
+
+#floating-add-button:hover {
+    background-color: #2563eb;
+}
+#team-scheduler-button {
+    position: fixed;
+    bottom: 24px;
+    right: 92px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #10b981;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#team-scheduler-button:hover {
+    background-color: #059669;
+}
+#calendar {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+#calendar-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3100;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 1000px;
+    height: 600px;
+    overflow: hidden;
+}
+
+#calendar {
+    height: 100%;
+}
+#calendar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.2);
+    z-index: 3000;
+    display: none;
+}
