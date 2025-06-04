@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .login-form {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    .login-form h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #333;
+    }
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    input[readonly] {
+      background-color: #f0f0f0;
+      color: #888;
+    }
+    .small-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .small-buttons button {
+      background: none;
+      border: none;
+      color: #3b82f6;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+    }
+    .small-buttons button:hover {
+      text-decoration: underline;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #3b82f6;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .submit-btn:hover {
+      background-color: #2563eb;
+    }
+    #otp-group,
+    #email-controls {
+      display: none;
+    }
+    .message {
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+    }
+    .message.success {
+      color: green;
+    }
+    .message.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-form">
+      <h2>Login</h2>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="stage" value="{{ stage }}" />
+
+        <div class="form-group" id="email-group">
+          <label for="email">Email</label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            required
+            value="{{ email }}"
+            {% if readonly_email %}readonly{% endif %}
+          />
+          {% if show_email_controls %}
+            <div class="small-buttons" id="email-controls">
+              <button type="submit" name="stage" value="request_otp">Edit Email</button>
+              <button type="submit" name="stage" value="request_otp">Resend OTP</button>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="form-group" id="otp-group" {% if show_otp_group %}style="display:block;"{% else %}style="display:none;"{% endif %}>
+          <label for="otp">One-Time Password</label>
+          <input type="text" id="otp" name="otp" value="{{ otp|default:'' }}" />
+        </div>
+
+        {% if show_new_user_fields %}
+          <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" value="{{ first_name|default:'' }}" />
+          </div>
+          <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" value="{{ last_name|default:'' }}" />
+          </div>
+          <div class="form-group">
+            <label for="church">Church</label>
+            <input type="text" id="church" name="church" value="{{ church|default:'' }}" />
+          </div>
+        {% endif %}
+
+        <div id="message" class="message {% if message_class %}{{ message_class }}{% endif %}">
+          {{ message }}
+        </div>
+
+        <button id="submit-btn" class="submit-btn" type="submit">
+          {{ button_text }}
+        </button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
