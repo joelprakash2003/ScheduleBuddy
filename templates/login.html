@@ -50,22 +50,22 @@
       background-color: #f0f0f0;
       color: #888;
     }
-    .small-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-top: 6px;
+
+    /* Only hide the OTP box by default. Remove #email-controls from here. */
+    #otp-group {
+      display: none;
     }
-    .small-buttons button {
-      background: none;
-      border: none;
-      color: #3b82f6;
-      cursor: pointer;
+
+    .message {
       font-size: 14px;
-      padding: 0;
+      margin-top: 10px;
+      text-align: center;
     }
-    .small-buttons button:hover {
-      text-decoration: underline;
+    .message.success {
+      color: green;
+    }
+    .message.error {
+      color: red;
     }
     .submit-btn {
       width: 100%;
@@ -81,29 +81,16 @@
     .submit-btn:hover {
       background-color: #2563eb;
     }
-    #otp-group,
-    #email-controls {
-      display: none;
-    }
-    .message {
-      font-size: 14px;
-      margin-top: 10px;
-      text-align: center;
-    }
-    .message.success {
-      color: green;
-    }
-    .message.error {
-      color: red;
-    }
   </style>
 </head>
 <body>
   <div class="login-container">
     <div class="login-form">
       <h2>Login</h2>
-      <form method="post">
+
+      <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
+        {# hidden “stage” field: will be "request_otp" initially, then becomes "verify_otp" after OTP is requested #}
         <input type="hidden" name="stage" value="{{ stage }}" />
 
         <div class="form-group" id="email-group">
@@ -116,19 +103,30 @@
             value="{{ email }}"
             {% if readonly_email %}readonly{% endif %}
           />
-          {% if show_email_controls %}
-            <div class="small-buttons" id="email-controls">
-              <button type="submit" name="stage" value="request_otp">Edit Email</button>
-              <button type="submit" name="stage" value="request_otp">Resend OTP</button>
-            </div>
-          {% endif %}
         </div>
 
-        <div class="form-group" id="otp-group" {% if show_otp_group %}style="display:block;"{% else %}style="display:none;"{% endif %}>
+        {# Show these only when show_email_controls=True, with an inline style override #}
+        {% if show_email_controls %}
+          <div id="email-controls"
+               class="small-buttons"
+               style="display:flex; justify-content:flex-end; gap:12px; margin-top:6px;">
+            <button type="submit" name="stage" value="request_otp">Edit Email</button>
+            <button type="submit" name="stage" value="request_otp">Resend OTP</button>
+          </div>
+        {% endif %}
+
+        {# OTP field is hidden by default via CSS. If show_otp_group=True, inline style shows it #}
+        <div class="form-group" id="otp-group"
+             {% if show_otp_group %}
+               style="display:block;"
+             {% else %}
+               style="display:none;"
+             {% endif %}>
           <label for="otp">One-Time Password</label>
           <input type="text" id="otp" name="otp" value="{{ otp|default:'' }}" />
         </div>
 
+        {# “New user” fields show up only if show_new_user_fields=True #}
         {% if show_new_user_fields %}
           <div class="form-group">
             <label for="first_name">First Name</label>
