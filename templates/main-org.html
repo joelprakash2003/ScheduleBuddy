@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Org Page</title>
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <style>
     * {
@@ -14,7 +17,6 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       height: 100vh;
@@ -26,8 +28,6 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 20px;
-      background-color: #ffffff;
-      border-bottom: 1px solid #ddd;
     }
 
     .nav-buttons {
@@ -37,7 +37,6 @@
 
     .top-nav button {
       padding: 10px 14px;
-      background-color: #e0e0e0;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -45,7 +44,6 @@
     }
 
     .top-nav button:hover {
-      background-color: #ccc;
     }
 
     .user-icon {
@@ -87,7 +85,6 @@
     }
 
     .org-card:hover {
-      background-color: #f0f0f0;
     }
 
     .org-name {
@@ -205,6 +202,7 @@
   display: none;
 }
   </style>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
   <nav class="top-nav">
