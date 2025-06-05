@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f7f9fb;
+  margin: 0;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.navbar .brand {
+  font-weight: 600;
+  font-size: 20px;
+  cursor: pointer;
+  color: #3b82f6;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-links button {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.nav-links button:hover {
+  background: #e5e7eb;
+}
+
+.nav-links .back-btn {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.main-content {
+  padding: 40px;
+}
+
+.message {
+  font-size: 18px;
+  color: #333;
+}
+
+.org-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  padding: 16px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+  transition: background-color 0.2s;
+}
+
+.org-card:hover {
+  background: #f0f0f0;
+}
+
+.org-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.org-id {
+  font-size: 14px;
+  color: #555;
+  margin-top: 4px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}

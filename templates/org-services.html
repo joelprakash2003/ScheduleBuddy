@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Org Page</title>
+  <link rel="stylesheet" href="/static/styles.css" />
   <style>
     * {
       box-sizing: border-box;
@@ -12,39 +13,10 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
       display: flex;
-      height: 100vh;
+      flex-direction: column;
+      min-height: 100vh;
       background-color: #f5f5f5;
-    }
-
-    .sidebar {
-      width: 160px;
-      background-color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border-right: 1px solid #ddd;
-      padding: 20px 10px;
-    }
-
-    .top-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .sidebar button {
-      padding: 10px;
-      background-color: #e0e0e0;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .sidebar button:hover {
-      background-color: #ccc;
     }
 
     .user-icon {
@@ -180,27 +152,27 @@
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="top-buttons">
+  <nav class="navbar">
+    <div class="brand" onclick="window.location.href='/user-organizations'">ScheduleBuddy</div>
+    <div class="nav-links">
       <button onclick="goToPage('main-org')">Dashboard</button>
       <button onclick="goToPage('org-services')">Services</button>
       <button onclick="goToPage('org-teams')">Teams</button>
       <button onclick="goToPage('org-people')">People</button>
       <button onclick="goToPage('org-messages')">Messages</button>
-    </div>
-
-    <div class="user-icon" id="user-icon-container">
-      <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
-      </svg>
-
-      <div id="user-popup" style="display: none; position: absolute; bottom: 60px; left: 170px; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
-        <p style="margin-bottom: 4px;"><strong id="popup-name"></strong></p>
-        <p id="popup-email" style="margin-bottom: 12px; font-size: 14px; color: #555;"></p>
-        <button onclick="signOut()" style="padding: 6px 12px; border: none; background-color: #e74c3c; color: white; border-radius: 4px; cursor: pointer;">Sign Out</button>
+      <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
+      <div class="user-icon" id="user-icon-container" style="position: relative;">
+        <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+        </svg>
+        <div id="user-popup" style="display:none; position:absolute; top:40px; right:0; background:white; border:1px solid #ccc; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); min-width:200px;">
+          <p style="margin-bottom:4px;"><strong id="popup-name"></strong></p>
+          <p id="popup-email" style="margin-bottom:12px; font-size:14px; color:#555;"></p>
+          <button onclick="signOut()" style="padding:6px 12px; border:none; background-color:#e74c3c; color:white; border-radius:4px; cursor:pointer;">Sign Out</button>
+        </div>
       </div>
     </div>
-  </div>
+  </nav>
 
   <div class="main-content" id="main-content">
     <p class="message">Loading services...</p>
@@ -210,48 +182,42 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
     let allTeams = [];
-    function showServiceForm() {
+  function showServiceForm() {
   mainContent.innerHTML = `
     <h2>Create New Service</h2>
-    <form id="service-form" style="max-width: 700px;">
-      <div style="margin-bottom: 16px;">
-        <label><strong>Service Name</strong></label><br/>
-        <input type="text" id="serviceName" required style="width: 100%; padding: 8px;" />
+    <form id="service-form" class="form-grid" style="max-width: 800px;">
+      <div class="form-group">
+        <label><strong>Service Name</strong></label>
+        <input type="text" id="serviceName" required />
       </div>
-
-      <div style="margin-bottom: 16px;">
-        <label><strong>Start Date & Time</strong></label><br/>
-        <input type="datetime-local" id="startDateTime" required style="width: 100%; padding: 8px;" />
+      <div class="form-group">
+        <label><strong>Start Date & Time</strong></label>
+        <input type="datetime-local" id="startDateTime" required />
       </div>
-
-      <div style="margin-bottom: 16px;">
-        <label><strong>End Date & Time</strong></label><br/>
-        <input type="datetime-local" id="endDateTime" required style="width: 100%; padding: 8px;" />
+      <div class="form-group">
+        <label><strong>End Date & Time</strong></label>
+        <input type="datetime-local" id="endDateTime" required />
       </div>
-
-      <div style="margin-bottom: 16px;">
-        <label><strong>Location</strong> (Optional)</label><br/>
-        <input type="text" id="location" style="width: 100%; padding: 8px;" />
+      <div class="form-group">
+        <label><strong>Location</strong> (Optional)</label>
+        <input type="text" id="location" />
       </div>
-
-      <div style="margin-bottom: 16px;">
+      <div class="form-group" style="grid-column:1/-1;">
         <label><strong>Assign Teams</strong></label>
-        <div id="teams-list" style="margin-top: 8px;"></div>
+        <div id="teams-list" style="margin-top:8px;"></div>
       </div>
-
-      <div style="margin-bottom: 16px;">
+      <div class="form-group" style="grid-column:1/-1;">
         <label><input type="checkbox" id="isRecurring" onchange="toggleRecurrence()" /> This service recurs</label>
       </div>
-
-      <div id="recurrence-options" style="display: none; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
+      <div id="recurrence-options" style="display:none; border:1px solid #ccc; padding:12px; border-radius:6px; grid-column:1/-1;">
         <label><strong>Recurrence Pattern</strong></label><br/>
-        <select id="recurrencePattern" style="margin-bottom: 8px;">
+        <select id="recurrencePattern" style="margin-bottom:8px;">
           <option value="daily">Daily</option>
           <option value="weekly" selected>Weekly</option>
           <option value="monthly">Monthly</option>
         </select><br/>
-        <label>Repeat every <input type="number" id="repeatInterval" value="1" style="width: 60px;" /> week(s) on:</label><br/>
-        <div style="margin: 6px 0;">
+        <label>Repeat every <input type="number" id="repeatInterval" value="1" style="width:60px;" /> week(s) on:</label><br/>
+        <div style="margin:6px 0;">
           <label><input type="checkbox" value="0" /> Sunday</label>
           <label><input type="checkbox" value="1" /> Monday</label>
           <label><input type="checkbox" value="2" /> Tuesday</label>
@@ -260,11 +226,10 @@
           <label><input type="checkbox" value="5" /> Friday</label>
           <label><input type="checkbox" value="6" /> Saturday</label>
         </div>
-        <label>End After <input type="number" id="endOccurrences" value="10" style="width: 60px;" /> occurrences (Max 16 weeks)</label>
+        <label>End After <input type="number" id="endOccurrences" value="10" style="width:60px;" /> occurrences (Max 16 weeks)</label>
       </div>
-
-      <button type="submit" style="margin-top: 16px; padding: 10px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Create Service</button>
-      <p id="service-message" style="margin-top: 12px;"></p>
+      <button type="submit" class="back-btn" style="margin-top:16px; width:150px;">Create Service</button>
+      <p id="service-message" style="margin-top:12px; grid-column:1/-1;"></p>
     </form>
   `;
   

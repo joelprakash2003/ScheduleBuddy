@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Org Page</title>
+  <link rel="stylesheet" href="/static/styles.css" />
   <style>
     * {
       box-sizing: border-box;
@@ -12,92 +13,14 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
       display: flex;
-      height: 100vh;
+      flex-direction: column;
+      min-height: 100vh;
       background-color: #f5f5f5;
-    }
-
-    .sidebar {
-      width: 160px;
-      background-color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border-right: 1px solid #ddd;
-      padding: 20px 10px;
-    }
-
-    .top-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .sidebar button {
-      padding: 10px;
-      background-color: #e0e0e0;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .sidebar button:hover {
-      background-color: #ccc;
-    }
-
-    .user-icon {
-      display: flex;
-      justify-content: center;
-      padding-top: 10px;
-    }
-
-    .user-icon svg {
-      width: 24px;
-      height: 24px;
-      fill: #666;
-      cursor: pointer;
-    }
-
-    .user-icon svg:hover {
-      fill: #000;
     }
 
     .main-content {
       flex: 1;
-      padding: 40px;
-    }
-
-    .message {
-      font-size: 18px;
-      color: #333;
-    }
-
-    .org-card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: white;
-      padding: 16px;
-      margin-bottom: 16px;
-      cursor: pointer;
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
-      transition: background-color 0.2s;
-    }
-
-    .org-card:hover {
-      background-color: #f0f0f0;
-    }
-
-    .org-name {
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .org-id {
-      font-size: 14px;
-      color: #555;
-      margin-top: 4px;
     }
   </style>
 </head>
@@ -115,24 +38,22 @@
   </script>
 
 
-  <div class="sidebar">
-    <div class="top-buttons">
-      <button onclick="showJoinOrgPopup()">Join Org</button>
-      <button onclick="showStartOrgForm()">Start Org</button>
-    </div>
-
-    <div class="user-icon" id="user-icon-container">
+  <nav class="navbar">
+  <div class='brand' onclick="window.location.href='/user-organizations'">ScheduleBuddy</div>
+  <div class="nav-links">
+    <button onclick="showJoinOrgPopup()">Join Org</button>
+    <button onclick="showStartOrgForm()">Start Org</button>
+    <div class="user-icon" id="user-icon-container" style="position: relative;">
       <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
       </svg>
-
-      <div id="user-popup" style="display: none; position: absolute; bottom: 60px; left: 170px; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
-        <p style="margin-bottom: 4px;"><strong id="popup-name">{{ first_name }} {{ last_name }}</strong></p>
-        <p id="popup-email" style="margin-bottom: 12px; font-size: 14px; color: #555;">{{ user_email }}</p>
-        <button onclick="signOut()" style="padding: 6px 12px; border: none; background-color: #e74c3c; color: white; border-radius: 4px; cursor: pointer;">Sign Out</button>
+      <div id="user-popup" style="display:none; position:absolute; top:40px; right:0; background:white; border:1px solid #ccc; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); min-width:200px;">
+        <p style="margin-bottom:4px;"><strong id="popup-name">{{ first_name }} {{ last_name }}</strong></p>
+        <p id="popup-email" style="margin-bottom:12px; font-size:14px; color:#555;">{{ user_email }}</p>
+        <button onclick="signOut()" style="padding:6px 12px; border:none; background-color:#e74c3c; color:white; border-radius:4px; cursor:pointer;">Sign Out</button>
       </div>
     </div>
-  </div>
+</nav>
 
 
   <div class="main-content" id="main-content">
