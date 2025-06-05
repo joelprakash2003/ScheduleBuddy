@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Org Page</title>
+  <link rel="stylesheet" href="/static/styles.css" />
   <style>
     * {
       box-sizing: border-box;
@@ -12,40 +13,12 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
       display: flex;
-      height: 100vh;
+      flex-direction: column;
+      min-height: 100vh;
       background-color: #f5f5f5;
     }
 
-    .sidebar {
-      width: 160px;
-      background-color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border-right: 1px solid #ddd;
-      padding: 20px 10px;
-    }
-
-    .top-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .sidebar button {
-      padding: 10px;
-      background-color: #e0e0e0;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .sidebar button:hover {
-      background-color: #ccc;
-    }
 
     .user-icon {
       display: flex;
@@ -56,12 +29,12 @@
     .user-icon svg {
       width: 24px;
       height: 24px;
-      fill: #666;
+      fill: var(--brand-color);
       cursor: pointer;
     }
 
     .user-icon svg:hover {
-      fill: #000;
+      fill: var(--brand-hover);
     }
 
     .main-content {
@@ -99,56 +72,47 @@
       color: #555;
       margin-top: 4px;
     }
-           #floating-add-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: #3b82f6;
-      color: white;
-      font-size: 32px;
-      line-height: 0;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      z-index: 1000;
-    }
-    
-    #floating-add-button:hover {
-      background-color: #2563eb;
-}
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="top-buttons">
+  <nav class="navbar">
+    <div class="brand" onclick="window.location.href='/user-organizations'">ScheduleBuddy</div>
+    <div class="nav-links">
       <button onclick="goToPage('main-org')">Dashboard</button>
       <button onclick="goToPage('org-services')">Services</button>
       <button onclick="goToPage('org-teams')">Teams</button>
       <button onclick="goToPage('org-people')">People</button>
       <button onclick="goToPage('org-messages')">Messages</button>
-    </div>
-
-    <div class="user-icon" id="user-icon-container">
-      <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
-      </svg>
-
-      <div id="user-popup" style="display: none; position: absolute; bottom: 60px; left: 170px; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
-        <p style="margin-bottom: 4px;"><strong id="popup-name"></strong></p>
-        <p id="popup-email" style="margin-bottom: 12px; font-size: 14px; color: #555;"></p>
-        <button onclick="signOut()" style="padding: 6px 12px; border: none; background-color: #e74c3c; color: white; border-radius: 4px; cursor: pointer;">Sign Out</button>
+      <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
+      <div class="user-icon" id="user-icon-container" style="position: relative;">
+        <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+        </svg>
+        <div id="user-popup" style="display:none; position:absolute; top:40px; right:0; background:white; border:1px solid #ccc; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); min-width:200px;">
+          <p style="margin-bottom:4px;"><strong id="popup-name"></strong></p>
+          <p id="popup-email" style="margin-bottom:12px; font-size:14px; color:#555;"></p>
+          <button onclick="signOut()" style="padding:6px 12px; border:none; background-color:#e74c3c; color:white; border-radius:4px; cursor:pointer;">Sign Out</button>
+        </div>
       </div>
     </div>
-  </div>
+  </nav>
 
-  <div class="main-content" id="main-content">
+  <div class="main-content card-grid" id="main-content">
+    <div style="margin-bottom:20px;">
+      <button class="back-btn" onclick="showImportModal()">Add People</button>
+    </div>
     <p class="message">Loading people...</p>
   </div>
 <script>
+  function highlightNav(page) {
+    document.querySelectorAll('.nav-links button').forEach(btn => {
+      if (btn.getAttribute('onclick')?.includes(`'${page}'`)) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
   function navigateTo(section) {
     const mainContent = document.getElementById('main-content');
     mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
@@ -249,19 +213,16 @@ async function renderPeoplePage({ isOwner, isOrgAdmin, adminTeams }) {
         : "No assigned positions";
 
       const card = document.createElement("div");
-      card.style = `
-        background: white;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 16px;
-        width: 240px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      `;
+      card.className = "org-card";
+      card.style.width = "240px";
 
       card.innerHTML = `
-        <div style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">${fullName}</div>
-        <div style="font-size: 14px; color: #555; margin-bottom: 8px;">${email}</div>
-        <div style="font-size: 13px; color: #333;"><strong>Positions:</strong><br>${positions}</div>
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+          <span class="org-name" style="font-size:18px;">${fullName}</span>
+        </div>
+        <div class="org-id"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16v2H4zm0 4h16v2H4zm0 4h10v2H4z"/></svg> ${email}</div>
+        <div class="org-id"><strong>Positions:</strong> ${positions}</div>
       `;
 
       card.onclick = async () => {
@@ -598,6 +559,7 @@ async function initiateOwnershipTransfer(newOwnerEmail, newOwnerFirst, newOwnerL
 }
 
 initPage();
+highlightNav('org-people');
 
   
 function showCalendar() {
@@ -618,7 +580,7 @@ function addRow() {
       <td><input type="text" /></td>
       <td><input type="text" /></td>
       <td><input type="email" /></td>
-      <td><button onclick="removeRow(this)">🗑️</button></td>
+      <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
     </tr>
   `;
   document.querySelector("#import-table tbody").insertAdjacentHTML("beforeend", row);
@@ -652,7 +614,7 @@ function handleFileImport(event) {
           <td><input type="text" value="${first}" /></td>
           <td><input type="text" value="${last}" /></td>
           <td><input type="email" value="${email}" /></td>
-          <td><button onclick="removeRow(this)">🗑️</button></td>
+          <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
         </tr>
       `;
       tbody.insertAdjacentHTML("beforeend", tr);
@@ -780,9 +742,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
   
-<div class="tooltip">
-  <button onclick="showImportModal()" id="floating-add-button">+</button>
-</div>
 <div id="import-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 2000; justify-content: center; align-items: center;">
   <div style="background: white; padding: 24px; border-radius: 8px; width: 90%; max-width: 800px; position: relative;">
     <button onclick="closeImportModal()" style="position: absolute; top: 10px; right: 10px; font-size: 18px;">❌</button>
@@ -810,18 +769,21 @@ document.addEventListener("DOMContentLoaded", function () {
             <td><input type="text" /></td>
             <td><input type="text" /></td>
             <td><input type="email" /></td>
-            <td><button onclick="removeRow(this)">🗑️</button></td>
+            <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
           </tr>
         </tbody>
       </table>
-      <button onclick="addRow()" style="margin-top: 12px;">➕ Add Row</button>
+      <button onclick="addRow()" style="margin-top: 12px; display:flex; align-items:center; gap:4px;">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14m7-7H5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        Add Row
+      </button>
     </div>
 
     <p style="margin-top: 16px;">
       <a href="#" onclick="toggleImportMode(event)" id="toggle-import-link">Enter manually instead</a>
     </p>
 
-    <button onclick="submitImport()" style="margin-top: 16px; background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px;">Submit</button>
+    <button onclick="submitImport()" style="margin-top: 16px; background: var(--brand-color); color: white; border: none; padding: 8px 16px; border-radius: 4px;">Submit</button>
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

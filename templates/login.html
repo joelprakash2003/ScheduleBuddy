@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>Login</title>
+  <link rel="stylesheet" href="/static/styles.css" />
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f4f6f8;
       margin: 0;
       padding: 0;
@@ -70,7 +70,7 @@
     .submit-btn {
       width: 100%;
       padding: 12px;
-      background-color: #3b82f6;
+      background-color: var(--brand-color);
       border: none;
       color: #fff;
       font-weight: 600;
@@ -79,13 +79,14 @@
       transition: background-color 0.3s ease;
     }
     .submit-btn:hover {
-      background-color: #2563eb;
+      background-color: var(--brand-hover);
     }
   </style>
 </head>
 <body>
   <div class="login-container">
     <div class="login-form">
+      <div style="text-align:center; font-weight:600; font-size:24px; color:var(--brand-color); margin-bottom:8px;">ScheduleBuddy</div>
       <h2>Login</h2>
 
       <form method="post" action="{% url 'login' %}">
@@ -108,10 +109,9 @@
         {# Show these only when show_email_controls=True, with an inline style override #}
         {% if show_email_controls %}
           <div id="email-controls"
-               class="small-buttons"
                style="display:flex; justify-content:flex-end; gap:12px; margin-top:6px;">
-            <button type="submit" name="stage" value="request_otp">Edit Email</button>
-            <button type="submit" name="stage" value="request_otp">Resend OTP</button>
+            <button class="email-btn" type="submit" name="stage" value="request_otp">Edit Email</button>
+            <button class="email-btn" type="submit" name="stage" value="request_otp">Resend OTP</button>
           </div>
         {% endif %}
 
