@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Org Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -12,39 +15,33 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
       display: flex;
+      flex-direction: column;
       height: 100vh;
       background-color: #f5f5f5;
     }
 
-    .sidebar {
-      width: 160px;
-      background-color: #ffffff;
+    .top-nav {
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: space-between;
-      border-right: 1px solid #ddd;
-      padding: 20px 10px;
+      padding: 10px 20px;
     }
 
-    .top-buttons {
+    .nav-buttons {
       display: flex;
-      flex-direction: column;
       gap: 16px;
     }
 
-    .sidebar button {
-      padding: 10px;
-      background-color: #e0e0e0;
+    .top-nav button {
+      padding: 10px 14px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
     }
 
-    .sidebar button:hover {
-      background-color: #ccc;
+    .top-nav button:hover {
     }
 
     .user-icon {
@@ -56,12 +53,12 @@
     .user-icon svg {
       width: 24px;
       height: 24px;
-      fill: #666;
+      fill: #fff;
       cursor: pointer;
     }
 
     .user-icon svg:hover {
-      fill: #000;
+      fill: #e0e0e0;
     }
 
     .main-content {
@@ -86,7 +83,6 @@
     }
 
     .org-card:hover {
-      background-color: #f0f0f0;
     }
 
     .org-name {
@@ -100,15 +96,20 @@
       margin-top: 4px;
     }
   </style>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <div class="sidebar">
-    <div class="top-buttons">
-      <button onclick="goToPage('main-org')">Dashboard</button>
-      <button onclick="goToPage('org-services')">Services</button>
-      <button onclick="goToPage('org-teams')">Teams</button>
-      <button onclick="goToPage('org-people')">People</button>
-      <button onclick="goToPage('org-messages')">Messages</button>
+  <nav class="top-nav">
+    <div style="display:flex;align-items:center;">
+      <span class="nav-brand">ScheduleBuddy</span>
+      <div class="nav-buttons">
+        <button onclick="window.location.href='/user-organizations/'">My organizations</button>
+        <button onclick="goToPage('main-org')"><svg viewBox="0 0 24 24"><path d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z"/><path d="M9 21V12h6v9"/></svg>Dashboard</button>
+        <button onclick="goToPage('org-services')"><svg viewBox="0 0 24 24"><path d="M3 4h18M3 8h18M5 4v16h14V4"/></svg>Services</button>
+        <button onclick="goToPage('org-teams')"><svg viewBox="0 0 24 24"><path d="M17 20v-2a3 3 0 00-3-3h-4a3 3 0 00-3 3v2"/><path d="M12 11a4 4 0 100-8 4 4 0 000 8z"/></svg>Teams</button>
+        <button onclick="goToPage('org-people')"><svg viewBox="0 0 24 24"><path d="M15 20v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>People</button>
+        <button onclick="goToPage('org-messages')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Messages</button>
+      </div>
     </div>
 
     <div class="user-icon" id="user-icon-container">
@@ -116,13 +117,13 @@
         <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
       </svg>
 
-      <div id="user-popup" style="display: none; position: absolute; bottom: 60px; left: 170px; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
+      <div id="user-popup" style="display: none; position: absolute; top: 50px; right: 0; background: white; border: 1px solid #ccc; padding: 12px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); min-width: 200px;">
         <p style="margin-bottom: 4px;"><strong id="popup-name"></strong></p>
         <p id="popup-email" style="margin-bottom: 12px; font-size: 14px; color: #555;"></p>
         <button onclick="signOut()" style="padding: 6px 12px; border: none; background-color: #e74c3c; color: white; border-radius: 4px; cursor: pointer;">Sign Out</button>
       </div>
     </div>
-  </div>
+  </nav>
 
   <div class="main-content" id="main-content">
     <p class="message">Loading messages...</p>
