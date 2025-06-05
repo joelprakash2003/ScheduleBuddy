@@ -29,12 +29,12 @@
     .user-icon svg {
       width: 24px;
       height: 24px;
-      fill: #666;
+      fill: var(--brand-color);
       cursor: pointer;
     }
 
     .user-icon svg:hover {
-      fill: #000;
+      fill: var(--brand-hover);
     }
 
     .main-content {
@@ -79,7 +79,7 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background-color: #3b82f6;
+      background-color: var(--brand-color);
       color: white;
       font-size: 32px;
       line-height: 0;
@@ -91,7 +91,7 @@
     }
     
     #floating-add-button:hover {
-      background-color: #2563eb;
+      background-color: var(--brand-hover);
 }
   </style>
 </head>
@@ -591,7 +591,7 @@ function addRow() {
       <td><input type="text" /></td>
       <td><input type="text" /></td>
       <td><input type="email" /></td>
-      <td><button onclick="removeRow(this)">🗑️</button></td>
+      <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
     </tr>
   `;
   document.querySelector("#import-table tbody").insertAdjacentHTML("beforeend", row);
@@ -625,7 +625,7 @@ function handleFileImport(event) {
           <td><input type="text" value="${first}" /></td>
           <td><input type="text" value="${last}" /></td>
           <td><input type="email" value="${email}" /></td>
-          <td><button onclick="removeRow(this)">🗑️</button></td>
+          <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
         </tr>
       `;
       tbody.insertAdjacentHTML("beforeend", tr);
@@ -783,18 +783,21 @@ document.addEventListener("DOMContentLoaded", function () {
             <td><input type="text" /></td>
             <td><input type="text" /></td>
             <td><input type="email" /></td>
-            <td><button onclick="removeRow(this)">🗑️</button></td>
+            <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
           </tr>
         </tbody>
       </table>
-      <button onclick="addRow()" style="margin-top: 12px;">➕ Add Row</button>
+      <button onclick="addRow()" style="margin-top: 12px; display:flex; align-items:center; gap:4px;">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14m7-7H5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        Add Row
+      </button>
     </div>
 
     <p style="margin-top: 16px;">
       <a href="#" onclick="toggleImportMode(event)" id="toggle-import-link">Enter manually instead</a>
     </p>
 
-    <button onclick="submitImport()" style="margin-top: 16px; background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 4px;">Submit</button>
+    <button onclick="submitImport()" style="margin-top: 16px; background: var(--brand-color); color: white; border: none; padding: 8px 16px; border-radius: 4px;">Submit</button>
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

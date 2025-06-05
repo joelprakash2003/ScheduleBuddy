@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
+:root {
+  --brand-color: #10245c;
+  --brand-hover: #0c1b48;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #f7f9fb;
@@ -10,29 +15,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
+  padding: 20px 32px;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
 }
 
 .navbar .brand {
   font-weight: 600;
-  font-size: 20px;
+  font-size: 24px;
   cursor: pointer;
-  color: #3b82f6;
+  color: var(--brand-color);
 }
 
 .nav-links {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .nav-links button {
   background: none;
   border: none;
-  padding: 8px 12px;
+  padding: 10px 16px;
   font-weight: 600;
+  font-size: 16px;
   cursor: pointer;
   border-radius: 6px;
 }
@@ -42,7 +50,7 @@ body {
 }
 
 .nav-links .back-btn {
-  background: #3b82f6;
+  background: var(--brand-color);
   color: #fff;
 }
 
@@ -97,4 +105,21 @@ body {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  fill: var(--brand-color);
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 16px;
+  }
+  .nav-links button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
 }

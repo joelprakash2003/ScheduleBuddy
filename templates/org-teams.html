@@ -29,12 +29,12 @@
     .user-icon svg {
       width: 24px;
       height: 24px;
-      fill: #666;
+      fill: var(--brand-color);
       cursor: pointer;
     }
 
     .user-icon svg:hover {
-      fill: #000;
+      fill: var(--brand-hover);
     }
 
     .main-content {
@@ -80,7 +80,7 @@
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background-color: #3b82f6;
+      background-color: var(--brand-color);
       color: white;
       font-size: 32px;
       line-height: 0;
@@ -92,7 +92,7 @@
     }
     
     #floating-add-button:hover {
-      background-color: #2563eb;
+      background-color: var(--brand-hover);
 }
   </style>
 </head>
@@ -274,7 +274,7 @@ function showTeamForm(existingTeam = null) {
       <label><input type="checkbox" id="askForAvailability" /> Ask for Availability</label>
     </div>
 
-      <button type="submit" style="padding: 10px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 6px; cursor: pointer;">Submit</button>
+      <button type="submit" style="padding: 10px 16px; background-color: var(--brand-color); color: white; border: none; border-radius: 6px; cursor: pointer;">Submit</button>
       <p id="team-message" style="margin-top: 16px;"></p>
     </form>
   `;

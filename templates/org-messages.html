@@ -29,12 +29,12 @@
     .user-icon svg {
       width: 24px;
       height: 24px;
-      fill: #666;
+      fill: var(--brand-color);
       cursor: pointer;
     }
 
     .user-icon svg:hover {
-      fill: #000;
+      fill: var(--brand-hover);
     }
 
     .main-content {
@@ -206,7 +206,7 @@ async function renderMessengerView() {
         </div>
       </div>
 
-      <button onclick="sendMessage()" style="margin-top: 24px; background: #3b82f6; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Send</button>
+      <button onclick="sendMessage()" style="margin-top: 24px; background: var(--brand-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Send</button>
     </div>
     <p id="send-status" style="margin-top: 16px; color: green;"></p>
   `;
