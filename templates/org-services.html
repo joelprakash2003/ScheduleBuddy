@@ -38,6 +38,9 @@
 
     .main-content {
       flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
       padding: 40px;
     }
 
@@ -70,48 +73,6 @@
       font-size: 14px;
       color: #555;
       margin-top: 4px;
-    }
-       #floating-add-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: var(--brand-color);
-      color: white;
-      font-size: 32px;
-      line-height: 0;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      z-index: 1000;
-    }
-    
-    #floating-add-button:hover {
-      background-color: var(--brand-hover);
-}
-    #team-scheduler-button {
-      position: fixed;
-      bottom: 24px;
-      right: 92px; 
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: #10b981;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    #team-scheduler-button:hover {
-      background-color: #059669;
     }
     .tooltip {
   position: relative;
@@ -155,11 +116,11 @@
   <nav class="navbar">
     <div class="brand" onclick="window.location.href='/user-organizations'">ScheduleBuddy</div>
     <div class="nav-links">
-      <button onclick="goToPage('main-org')">Dashboard</button>
-      <button onclick="goToPage('org-services')">Services</button>
-      <button onclick="goToPage('org-teams')">Teams</button>
-      <button onclick="goToPage('org-people')">People</button>
-      <button onclick="goToPage('org-messages')">Messages</button>
+      <button id="nav-dashboard" onclick="goToPage('main-org')">Dashboard</button>
+      <button id="nav-services" onclick="goToPage('org-services')">Services</button>
+      <button id="nav-teams" onclick="goToPage('org-teams')">Teams</button>
+      <button id="nav-people" onclick="goToPage('org-people')">People</button>
+      <button id="nav-messages" onclick="goToPage('org-messages')">Messages</button>
       <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
       <div class="user-icon" id="user-icon-container" style="position: relative;">
         <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -174,6 +135,12 @@
     </div>
   </nav>
 
+  <div class="page-actions" id="page-actions" style="padding:20px 40px; display:flex; gap:12px;">
+    <button class="secondary-btn" onclick="showServiceForm()">Create Service</button>
+    <button class="secondary-btn" onclick="renderTeamScheduler()">Schedule Team Members</button>
+    <button class="secondary-btn" onclick="renderCalendarView()">Export Schedule</button>
+  </div>
+
   <div class="main-content" id="main-content">
     <p class="message">Loading services...</p>
   </div>
@@ -183,6 +150,7 @@
 <script>
     let allTeams = [];
   function showServiceForm() {
+  mainContent.style.display = 'block';
   mainContent.innerHTML = `
     <h2>Create New Service</h2>
     <form id="service-form" class="form-grid" style="max-width: 800px;">
@@ -255,6 +223,11 @@ const userEmail = localStorage.getItem("user_email");
 const firstName = localStorage.getItem("user_first_name") || "";
 const lastName = localStorage.getItem("user_last_name") || "";
 
+function setActiveNav(page) {
+  const btn = document.getElementById('nav-' + page);
+  if (btn) btn.classList.add('active');
+}
+
 const userIcon = document.getElementById('user-icon');
 const userPopup = document.getElementById('user-popup');
 const popupName = document.getElementById('popup-name');
@@ -296,8 +269,10 @@ async function loadServices({ isOwner, isOrgAdmin }) {
     return;
   }
 
+  mainContent.style.display = 'grid';
+
   try {
-    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/services`);
+  const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/services`);
     const services = await res.json();
     const now = new Date();
     const upcomingServices = services.filter(service => new Date(service.end_datetime) > now);
@@ -316,16 +291,23 @@ async function loadServices({ isOwner, isOrgAdmin }) {
       const card = document.createElement('div');
       card.className = 'org-card';
 
-      const startDate = new Date(service.start_datetime).toLocaleString();
-      const endDate = new Date(service.end_datetime).toLocaleString();
+      const start = new Date(service.start_datetime);
+      const end = new Date(service.end_datetime);
+      const dateStr = start.toLocaleDateString();
+      const timeStr = `${start.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})} - ${end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
       const teamNames = service.teams?.map(t => t.team_name).join(', ') || 'No teams assigned';
 
+      const recurring = service.recurrence_pattern || service.is_recurring;
+
       card.innerHTML = `
-  <div class="org-name">${service.service_name}</div>
-  <div class="org-id"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg> ${service.location}</div>
-  <div class="org-id"><svg class="icon" viewBox="0 0 24 24"><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg> ${startDate} → ${endDate}</div>
-  ${isOwner || isOrgAdmin ? `<div class="org-id">Teams: ${teamNames}</div>` : ""}
-`;
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span class="org-name">${service.service_name}</span>
+          ${recurring ? `<span class="pill"><svg class="icon" viewBox='0 0 24 24'><path d='M12 4v1a7 7 0 0 1 0 14v1a8 8 0 0 0 0-16zM11 5a7 7 0 0 0 0 14v1a8 8 0 0 1 0-16v1z'/></svg> Recurring</span>` : ''}
+        </div>
+        <div class="org-id"><svg class="icon" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg> ${dateStr}</div>
+        <div class="org-id"><svg class="icon" viewBox="0 0 24 24"><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg> ${timeStr}</div>
+        <div class="org-id"><svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg> Team: ${teamNames}</div>
+      `;
       const userTeams = userTeamPermissions.map(tp => tp.team_name);
     const userRoles = userTeamPermissions.reduce((acc, tp) => {
       acc[tp.team_name] = tp.permissions;
@@ -374,9 +356,10 @@ async function initPage() {
     const showScheduleService = isOwner || isOrgAdmin;
     const showTeamScheduler = isOwner || isOrgAdmin || userTeamPermissions.some(tp => tp.permissions.includes("Scheduler"));
 
-    document.getElementById("floating-add-button").style.display = showScheduleService ? "block" : "none";
-    document.getElementById("team-scheduler-button").style.display = showTeamScheduler ? "flex" : "none";
-    document.getElementById("calendar-view-button").style.display = showScheduleService ? "flex" : "none";
+    const actions = document.getElementById('page-actions').querySelectorAll('button');
+    actions[0].style.display = showScheduleService ? 'inline-block' : 'none';
+    actions[1].style.display = showTeamScheduler ? 'inline-block' : 'none';
+    actions[2].style.display = showScheduleService ? 'inline-block' : 'none';
 
     loadServices({ isOwner, isOrgAdmin });
   } catch (err) {
@@ -385,6 +368,7 @@ async function initPage() {
   }
 }
 
+setActiveNav('services');
 initPage();
 
 function toggleRecurrence() {
@@ -1266,30 +1250,5 @@ function exportCalendarToExcel() {
 </script>
 
 
-<div class="tooltip">
-  <button onclick="showServiceForm()" id="floating-add-button" style="display: none;">
-    <svg class="icon" viewBox="0 0 24 24">
-      <path d="M12 5v14m7-7H5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-    </svg>
-  </button>
-  <span class="tooltiptext">Schedule Service</span>
-</div>
-
-<div class="tooltip">
-  <button onclick="renderTeamScheduler()" id="team-scheduler-button" style="display: none;">
-    <svg class="icon" viewBox="0 0 24 24">
-      <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
-    </svg>
-  </button>
-  <span class="tooltiptext">Schedule Team Members</span>
-</div>
-<div class="tooltip">
-  <button onclick="renderCalendarView()" id="calendar-view-button" style="display: none; position: fixed; bottom: 24px; right: 160px; width: 56px; height: 56px; border-radius: 50%; background-color: #f59e0b; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center;">
-    <svg class="icon" viewBox="0 0 24 24" style="fill:#fff;">
-      <path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5zm0 4h14v12H5V7zm2-4h2v2H7V3zm8 0h2v2h-2V3z"/>
-    </svg>
-  </button>
-  <span class="tooltiptext">Export Schedule Calendar</span>
-</div>
 </body>
 </html>

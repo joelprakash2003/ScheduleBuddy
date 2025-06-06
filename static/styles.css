@@ -49,6 +49,11 @@ body {
   background: #e5e7eb;
 }
 
+.nav-links button.active {
+  background: var(--brand-color);
+  color: #fff;
+}
+
 .nav-links .back-btn {
   background: var(--brand-color);
   color: #fff;
@@ -127,6 +132,17 @@ body {
 
 .secondary-btn:hover {
   background: #e5e7eb;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e5e7eb;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 12px;
+  margin-left: 8px;
 }
 
 @media (max-width: 600px) {

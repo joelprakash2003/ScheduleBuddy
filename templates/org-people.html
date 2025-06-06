@@ -39,6 +39,9 @@
 
     .main-content {
       flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
       padding: 40px;
     }
 
@@ -72,38 +75,17 @@
       color: #555;
       margin-top: 4px;
     }
-           #floating-add-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: var(--brand-color);
-      color: white;
-      font-size: 32px;
-      line-height: 0;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      z-index: 1000;
-    }
-    
-    #floating-add-button:hover {
-      background-color: var(--brand-hover);
-}
   </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="brand" onclick="window.location.href='/user-organizations'">ScheduleBuddy</div>
     <div class="nav-links">
-      <button onclick="goToPage('main-org')">Dashboard</button>
-      <button onclick="goToPage('org-services')">Services</button>
-      <button onclick="goToPage('org-teams')">Teams</button>
-      <button onclick="goToPage('org-people')">People</button>
-      <button onclick="goToPage('org-messages')">Messages</button>
+      <button id="nav-dashboard" onclick="goToPage('main-org')">Dashboard</button>
+      <button id="nav-services" onclick="goToPage('org-services')">Services</button>
+      <button id="nav-teams" onclick="goToPage('org-teams')">Teams</button>
+      <button id="nav-people" onclick="goToPage('org-people')">People</button>
+      <button id="nav-messages" onclick="goToPage('org-messages')">Messages</button>
       <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
       <div class="user-icon" id="user-icon-container" style="position: relative;">
         <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -118,6 +100,10 @@
     </div>
   </nav>
 
+  <div class="page-actions" id="page-actions" style="padding:20px 40px; display:flex; gap:12px;">
+    <button class="secondary-btn" onclick="showImportModal()">Add People</button>
+  </div>
+
   <div class="main-content" id="main-content">
     <p class="message">Loading people...</p>
   </div>
@@ -130,6 +116,11 @@
 const userEmail = localStorage.getItem("user_email");
 const firstName = localStorage.getItem("user_first_name") || "";
 const lastName = localStorage.getItem("user_last_name") || "";
+
+function setActiveNav(page) {
+  const btn = document.getElementById('nav-' + page);
+  if (btn) btn.classList.add('active');
+}
 
 const userIcon = document.getElementById('user-icon');
 const userPopup = document.getElementById('user-popup');
@@ -570,6 +561,7 @@ async function initiateOwnershipTransfer(newOwnerEmail, newOwnerFirst, newOwnerL
   }
 }
 
+setActiveNav('people');
 initPage();
 
   
@@ -753,9 +745,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
   
-<div class="tooltip">
-  <button onclick="showImportModal()" id="floating-add-button">+</button>
-</div>
 <div id="import-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 2000; justify-content: center; align-items: center;">
   <div style="background: white; padding: 24px; border-radius: 8px; width: 90%; max-width: 800px; position: relative;">
     <button onclick="closeImportModal()" style="position: absolute; top: 10px; right: 10px; font-size: 18px;">❌</button>

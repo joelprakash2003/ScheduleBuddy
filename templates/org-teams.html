@@ -39,6 +39,9 @@
 
     .main-content {
       flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
       padding: 40px;
     }
 
@@ -73,38 +76,17 @@
       margin-top: 4px;
     }
     
-    #floating-add-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: var(--brand-color);
-      color: white;
-      font-size: 32px;
-      line-height: 0;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      z-index: 1000;
-    }
-    
-    #floating-add-button:hover {
-      background-color: var(--brand-hover);
-}
   </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="brand" onclick="window.location.href='/user-organizations'">ScheduleBuddy</div>
     <div class="nav-links">
-      <button onclick="goToPage('main-org')">Dashboard</button>
-      <button onclick="goToPage('org-services')">Services</button>
-      <button onclick="goToPage('org-teams')">Teams</button>
-      <button onclick="goToPage('org-people')">People</button>
-      <button onclick="goToPage('org-messages')">Messages</button>
+      <button id="nav-dashboard" onclick="goToPage('main-org')">Dashboard</button>
+      <button id="nav-services" onclick="goToPage('org-services')">Services</button>
+      <button id="nav-teams" onclick="goToPage('org-teams')">Teams</button>
+      <button id="nav-people" onclick="goToPage('org-people')">People</button>
+      <button id="nav-messages" onclick="goToPage('org-messages')">Messages</button>
       <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
       <div class="user-icon" id="user-icon-container" style="position: relative;">
         <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -119,6 +101,10 @@
     </div>
   </nav>
 
+  <div class="page-actions" id="page-actions" style="padding:20px 40px; display:flex; gap:12px;">
+    <button class="secondary-btn" onclick="showTeamForm()">Create New Team</button>
+  </div>
+
   <div class="main-content" id="main-content">
     <p class="message">Loading teams...</p>
   </div>
@@ -131,6 +117,11 @@
 const userEmail = localStorage.getItem("user_email");
 const firstName = localStorage.getItem("user_first_name") || "";
 const lastName = localStorage.getItem("user_last_name") || "";
+
+function setActiveNav(page) {
+  const btn = document.getElementById('nav-' + page);
+  if (btn) btn.classList.add('active');
+}
 
 const userIcon = document.getElementById('user-icon');
 const userPopup = document.getElementById('user-popup');
@@ -232,7 +223,7 @@ async function initPage() {
 
     if (!isOwner && !isOrgAdmin && !isTeamAdmin) {
       mainContent.innerHTML = `<h2>Access Denied</h2><p>You do not have permission to view this page.</p>`;
-      document.getElementById("floating-add-button").style.display = "none";
+      document.getElementById("page-actions").style.display = "none";
       return;
     }
 
@@ -400,11 +391,8 @@ function addPositionRow() {
   tbody.appendChild(row);
 }
 
+setActiveNav('teams');
 initPage();
 </script>
-<button onclick="showTeamForm()" id="floating-add-button" title="Add Team">
-  +
-</button>
-
 </body>
 </html>
