@@ -114,6 +114,21 @@ body {
   fill: var(--brand-color);
 }
 
+.secondary-btn {
+  background: #fff;
+  border: 1px solid var(--brand-color);
+  color: var(--brand-color);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.secondary-btn:hover {
+  background: #e5e7eb;
+}
+
 @media (max-width: 600px) {
   .navbar {
     padding: 16px;
