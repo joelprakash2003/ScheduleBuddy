@@ -49,6 +49,11 @@ body {
   background: #e5e7eb;
 }
 
+.nav-links button.active {
+  background: var(--brand-color);
+  color: #fff;
+}
+
 .nav-links .back-btn {
   background: var(--brand-color);
   color: #fff;
@@ -112,6 +117,32 @@ body {
   height: 20px;
   vertical-align: middle;
   fill: var(--brand-color);
+}
+
+.secondary-btn {
+  background: #fff;
+  border: 1px solid var(--brand-color);
+  color: var(--brand-color);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.secondary-btn:hover {
+  background: #e5e7eb;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e5e7eb;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 12px;
+  margin-left: 8px;
 }
 
 @media (max-width: 600px) {

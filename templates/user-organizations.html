@@ -21,6 +21,10 @@
 
     .main-content {
       flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 40px;
     }
   </style>
 </head>
@@ -108,13 +112,14 @@
 
     function showStartOrgForm() {
       const mainContent = document.getElementById('main-content');
+      mainContent.style.display = 'block';
       const firstName = localStorage.getItem("user_first_name") || "";
       const lastName = localStorage.getItem("user_last_name") || "";
       const userEmail = localStorage.getItem("user_email");
 
       mainContent.innerHTML = `
         <h2 style="margin-bottom: 20px;">Start a New Organization</h2>
-        <form id="start-org-form" style="max-width: 400px;">
+        <form id="start-org-form" style="max-width: 400px; margin:0 auto;">
           <div style="margin-bottom: 12px;">
             <label for="orgName">Org Name</label><br/>
             <input type="text" id="orgName" required style="width: 100%; padding: 8px;" />

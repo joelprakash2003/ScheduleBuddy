@@ -66,27 +66,6 @@
   visibility: visible;
   opacity: 1;
 }
-       #floating-add-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: var(--brand-color);
-      color: white;
-      font-size: 32px;
-      line-height: 0;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      z-index: 1000;
-    }
-    
-    #floating-add-button:hover {
-      background-color: var(--brand-hover);
-}
     #team-scheduler-button {
       position: fixed;
       bottom: 24px;
@@ -148,11 +127,11 @@
   <nav class="navbar">
     <div class="brand" onclick="window.location.href='/user-organizations'">ScheduleBuddy</div>
     <div class="nav-links">
-      <button onclick="goToPage('main-org')">Dashboard</button>
-      <button onclick="goToPage('org-services')">Services</button>
-      <button onclick="goToPage('org-teams')">Teams</button>
-      <button onclick="goToPage('org-people')">People</button>
-      <button onclick="goToPage('org-messages')">Messages</button>
+      <button id="nav-dashboard" onclick="goToPage('main-org')">Dashboard</button>
+      <button id="nav-services" onclick="goToPage('org-services')">Services</button>
+      <button id="nav-teams" onclick="goToPage('org-teams')">Teams</button>
+      <button id="nav-people" onclick="goToPage('org-people')">People</button>
+      <button id="nav-messages" onclick="goToPage('org-messages')">Messages</button>
       <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
       <div class="user-icon" id="user-icon-container" style="position: relative;">
         <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -166,6 +145,10 @@
       </div>
     </div>
   </nav>
+
+  <div class="page-actions" id="page-actions" style="padding:20px 40px;">
+    <button class="secondary-btn" onclick="showCalendar()">Schedule your Availability</button>
+  </div>
 
   <div class="main-content" id="main-content">
     <p class="message">Loading organization...</p>
@@ -186,6 +169,11 @@
 const userEmail = localStorage.getItem("user_email");
 const firstName = localStorage.getItem("user_first_name") || "";
 const lastName = localStorage.getItem("user_last_name") || "";
+
+function setActiveNav(page) {
+  const btn = document.getElementById('nav-' + page);
+  if (btn) btn.classList.add('active');
+}
 
 const userIcon = document.getElementById('user-icon');
 const userPopup = document.getElementById('user-popup');
@@ -298,7 +286,10 @@ async function loadUserDashboard() {
   }
 }
 
-window.addEventListener("DOMContentLoaded", loadUserDashboard);
+window.addEventListener("DOMContentLoaded", () => {
+  setActiveNav('dashboard');
+  loadUserDashboard();
+});
 
 let calendarInstance = null;
 const selectedDates = new Set();
@@ -428,13 +419,5 @@ function removeInabilityDateFromDatabase(dateStr) {
   });
 }
 </script>
-<div class="tooltip">
-  <button onclick="showCalendar()" id="floating-add-button" style="display: block;">
-    <svg class="icon" viewBox="0 0 24 24">
-      <path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5zm0 4h14v12H5V7zm2-4h2v2H7V3zm8 0h2v2h-2V3z"/>
-    </svg>
-  </button>
-  <span class="tooltiptext">Schedule Your Availability</span>
-</div>
 </body>
 </html>

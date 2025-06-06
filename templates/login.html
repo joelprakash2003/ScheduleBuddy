@@ -5,6 +5,13 @@
   <title>Login</title>
   <link rel="stylesheet" href="/static/styles.css" />
   <style>
+    .brand-top {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--brand-color);
+      margin-bottom: 20px;
+    }
     body {
       background-color: #f4f6f8;
       margin: 0;
@@ -81,10 +88,24 @@
     .submit-btn:hover {
       background-color: var(--brand-hover);
     }
+    .secondary-btn {
+      background: #fff;
+      border: 1px solid var(--brand-color);
+      color: var(--brand-color);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    .secondary-btn:hover {
+      background: #e5e7eb;
+    }
   </style>
 </head>
 <body>
   <div class="login-container">
+    <div class="brand-top">ScheduleBuddy</div>
     <div class="login-form">
       <h2>Login</h2>
 
@@ -108,10 +129,9 @@
         {# Show these only when show_email_controls=True, with an inline style override #}
         {% if show_email_controls %}
           <div id="email-controls"
-               class="small-buttons"
                style="display:flex; justify-content:flex-end; gap:12px; margin-top:6px;">
-            <button type="submit" name="stage" value="request_otp">Edit Email</button>
-            <button type="submit" name="stage" value="request_otp">Resend OTP</button>
+            <button type="button" class="secondary-btn" onclick="submitStage('request_otp')">Edit Email</button>
+            <button type="button" class="secondary-btn" onclick="submitStage('request_otp')">Resend OTP</button>
           </div>
         {% endif %}
 
@@ -152,5 +172,12 @@
       </form>
     </div>
   </div>
+  <script>
+    function submitStage(stage) {
+      const form = document.querySelector('.login-form form');
+      form.querySelector('input[name="stage"]').value = stage;
+      form.submit();
+    }
+  </script>
 </body>
 </html>
