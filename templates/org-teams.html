@@ -98,11 +98,13 @@
     </div>
   </nav>
 
-  <div class="main-content card-grid" id="main-content">
-    <div style="margin-bottom:20px;">
+  <div class="main-content">
+    <div id="team-actions" style="margin-bottom:20px;">
       <button class="back-btn" onclick="showTeamForm()">Create New Team</button>
     </div>
-    <p class="message">Loading teams...</p>
+    <div id="team-grid" class="card-grid max-three">
+      <p class="message">Loading teams...</p>
+    </div>
   </div>
 <script>
   function highlightNav(page) {
@@ -115,10 +117,10 @@
     });
   }
   function navigateTo(section) {
-    const mainContent = document.getElementById('main-content');
+    const mainContent = document.getElementById('team-grid');
     mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
   }
-  const mainContent = document.getElementById('main-content');
+  const mainContent = document.getElementById('team-grid');
 const userEmail = localStorage.getItem("user_email");
 const firstName = localStorage.getItem("user_first_name") || "";
 const lastName = localStorage.getItem("user_last_name") || "";
@@ -163,6 +165,7 @@ async function loadTeams({ isOwner, isOrgAdmin, currentUser }) {
     mainContent.innerHTML = '<p class="message">No org ID provided.</p>';
     return;
   }
+  mainContent.className = 'card-grid max-three';
 
   try {
     const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`);
@@ -235,6 +238,7 @@ async function initPage() {
 }
 
 function showTeamForm(existingTeam = null) {
+  mainContent.className = '';
   mainContent.innerHTML = `
     <h2>Create New Team</h2>
     <form id="team-form" style="max-width: 700px;">

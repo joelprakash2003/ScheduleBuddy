@@ -56,7 +56,7 @@
 </nav>
 
 
-  <div class="main-content card-grid" id="main-content">
+  <div class="main-content card-grid max-three" id="main-content">
     {% if orgs %}
       {% for org in orgs %}
         <div class="org-card"
@@ -71,12 +71,12 @@
   </div>
 
 
-  <div id="join-org-popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; border-radius: 12px; padding: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.2); z-index: 10; width: 90%; max-width: 400px; font-family: 'Poppins', sans-serif;">
+  <div id="join-org-popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 2px solid var(--brand-color); border-radius: 12px; padding: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.2); z-index: 10; width: 90%; max-width: 400px; font-family: 'Poppins', sans-serif;">
     <h3 style="margin-bottom: 16px; color: var(--brand-color);">Join Organization</h3>
     <input id="join-org-id" type="text" placeholder="Enter Org ID" style="padding: 10px; width: 100%; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 6px;" />
     <div style="display: flex; justify-content: flex-end; gap: 10px;">
-      <button onclick="closeJoinOrgPopup()" style="padding: 8px 16px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer;">Cancel</button>
-      <button onclick="submitJoinOrg()" style="padding: 8px 16px; background-color: var(--brand-color); color: white; border: none; border-radius: 6px; cursor: pointer;">Join</button>
+      <button onclick="closeJoinOrgPopup()" class="email-btn" style="background:white; color:var(--brand-color); border:1px solid var(--brand-color);">Cancel</button>
+      <button onclick="submitJoinOrg()" class="back-btn">Join</button>
     </div>
     <p id="join-org-message" style="margin-top: 12px; font-size: 14px;"></p>
   </div>

@@ -132,13 +132,15 @@
     </div>
   </nav>
 
-  <div class="main-content card-grid" id="main-content">
+  <div class="main-content">
     <div id="service-actions" style="margin-bottom:20px;">
       <button class="back-btn" onclick="showServiceForm()">Create Service</button>
       <button class="back-btn" onclick="renderTeamScheduler()">Schedule Team Members</button>
       <button class="back-btn" style="background-color:#f59e0b;" onclick="renderCalendarView()">Export Schedule</button>
     </div>
-    <p class="message">Loading services...</p>
+    <div id="service-grid" class="card-grid max-three">
+      <p class="message">Loading services...</p>
+    </div>
   </div>
   <script src="https://unpkg.com/html-docx-js/dist/html-docx.js"></script>
 
@@ -155,8 +157,9 @@
     }
     let allTeams = [];
   function showServiceForm() {
-  mainContent.className = 'main-content';
-  mainContent.innerHTML = `
+  const grid = document.getElementById('service-grid');
+  grid.className = '';
+  grid.innerHTML = `
     <h2>Create New Service</h2>
     <form id="service-form" class="form-grid" style="max-width: 800px;">
       <div class="form-group">
@@ -220,10 +223,10 @@
   document.getElementById("service-form").addEventListener("submit", handleServiceSubmit);
 }
   function navigateTo(section) {
-    const mainContent = document.getElementById('main-content');
+    const mainContent = document.getElementById('service-grid');
     mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
   }
-  const mainContent = document.getElementById('main-content');
+  const mainContent = document.getElementById('service-grid');
 const userEmail = localStorage.getItem("user_email");
 const firstName = localStorage.getItem("user_first_name") || "";
 const lastName = localStorage.getItem("user_last_name") || "";
@@ -268,7 +271,7 @@ async function loadServices({ isOwner, isOrgAdmin }) {
     mainContent.innerHTML = '<p class="message">No org ID provided.</p>';
     return;
   }
-  mainContent.className = 'main-content card-grid';
+  mainContent.className = 'card-grid max-three';
 
   try {
     const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/services`);
@@ -301,7 +304,7 @@ async function loadServices({ isOwner, isOrgAdmin }) {
         </div>
         <div class="org-id"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg> ${service.location}</div>
         <div class="org-id"><svg class="icon" viewBox="0 0 24 24"><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg> ${startDate} → ${endDate}</div>
-        ${isOwner || isOrgAdmin ? `<div class="org-id"><svg class="icon" viewBox='0 0 24 24'><path d='M16 11V9a4 4 0 1 0-8 0v2H6v10h12V11h-2zm-6-2a2 2 0 1 1 4 0v2h-4V9z'/></svg> Team: ${teamNames}</div>` : ''}
+        <div class="org-id"><svg class="icon" viewBox='0 0 24 24'><path d='M16 11V9a4 4 0 1 0-8 0v2H6v10h12V11h-2zm-6-2a2 2 0 1 1 4 0v2h-4V9z'/></svg> Team: ${teamNames}</div>
       `;
       const userTeams = userTeamPermissions.map(tp => tp.team_name);
     const userRoles = userTeamPermissions.reduce((acc, tp) => {

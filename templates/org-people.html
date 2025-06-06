@@ -97,11 +97,16 @@
     </div>
   </nav>
 
-  <div class="main-content card-grid" id="main-content">
-    <div style="margin-bottom:20px;">
+  <div class="main-content">
+    <div id="people-actions" style="margin-bottom:20px;">
       <button class="back-btn" onclick="showImportModal()">Add People</button>
+      <input type="text" id="people-search" placeholder="Search..." style="padding:8px; margin-left:12px; border:1px solid #ccc; border-radius:6px;">
     </div>
-    <p class="message">Loading people...</p>
+    <h2 style="margin-bottom:16px;">People</h2>
+    <div id="people-grid" class="card-grid max-three">
+      <p class="message">Loading people...</p>
+    </div>
+    <div id="pending-grid" style="margin-top:40px;"></div>
   </div>
 <script>
   function highlightNav(page) {
@@ -114,10 +119,10 @@
     });
   }
   function navigateTo(section) {
-    const mainContent = document.getElementById('main-content');
+    const mainContent = document.getElementById('people-grid');
     mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
   }
-  const mainContent = document.getElementById('main-content');
+  const mainContent = document.getElementById('people-grid');
 const userEmail = localStorage.getItem("user_email");
 const firstName = localStorage.getItem("user_first_name") || "";
 const lastName = localStorage.getItem("user_last_name") || "";
@@ -158,14 +163,9 @@ function goToPage(page) {
   window.location.href = `/${page}?org=${orgId}`;
 }
 async function renderPeoplePage({ isOwner, isOrgAdmin, adminTeams }) {
-  mainContent.innerHTML = `
-    <h2>People</h2>
-    <input type="text" id="people-search" placeholder="Search by name or email..." style="padding: 8px; width: 100%; max-width: 400px; margin: 16px 0; border: 1px solid #ccc; border-radius: 6px;" />
-    <div id="people-grid" style="display: flex; flex-wrap: wrap; gap: 16px;"></div>
-    <div id="pending-grid" style="margin-top: 40px;"></div>
-  `;
-
-  const container = document.getElementById("people-grid");
+  const container = document.getElementById('people-grid');
+  container.className = 'card-grid max-three';
+  container.innerHTML = '';
   const pendingContainer = document.getElementById("pending-grid");
   const searchInput = document.getElementById("people-search");
 
