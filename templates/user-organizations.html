@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Org Page</title>
   <link rel="stylesheet" href="/static/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --font-brand: 'Poppins', sans-serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -16,11 +22,188 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      background-color: #f5f5f5;
+      background-color: #f4f6f8;
+      font-family: var(--font-body);
+      color: #2d3748;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .brand {
+      font-family: var(--font-brand);
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--brand-color);
     }
 
     .main-content {
       flex: 1;
+      padding: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .org-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .org-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .org-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .org-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a202c;
+    }
+
+    .org-id {
+      color: #4a5568;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .message {
+      text-align: center;
+      color: #4a5568;
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-top: 48px;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup h3 {
+      color: #1a202c;
+      font-size: 1.5rem;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    .form-row {
+      margin-bottom: 20px;
+    }
+
+    .form-row label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2d3748;
+      font-weight: 500;
+    }
+
+    .form-row input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      color: #2d3748;
+    }
+
+    .form-row input:focus {
+      outline: none;
+      border-color: var(--brand-color);
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .button {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .button-secondary {
+      background: #edf2f7;
+      border: none;
+      color: #4a5568;
+    }
+
+    .button-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .button-primary {
+      background: var(--brand-color);
+      border: none;
+      color: white;
+    }
+
+    .button-primary:hover {
+      background: var(--brand-hover);
+      transform: translateY(-1px);
+    }
+
+    .form-message {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px;
+      }
+
+      .org-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .popup-content {
+        padding: 24px;
+      }
     }
   </style>
 </head>
@@ -56,31 +239,78 @@
 </nav>
 
 
-  <div class="main-content" id="main-content">
-    {% if orgs %}
-      {% for org in orgs %}
-        <div class="org-card"
-             onclick="window.location.href = `/main-org/?org={{ org.id }}`">
-          <div class="org-name">{{ org.name }}</div>
-          <div class="org-id">{{ org.id }}</div>
-        </div>
-      {% endfor %}
-    {% else %}
-      <p class="message">You aren't in any orgs yet, please join or start one on the left.</p>
-    {% endif %}
-  </div>
-
-
-  <div id="join-org-popup" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; border-radius: 12px; padding: 24px; box-shadow: 0 0 20px rgba(0,0,0,0.2); z-index: 10; width: 90%; max-width: 400px; font-family: 'Poppins', sans-serif;">
-    <h3 style="margin-bottom: 16px; color: var(--brand-color);">Join Organization</h3>
-    <input id="join-org-id" type="text" placeholder="Enter Org ID" style="padding: 10px; width: 100%; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 6px;" />
-    <div style="display: flex; justify-content: flex-end; gap: 10px;">
-      <button onclick="closeJoinOrgPopup()" style="padding: 8px 16px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer;">Cancel</button>
-      <button onclick="submitJoinOrg()" style="padding: 8px 16px; background-color: var(--brand-color); color: white; border: none; border-radius: 6px; cursor: pointer;">Join</button>
+  <div class="main-content">
+    <div class="org-grid">
+      {% if orgs %}
+        {% for org in orgs %}
+          <div class="org-card" onclick="window.location.href = `/main-org/?org={{ org.id }}`">
+            <div class="org-name">{{ org.name }}</div>
+            <div class="org-id">ID: {{ org.id }}</div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="message">You aren't in any organizations yet. Join an existing organization or start a new one.</p>
+      {% endif %}
     </div>
-    <p id="join-org-message" style="margin-top: 12px; font-size: 14px;"></p>
   </div>
 
+  <!-- Join Organization Popup -->
+  <div id="join-org-popup" class="popup">
+    <div class="popup-content">
+      <h3>Join Organization</h3>
+      <div class="form-row">
+        <label for="join-org-id">Organization ID</label>
+        <input id="join-org-id" type="text" placeholder="Enter the organization ID" />
+      </div>
+      <div class="popup-buttons">
+        <button class="button button-secondary" onclick="closeJoinOrgPopup()">Cancel</button>
+        <button class="button button-primary" onclick="submitJoinOrg()">Join</button>
+      </div>
+      <p id="join-org-message" class="form-message"></p>
+    </div>
+  </div>
+
+  <!-- Start Organization Popup -->
+  <div id="start-org-popup" class="popup">
+    <div class="popup-content">
+      <h3>Start a New Organization</h3>
+      <form id="start-org-form">
+        <div class="form-row">
+          <label for="orgName">Organization Name</label>
+          <input type="text" id="orgName" required />
+        </div>
+        <div class="form-row">
+          <label for="orgType">Organization Type</label>
+          <input type="text" id="orgType" required placeholder="e.g., Church, Ministry, etc." />
+        </div>
+        <div class="form-row">
+          <label for="address">Address</label>
+          <input type="text" id="address" required />
+        </div>
+        <div class="form-row">
+          <label for="address2">Address Line 2</label>
+          <input type="text" id="address2" placeholder="Optional" />
+        </div>
+        <div class="form-row">
+          <label for="city">City</label>
+          <input type="text" id="city" required />
+        </div>
+        <div class="form-row">
+          <label for="state">State</label>
+          <input type="text" id="state" required />
+        </div>
+        <div class="form-row">
+          <label for="zip">ZIP Code</label>
+          <input type="text" id="zip" required />
+        </div>
+        <div class="popup-buttons">
+          <button type="button" class="button button-secondary" onclick="closeStartOrgPopup()">Cancel</button>
+          <button type="submit" class="button button-primary">Create Organization</button>
+        </div>
+        <p id="org-message" class="form-message"></p>
+      </form>
+    </div>
+  </div>
 
   <script>
     const userIcon = document.getElementById('user-icon');
@@ -107,113 +337,94 @@
     }
 
     function showStartOrgForm() {
-      const mainContent = document.getElementById('main-content');
-      const firstName = localStorage.getItem("user_first_name") || "";
-      const lastName = localStorage.getItem("user_last_name") || "";
-      const userEmail = localStorage.getItem("user_email");
+      document.getElementById('start-org-popup').style.display = 'flex';
+    }
 
-      mainContent.innerHTML = `
-        <h2 style="margin-bottom: 20px;">Start a New Organization</h2>
-        <form id="start-org-form" style="max-width: 400px;">
-          <div style="margin-bottom: 12px;">
-            <label for="orgName">Org Name</label><br/>
-            <input type="text" id="orgName" required style="width: 100%; padding: 8px;" />
-          </div>
-          <div style="margin-bottom: 12px;">
-            <label for="orgType">Org Type</label><br/>
-            <input type="text" id="orgType" required style="width: 100%; padding: 8px;" />
-          </div>
-          <div style="margin-bottom: 12px;">
-            <label for="address">Address</label><br/>
-            <input type="text" id="address" required style="width: 100%; padding: 8px;" />
-          </div>
-          <div style="margin-bottom: 12px;">
-            <label for="address2">Address 2</label><br/>
-            <input type="text" id="address2" style="width: 100%; padding: 8px;" />
-          </div>
-          <div style="margin-bottom: 12px;">
-            <label for="city">City</label><br/>
-            <input type="text" id="city" required style="width: 100%; padding: 8px;" />
-          </div>
-          <div style="margin-bottom: 12px;">
-            <label for="state">State</label><br/>
-            <input type="text" id="state" required style="width: 100%; padding: 8px;" />
-          </div>
-          <div style="margin-bottom: 20px;">
-            <label for="zip">Zip Code</label><br/>
-            <input type="text" id="zip" required style="width: 100%; padding: 8px;" />
-          </div>
-          <button type="submit" style="padding: 10px 16px; background-color: var(--brand-color); color: white; border: none; border-radius: 6px; cursor: pointer;">Submit</button>
-          <p id="org-message" style="margin-top: 16px;"></p>
-        </form>
-      `;
-
-      document.getElementById('start-org-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const msgEl = document.getElementById('org-message');
-        msgEl.textContent = "Submitting...";
-        msgEl.style.color = "#333";
-
-        const orgPayload = {
-          name: document.getElementById('orgName').value,
-          org_type: document.getElementById('orgType').value,
-          address: document.getElementById('address').value,
-          address2: document.getElementById('address2').value,
-          city: document.getElementById('city').value,
-          state: document.getElementById('state').value,
-          zip_code: document.getElementById('zip').value,
-          owner: {
-            first_name: firstName,
-            last_name: lastName,
-            email: userEmail
-          },
-          user_types: [],
-          services: [],
-          teams: [],
-          users: [],
-          messages: []
-        };
-
-        try {
-          const orgRes = await fetch("https://api.worshipbuddy.org/schedulebuddy/organizations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(orgPayload)
-          });
-
-          const orgData = await orgRes.json();
-          if (!orgRes.ok) throw new Error(orgData.detail || "Failed to create organization.");
-          
-          window.location.reload();
-        } catch (err) {
-          msgEl.textContent = err.message;
-          msgEl.style.color = "red";
-        }
-      });
+    function closeStartOrgPopup() {
+      document.getElementById('start-org-popup').style.display = 'none';
     }
 
     function showJoinOrgPopup() {
-      document.getElementById('join-org-id').value = "";
-      document.getElementById('join-org-message').textContent = "";
-      document.getElementById('join-org-popup').style.display = "block";
+      document.getElementById('join-org-id').value = '';
+      document.getElementById('join-org-message').textContent = '';
+      document.getElementById('join-org-popup').style.display = 'flex';
     }
 
     function closeJoinOrgPopup() {
-      document.getElementById('join-org-popup').style.display = "none";
+      document.getElementById('join-org-popup').style.display = 'none';
     }
+
+    // Close popups when clicking outside
+    document.querySelectorAll('.popup').forEach(popup => {
+      popup.addEventListener('click', (e) => {
+        if (e.target === popup) {
+          popup.style.display = 'none';
+        }
+      });
+    });
+
+    document.getElementById('start-org-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const msgEl = document.getElementById('org-message');
+      msgEl.textContent = 'Creating organization...';
+      msgEl.style.color = '#4a5568';
+
+      const firstName = localStorage.getItem('user_first_name') || '';
+      const lastName = localStorage.getItem('user_last_name') || '';
+      const userEmail = localStorage.getItem('user_email');
+
+      const orgPayload = {
+        name: document.getElementById('orgName').value,
+        org_type: document.getElementById('orgType').value,
+        address: document.getElementById('address').value,
+        address2: document.getElementById('address2').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        zip_code: document.getElementById('zip').value,
+        owner: {
+          first_name: firstName,
+          last_name: lastName,
+          email: userEmail
+        },
+        user_types: [],
+        services: [],
+        teams: [],
+        users: [],
+        messages: []
+      };
+
+      try {
+        const orgRes = await fetch('https://api.worshipbuddy.org/schedulebuddy/organizations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orgPayload)
+        });
+
+        const orgData = await orgRes.json();
+        if (!orgRes.ok) throw new Error(orgData.detail || 'Failed to create organization.');
+        
+        window.location.reload();
+      } catch (err) {
+        msgEl.textContent = err.message;
+        msgEl.style.color = '#e53e3e';
+      }
+    });
 
     async function submitJoinOrg() {
       const orgId = document.getElementById('join-org-id').value.trim();
       const msgEl = document.getElementById('join-org-message');
-      const firstName = localStorage.getItem("user_first_name") || "";
-      const lastName = localStorage.getItem("user_last_name") || "";
-      const userEmail = localStorage.getItem("user_email");
+      const firstName = localStorage.getItem('user_first_name') || '';
+      const lastName = localStorage.getItem('user_last_name') || '';
+      const userEmail = localStorage.getItem('user_email');
 
       if (!orgId) {
-        msgEl.textContent = "Please enter an organization ID.";
-        msgEl.style.color = "red";
+        msgEl.textContent = 'Please enter an organization ID.';
+        msgEl.style.color = '#e53e3e';
         return;
       }
+
+      msgEl.textContent = 'Joining organization...';
+      msgEl.style.color = '#4a5568';
 
       const joinPayload = {
         first_name: firstName,
@@ -224,19 +435,18 @@
 
       try {
         const joinRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/join`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(joinPayload)
         });
 
         const result = await joinRes.json();
-        if (!joinRes.ok) throw new Error(result.detail || "Failed to join organization.");
+        if (!joinRes.ok) throw new Error(result.detail || 'Failed to join organization.');
 
-        closeJoinOrgPopup();
         window.location.reload();
       } catch (err) {
-        msgEl.textContent = `${err.message}`;
-        msgEl.style.color = "red";
+        msgEl.textContent = err.message;
+        msgEl.style.color = '#e53e3e';
       }
     }
   </script>

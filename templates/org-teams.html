@@ -3,9 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Org Page</title>
+  <title>Teams - ScheduleBuddy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css" />
   <style>
+    :root {
+      --font-brand: 'Poppins', sans-serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --brand-color: #10245c;
+      --brand-hover: #0c1b48;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -16,9 +24,68 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      background-color: #f5f5f5;
+      background-color: #f4f6f8;
+      font-family: var(--font-body);
+      color: #2d3748;
+      -webkit-font-smoothing: antialiased;
     }
 
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-family: var(--font-brand);
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--brand-color);
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links button {
+      font-family: var(--font-body);
+      font-weight: 500;
+      background: none;
+      border: none;
+      padding: 10px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      color: #4a5568;
+    }
+
+    .nav-links button:hover {
+      background: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    .nav-links button.active {
+      background-color: var(--brand-color);
+      color: white;
+    }
+
+    .nav-links .back-btn {
+      background: var(--brand-color);
+      color: #fff;
+    }
+
+    .nav-links .back-btn:hover {
+      background: var(--brand-hover);
+    }
 
     .user-icon {
       display: flex;
@@ -39,61 +106,469 @@
 
     .main-content {
       flex: 1;
-      padding: 40px;
+      padding: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-family: var(--font-body);
+      font-weight: 600;
+      color: #1a202c;
+      font-size: 1.75rem;
+      margin: 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background-color: var(--brand-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-btn:hover {
+      background-color: var(--brand-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 1200px) {
+      .teams-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .teams-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .team-card {
+      background: white;
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      min-height: 280px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .team-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .team-card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .team-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--brand-color), var(--brand-hover));
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .team-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .team-details {
+      padding: 0 24px;
+      flex: 1;
+    }
+
+    .team-detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #f8fafc;
+    }
+
+    .team-detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-icon {
+      width: 40px;
+      height: 40px;
+      background: #f8fafc;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .detail-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--brand-color);
+    }
+
+    .detail-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .detail-primary {
+      font-weight: 600;
+      color: #1a202c;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .detail-secondary {
+      color: #64748b;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .team-card-footer {
+      padding: 16px 24px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .team-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #10b981;
+      font-weight: 500;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    .edit-hint {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-style: italic;
     }
 
     .message {
-      font-size: 18px;
-      color: #333;
+      text-align: center;
+      color: #4a5568;
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-top: 48px;
     }
 
-    .org-card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: white;
-      padding: 16px;
-      margin-bottom: 16px;
-      cursor: pointer;
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
-      transition: background-color 0.2s;
-    }
-
-    .org-card:hover {
-      background-color: #f0f0f0;
-    }
-
-    .org-name {
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .org-id {
-      font-size: 14px;
-      color: #555;
-      margin-top: 4px;
-    }
-    
-    #floating-add-button {
+    /* Popup Styles */
+    .popup-overlay {
+      display: none;
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: var(--brand-color);
-      color: white;
-      font-size: 32px;
-      line-height: 0;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
       z-index: 1000;
+      justify-content: center;
+      align-items: center;
     }
-    
-    #floating-add-button:hover {
-      background-color: var(--brand-hover);
-}
+
+    .popup-content {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .popup-title {
+      font-family: var(--font-body);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #718096;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+      background: #f7fafc;
+      color: #2d3748;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 8px;
+      color: #2d3748;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      color: #2d3748;
+      font-family: var(--font-body);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--brand-color);
+      box-shadow: 0 0 0 3px rgba(16, 36, 92, 0.15);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-secondary {
+      background: #edf2f7;
+      color: #4a5568;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-primary {
+      background: var(--brand-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-hover);
+      transform: translateY(-1px);
+    }
+
+    .user-popup {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      min-width: 220px;
+      z-index: 2000; /* Add high z-index */
+    }
+
+    .user-popup strong {
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    .user-popup button {
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+
+    .positions-list {
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .position-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .position-item:last-child {
+      border-bottom: none;
+    }
+
+    .position-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .qty-input {
+      width: 60px;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .remove-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .remove-btn:hover {
+      background: #dc2626;
+    }
+
+    .add-position-btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      margin-top: 12px;
+    }
+
+    .add-position-btn:hover {
+      background: #059669;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .action-buttons {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .teams-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .popup-content {
+        padding: 24px;
+        margin: 20px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -102,309 +577,564 @@
     <div class="nav-links">
       <button onclick="goToPage('main-org')">Dashboard</button>
       <button onclick="goToPage('org-services')">Services</button>
-      <button onclick="goToPage('org-teams')">Teams</button>
+      <button onclick="goToPage('org-teams')" class="active">Teams</button>
       <button onclick="goToPage('org-people')">People</button>
       <button onclick="goToPage('org-messages')">Messages</button>
       <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
-      <div class="user-icon" id="user-icon-container" style="position: relative;">
+      <div class="user-icon" id="user-icon-container" style="position: relative; z-index: 1500;">
         <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
         </svg>
-        <div id="user-popup" style="display:none; position:absolute; top:40px; right:0; background:white; border:1px solid #ccc; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); min-width:200px;">
+        <div id="user-popup" class="user-popup" style="display:none; position:absolute; top:40px; right:0;">
           <p style="margin-bottom:4px;"><strong id="popup-name"></strong></p>
           <p id="popup-email" style="margin-bottom:12px; font-size:14px; color:#555;"></p>
-          <button onclick="signOut()" style="padding:6px 12px; border:none; background-color:#e74c3c; color:white; border-radius:4px; cursor:pointer;">Sign Out</button>
+          <button onclick="signOut()" style="width:100%; padding:8px; border:none; background-color:#e74c3c; color:white; border-radius:6px; cursor:pointer;">Sign Out</button>
         </div>
       </div>
     </div>
   </nav>
 
   <div class="main-content" id="main-content">
-    <p class="message">Loading teams...</p>
+    <div class="action-buttons" style="position: fixed; left: 16px; top: 100px; z-index: 100; display: flex; gap: 12px;">
+      <button class="action-btn" onclick="showCreateTeamPopup()" id="create-team-btn" style="display: none;">
+        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+          <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Create Team
+      </button>
+    </div>
+
+    <div class="page-header" style="margin-bottom: 24px;">
+      <!-- Empty header or remove entirely -->
+    </div>
+
+    <div class="teams-grid" id="teams-container" style="padding-top: 60px;">
+      <p class="message">Loading teams...</p>
+    </div>
   </div>
-<script>
-  function navigateTo(section) {
-    const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
-  }
-  const mainContent = document.getElementById('main-content');
-const userEmail = localStorage.getItem("user_email");
-const firstName = localStorage.getItem("user_first_name") || "";
-const lastName = localStorage.getItem("user_last_name") || "";
 
-const userIcon = document.getElementById('user-icon');
-const userPopup = document.getElementById('user-popup');
-const popupName = document.getElementById('popup-name');
-const popupEmail = document.getElementById('popup-email');
-
-popupName.textContent = `${firstName} ${lastName}`;
-popupEmail.textContent = userEmail;
-
-userIcon.addEventListener('click', (e) => {
-  e.stopPropagation();
-  userPopup.style.display = userPopup.style.display === 'none' ? 'block' : 'none';
-});
-
-document.addEventListener('click', (e) => {
-  if (!document.getElementById('user-icon-container').contains(e.target)) {
-    userPopup.style.display = 'none';
-  }
-});
-
-function signOut() {
-  localStorage.removeItem("user_email");
-  localStorage.removeItem("user_first_name");
-  localStorage.removeItem("user_last_name");
-  window.location.href = "https://schedulebuddy.onrender.com/";
-}
-const urlParams = new URLSearchParams(window.location.search);
-  const orgId = urlParams.get("org");
-
-function goToPage(page) {
-  if (!orgId) {
-    alert("Organization ID is missing.");
-    return;
-  }
-  window.location.href = `/${page}?org=${orgId}`;
-}
-async function loadTeams({ isOwner, isOrgAdmin, currentUser }) {
-  if (!orgId) {
-    mainContent.innerHTML = '<p class="message">No org ID provided.</p>';
-    return;
-  }
-
-  try {
-    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`);
-    const teams = await res.json();
-
-    mainContent.innerHTML = '';
-
-    let visibleTeams = teams;
-    if (!isOwner && !isOrgAdmin) {
-      visibleTeams = teams.filter(team =>
-        currentUser.team_permissions?.some(tp =>
-          tp.team_name === team.team_name && tp.permissions.includes("Admin")
-        )
-      );
-    }
-
-    if (!visibleTeams.length) {
-      mainContent.innerHTML = `<p class="message">No teams available for your role.</p>`;
-      return;
-    }
-
-    visibleTeams.forEach(team => {
-      const card = document.createElement('div');
-      card.className = 'org-card';
-
-      const positions = team.positions.map(pos => `${pos.qty} × ${pos.position_name}`).join(', ') || 'No positions yet';
-
-      card.innerHTML = `
-        <div class="org-name">${team.team_name}</div>
-        <div class="org-id">Positions: ${positions}</div>
-        <div class="org-id">Assign w/ other teams: ${team.assign_with_other_team ? 'Yes' : 'No'}</div>
-      `;
-      card.onclick = () => showTeamForm(team);
-
-      mainContent.appendChild(card);
-    });
-  } catch (err) {
-    console.error(err);
-    mainContent.innerHTML = '<p class="message">Failed to load teams.</p>';
-  }
-}
-
-async function initPage() {
-  try {
-    const [orgRes, usersRes] = await Promise.all([
-      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`),
-      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`)
-    ]);
-
-    const org = await orgRes.json();
-    const allUsers = await usersRes.json();
-    const currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
-
-    const isOwner = org.owner?.email === userEmail;
-    const isOrgAdmin = currentUser?.org_admin === true;
-
-    const isTeamAdmin = currentUser?.team_permissions?.some(tp => tp.permissions.includes("Admin"));
-
-    if (!isOwner && !isOrgAdmin && !isTeamAdmin) {
-      mainContent.innerHTML = `<h2>Access Denied</h2><p>You do not have permission to view this page.</p>`;
-      document.getElementById("floating-add-button").style.display = "none";
-      return;
-    }
-
-    loadTeams({ isOwner, isOrgAdmin, currentUser });
-  } catch (err) {
-    console.error("Failed to verify permissions:", err.message);
-    mainContent.innerHTML = `<p class="message">Could not load permission data.</p>`;
-  }
-}
-
-function showTeamForm(existingTeam = null) {
-  mainContent.innerHTML = `
-    <h2>Create New Team</h2>
-    <form id="team-form" style="max-width: 700px;">
-      <div style="margin-bottom: 20px;">
-        <label><strong>Team Name</strong></label><br/>
-        <input type="text" id="teamName" required style="width: 100%; padding: 8px;" />
+  <!-- Create Team Popup -->
+  <div id="create-team-popup" class="popup-overlay">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2 class="popup-title">Create New Team</h2>
+        <button class="close-btn" onclick="closeCreateTeamPopup()">×</button>
       </div>
+      <form id="team-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="teamName">Team Name</label>
+            <input type="text" id="teamName" required />
+          </div>
+          <div class="form-group">
+            <label for="teamDescription">Description</label>
+            <textarea id="teamDescription" rows="3" placeholder="Brief description of the team's purpose"></textarea>
+          </div>
+        </div>
 
-      <label><strong>Positions</strong></label>
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-        <thead>
-          <tr style="text-align: left; border-bottom: 1px solid #ccc;">
-            <th>Position Name</th>
-            <th>Qty</th>
-            <th>Assign With Others</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="positions-body"></tbody>
-      </table>
-      <button type="button" onclick="addPositionRow()" style="margin-bottom: 20px;">+ Add Position</button>
+        <div class="checkbox-group">
+          <input type="checkbox" id="assignWithOtherTeam" />
+          <label for="assignWithOtherTeam">Allow assignment with other teams</label>
+        </div>
+        
+        <div class="form-group">
+          <label>Team Positions</label>
+          <div class="positions-list" id="positions-list">
+            <div class="position-item">
+              <input type="text" class="position-input" placeholder="Position name" required />
+              <input type="number" class="qty-input" value="1" min="1" max="10" />
+              <button type="button" class="remove-btn" onclick="removePosition(this)">Remove</button>
+            </div>
+          </div>
+          <button type="button" class="add-position-btn" onclick="addPosition()">
+            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+              <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            Add Position
+          </button>
+        </div>
 
-      <div style="margin-bottom: 20px;">
-      <label><input type="checkbox" id="assignWithOtherTeam" /> Assign With Other Teams</label>
+        <div class="popup-buttons">
+          <button type="button" class="btn btn-secondary" onclick="closeCreateTeamPopup()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Team</button>
+        </div>
+        <p id="team-message" style="margin-top: 12px; text-align: center;"></p>
+      </form>
     </div>
-    
-    <div style="margin-bottom: 20px;">
-      <label><input type="checkbox" id="askForAvailability" /> Ask for Availability</label>
+  </div>
+
+  <!-- Edit Team Popup -->
+  <div id="edit-team-popup" class="popup-overlay">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2 class="popup-title">Edit Team</h2>
+        <button class="close-btn" onclick="closeEditTeamPopup()">×</button>
+      </div>
+      <form id="edit-team-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editTeamName">Team Name</label>
+            <input type="text" id="editTeamName" required />
+          </div>
+          <div class="form-group">
+            <label for="editTeamDescription">Description</label>
+            <textarea id="editTeamDescription" rows="3" placeholder="Brief description of the team's purpose"></textarea>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="editAssignWithOtherTeam" />
+          <label for="editAssignWithOtherTeam">Allow assignment with other teams</label>
+        </div>
+        
+        <div class="form-group">
+          <label>Team Positions</label>
+          <div class="positions-list" id="edit-positions-list">
+            <!-- Positions will be populated here -->
+          </div>
+          <button type="button" class="add-position-btn" onclick="addEditPosition()">
+            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+              <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            Add Position
+          </button>
+        </div>
+
+        <div class="popup-buttons">
+          <button type="button" class="btn btn-secondary" onclick="closeEditTeamPopup()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Team</button>
+        </div>
+        <p id="edit-team-message" style="margin-top: 12px; text-align: center;"></p>
+      </form>
     </div>
+  </div>
 
-      <button type="submit" style="padding: 10px 16px; background-color: var(--brand-color); color: white; border: none; border-radius: 6px; cursor: pointer;">Submit</button>
-      <p id="team-message" style="margin-top: 16px;"></p>
-    </form>
-  `;
-  if (existingTeam) {
-  const deleteButton = document.createElement("button");
-  deleteButton.textContent = "Delete Team";
-  deleteButton.style = `
-    margin-top: 12px;
-    padding: 10px 16px;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    display: block;
-  `;
-  deleteButton.onclick = async function () {
-    if (!confirm("Are you sure you want to delete this team?")) return;
+  <script>
+    // Global variables
+    const mainContent = document.getElementById('main-content');
+    const userEmail = localStorage.getItem("user_email");
+    const firstName = localStorage.getItem("user_first_name") || "";
+    const lastName = localStorage.getItem("user_last_name") || "";
+    const urlParams = new URLSearchParams(window.location.search);
+    const orgId = urlParams.get("org");
 
-    try {
-      const res = await fetch(
-        `https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams/${encodeURIComponent(existingTeam.team_name)}`,
-        { method: "DELETE" }
-      );
+    let currentUser = null;
+    let isOwner = false;
+    let isOrgAdmin = false;
+    let userTeamPermissions = [];
+    let currentEditingTeam = null;
 
-      if (!res.ok) throw new Error("Failed to delete team.");
-      alert("Team deleted successfully.");
-      loadTeams();
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+    // User popup functionality
+    const userIcon = document.getElementById('user-icon');
+    const userPopup = document.getElementById('user-popup');
+    const popupName = document.getElementById('popup-name');
+    const popupEmail = document.getElementById('popup-email');
 
-  document.getElementById("team-form").appendChild(deleteButton);
-}
-  
-    document.getElementById("teamName").value = existingTeam ? existingTeam.team_name : '';
-    document.getElementById("assignWithOtherTeam").checked = existingTeam ? existingTeam.assign_with_other_team : false;
-    document.querySelector('#team-form button[type="submit"]').textContent = existingTeam ? "Update Team" : "Submit";
-    
-    const tbody = document.getElementById("positions-body");
-    tbody.innerHTML = '';
-    
-    const positions = existingTeam ? existingTeam.positions : [];
-    if (positions.length === 0) addPositionRow();
-    else {
-      positions.forEach(pos => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td><input type="text" class="pos-name" style="width: 100%; padding: 6px;" required value="${pos.position_name}" /></td>
-          <td><input type="number" class="pos-qty" min="1" style="width: 80px; padding: 6px;" required value="${pos.qty}" /></td>
-          <td style="text-align: center;"><input type="checkbox" class="pos-assign" ${pos.assign_with_other_position ? 'checked' : ''} /></td>
-          <td style="text-align: center;"><button type="button" onclick="this.closest('tr').remove()">❌</button></td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
+    popupName.textContent = `${firstName} ${lastName}`;
+    popupEmail.textContent = userEmail;
 
-  addPositionRow();
+    userIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userPopup.style.display = userPopup.style.display === 'none' ? 'block' : 'none';
+    });
 
-  document.getElementById("team-form").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const msg = document.getElementById("team-message");
-    msg.textContent = "Submitting...";
-    msg.style.color = "#333";
-
-    const positions = [];
-    document.querySelectorAll("#positions-body tr").forEach(row => {
-      const name = row.querySelector(".pos-name").value.trim();
-      const qty = parseInt(row.querySelector(".pos-qty").value.trim());
-      const assign = row.querySelector(".pos-assign").checked;
-
-      if (name && qty > 0) {
-        positions.push({
-          position_name: name,
-          qty,
-          assign_with_other_position: assign
-        });
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('user-icon-container').contains(e.target)) {
+        userPopup.style.display = 'none';
       }
     });
 
-    const payload = {
-      team_name: document.getElementById("teamName").value,
-      assign_with_other_team: document.getElementById("assignWithOtherTeam").checked, 
-      ask_for_availability: document.getElementById("askForAvailability").checked,
-      positions
-    };
+    function signOut() {
+      localStorage.removeItem("user_email");
+      localStorage.removeItem("user_first_name");
+      localStorage.removeItem("user_last_name");
+      window.location.href = "https://schedulebuddy.onrender.com/";
+    }
 
-    try {
-      const endpoint = existingTeam
-          ? `https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams/${encodeURIComponent(existingTeam.team_name)}`
-          : `https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`;
+    function goToPage(page) {
+      if (!orgId) {
+        alert("Organization ID is missing.");
+        return;
+      }
+      window.location.href = `/${page}?org=${orgId}`;
+    }
+
+    // Initialize page
+    async function initPage() {
+      try {
+        const [orgRes, usersRes] = await Promise.all([
+          fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`),
+          fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`)
+        ]);
+
+        const org = await orgRes.json();
+        const allUsers = await usersRes.json();
+        currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
+        isOwner = org.owner?.email === userEmail;
+        isOrgAdmin = currentUser?.org_admin === true;
+        userTeamPermissions = currentUser?.team_permissions || [];
+
+        const showCreateTeam = isOwner || isOrgAdmin;
+        document.getElementById("create-team-btn").style.display = showCreateTeam ? "flex" : "none";
+
+        loadTeams({ isOwner, isOrgAdmin });
+      } catch (err) {
+        console.error("Failed to determine user permissions:", err.message);
+        loadTeams({ isOwner: false, isOrgAdmin: false });
+      }
+    }
+
+    // Load teams
+    async function loadTeams({ isOwner, isOrgAdmin }) {
+      if (!orgId) {
+        document.getElementById('teams-container').innerHTML = '<p class="message">No org ID provided.</p>';
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`);
+        const teams = await res.json();
+
+        const container = document.getElementById('teams-container');
+        container.innerHTML = '';
+
+        if (!teams.length) {
+          container.innerHTML = `<p class="message">No teams found. Create your first team to get started.</p>`;
+          return;
+        }
+
+        teams.forEach(team => {
+          const card = document.createElement('div');
+          card.className = 'team-card';
+
+          const positionCount = team.positions?.length || 0;
+          const positionNames = team.positions?.map(p => `${p.position_name} (${p.qty || 1})`).join(', ') || 'No positions defined';
+
+          card.innerHTML = `
+            <div class="team-card-header">
+              <div class="team-badge">
+                <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                  <path fill="currentColor" d="M16 7c0-2.21-1.79-4-4-4S8 4.79 8 7s1.79 4 4 4 4-1.79 4-4zm-4 6c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z"/>
+                  <circle fill="currentColor" cx="18.5" cy="8.5" r="2.5"/>
+                  <path fill="currentColor" d="M24 16v3h-6v-3c0-1.25 2.27-2.5 6-2.5z"/>
+                </svg>
+                Team
+              </div>
+              <h3 class="team-title">${team.team_name}</h3>
+            </div>
+            
+            <div class="team-details">
+              <div class="team-detail-row">
+                <div class="detail-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-primary">Positions (${positionCount})</div>
+                  <div class="detail-secondary">${positionNames}</div>
+                </div>
+              </div>
+
+              <div class="team-detail-row">
+                <div class="detail-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-primary">Assignment</div>
+                  <div class="detail-secondary">${team.assign_with_other_team ? 'Can work with other teams' : 'Independent team'}</div>
+                </div>
+              </div>
+
+              ${team.description ? `
+                <div class="team-detail-row">
+                  <div class="detail-icon">
+                    <svg viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+                    </svg>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-primary">Description</div>
+                    <div class="detail-secondary">${team.description}</div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="team-card-footer">
+              <div class="team-status">
+                <div class="status-indicator"></div>
+                <span>Active</span>
+              </div>
+              <div class="edit-hint">Click to edit</div>
+            </div>
+          `;
+
+          const userRoles = userTeamPermissions.reduce((acc, tp) => {
+            acc[tp.team_name] = tp.permissions;
+            return acc;
+          }, {});
+
+          const hasAccess = isOwner || isOrgAdmin || userRoles[team.team_name]?.includes("Admin");
+
+          if (hasAccess) {
+            card.onclick = () => {
+              editTeam(team);
+            };
+          } else {
+            card.style.cursor = "not-allowed";
+            card.style.opacity = "0.6";
+            card.querySelector('.edit-hint').style.display = 'none';
+          }
+
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        document.getElementById('teams-container').innerHTML = '<p class="message">Failed to load teams.</p>';
+      }
+    }
+
+    // Popup functions
+    function showCreateTeamPopup() {
+      document.getElementById('create-team-popup').style.display = 'flex';
+    }
+
+    function closeCreateTeamPopup() {
+      document.getElementById('create-team-popup').style.display = 'none';
+      document.getElementById('team-form').reset();
+      document.getElementById('team-message').textContent = '';
+      // Reset positions list
+      const positionsList = document.getElementById('positions-list');
+      positionsList.innerHTML = `
+        <div class="position-item">
+          <input type="text" class="position-input" placeholder="Position name" required />
+          <input type="number" class="qty-input" value="1" min="1" max="10" />
+          <button type="button" class="remove-btn" onclick="removePosition(this)">Remove</button>
+        </div>
+      `;
+    }
+
+    function showEditTeamPopup() {
+      document.getElementById('edit-team-popup').style.display = 'flex';
+    }
+
+    function closeEditTeamPopup() {
+      document.getElementById('edit-team-popup').style.display = 'none';
+      document.getElementById('edit-team-form').reset();
+      document.getElementById('edit-team-message').textContent = '';
+      currentEditingTeam = null;
+    }
+
+    // Close popups when clicking outside
+    document.querySelectorAll('.popup-overlay').forEach(popup => {
+      popup.addEventListener('click', (e) => {
+        if (e.target === popup) {
+          popup.style.display = 'none';
+        }
+      });
+    });
+
+    // Position management functions
+    function addPosition() {
+      const positionsList = document.getElementById('positions-list');
+      const newPosition = document.createElement('div');
+      newPosition.className = 'position-item';
+      newPosition.innerHTML = `
+        <input type="text" class="position-input" placeholder="Position name" required />
+        <input type="number" class="qty-input" value="1" min="1" max="10" />
+        <button type="button" class="remove-btn" onclick="removePosition(this)">Remove</button>
+      `;
+      positionsList.appendChild(newPosition);
+    }
+
+    function addEditPosition() {
+      const positionsList = document.getElementById('edit-positions-list');
+      const newPosition = document.createElement('div');
+      newPosition.className = 'position-item';
+      newPosition.innerHTML = `
+        <input type="text" class="position-input" placeholder="Position name" required />
+        <input type="number" class="qty-input" value="1" min="1" max="10" />
+        <button type="button" class="remove-btn" onclick="removeEditPosition(this)">Remove</button>
+      `;
+      positionsList.appendChild(newPosition);
+    }
+
+    function removePosition(button) {
+      const positionsList = document.getElementById('positions-list');
+      if (positionsList.children.length > 1) {
+        button.parentElement.remove();
+      } else {
+        alert('At least one position is required.');
+      }
+    }
+
+    function removeEditPosition(button) {
+      const positionsList = document.getElementById('edit-positions-list');
+      if (positionsList.children.length > 1) {
+        button.parentElement.remove();
+      } else {
+        alert('At least one position is required.');
+      }
+    }
+
+    // Handle team form submission
+    document.getElementById('team-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const msg = document.getElementById("team-message");
+      msg.textContent = "Creating team...";
+      msg.style.color = "#4a5568";
+
+      const positions = [];
+      const positionItems = document.querySelectorAll('#positions-list .position-item');
+      
+      positionItems.forEach(item => {
+        const nameInput = item.querySelector('.position-input');
+        const qtyInput = item.querySelector('.qty-input');
         
-        const res = await fetch(endpoint, {
-          method: existingTeam ? "PUT" : "POST",
+        if (nameInput.value.trim()) {
+          positions.push({
+            position_name: nameInput.value.trim(),
+            qty: parseInt(qtyInput.value) || 1
+          });
+        }
+      });
+
+      if (positions.length === 0) {
+        msg.textContent = "At least one position is required.";
+        msg.style.color = "#e53e3e";
+        return;
+      }
+
+      const payload = {
+        team_name: document.getElementById("teamName").value,
+        description: document.getElementById("teamDescription").value,
+        assign_with_other_team: document.getElementById("assignWithOtherTeam").checked,
+        positions: positions
+      };
+
+      try {
+        const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`, {
+          method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
 
-      if (!res.ok) throw new Error("Failed to create team.");
-      msg.textContent = "Team created successfully!";
-      msg.style.color = "green";
+        if (!res.ok) throw new Error("Failed to create team.");
+        
+        msg.textContent = "Team created successfully!";
+        msg.style.color = "#10b981";
+        
+        setTimeout(() => {
+          closeCreateTeamPopup();
+          loadTeams({ isOwner, isOrgAdmin });
+        }, 1500);
+      } catch (err) {
+        msg.textContent = err.message;
+        msg.style.color = "#e53e3e";
+      }
+    });
 
-      loadTeams()
-    } catch (err) {
-      msg.textContent = err.message;
-      msg.style.color = "red";
+    // Handle edit team form submission
+    document.getElementById('edit-team-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const msg = document.getElementById("edit-team-message");
+      msg.textContent = "Updating team...";
+      msg.style.color = "#4a5568";
+
+      const positions = [];
+      const positionItems = document.querySelectorAll('#edit-positions-list .position-item');
+      
+      positionItems.forEach(item => {
+        const nameInput = item.querySelector('.position-input');
+        const qtyInput = item.querySelector('.qty-input');
+        
+        if (nameInput.value.trim()) {
+          positions.push({
+            position_name: nameInput.value.trim(),
+            qty: parseInt(qtyInput.value) || 1
+          });
+        }
+      });
+
+      if (positions.length === 0) {
+        msg.textContent = "At least one position is required.";
+        msg.style.color = "#e53e3e";
+        return;
+      }
+
+      const payload = {
+        team_name: document.getElementById("editTeamName").value,
+        description: document.getElementById("editTeamDescription").value,
+        assign_with_other_team: document.getElementById("editAssignWithOtherTeam").checked,
+        positions: positions
+      };
+
+      try {
+        const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams/${currentEditingTeam._id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error("Failed to update team.");
+        
+        msg.textContent = "Team updated successfully!";
+        msg.style.color = "#10b981";
+        
+        setTimeout(() => {
+          closeEditTeamPopup();
+          loadTeams({ isOwner, isOrgAdmin });
+        }, 1500);
+      } catch (err) {
+        msg.textContent = err.message;
+        msg.style.color = "#e53e3e";
+      }
+    });
+
+    // Edit team function
+    function editTeam(team) {
+      currentEditingTeam = team;
+      
+      // Populate form fields
+      document.getElementById('editTeamName').value = team.team_name;
+      document.getElementById('editTeamDescription').value = team.description || '';
+      document.getElementById('editAssignWithOtherTeam').checked = team.assign_with_other_team || false;
+      
+      // Populate positions
+      const positionsList = document.getElementById('edit-positions-list');
+      positionsList.innerHTML = '';
+      
+      if (team.positions && team.positions.length > 0) {
+        team.positions.forEach(position => {
+          const positionItem = document.createElement('div');
+          positionItem.className = 'position-item';
+          positionItem.innerHTML = `
+            <input type="text" class="position-input" placeholder="Position name" required value="${position.position_name}" />
+            <input type="number" class="qty-input" value="${position.qty || 1}" min="1" max="10" />
+            <button type="button" class="remove-btn" onclick="removeEditPosition(this)">Remove</button>
+          `;
+          positionsList.appendChild(positionItem);
+        });
+      } else {
+        // Add default position if none exist
+        const positionItem = document.createElement('div');
+        positionItem.className = 'position-item';
+        positionItem.innerHTML = `
+          <input type="text" class="position-input" placeholder="Position name" required />
+          <input type="number" class="qty-input" value="1" min="1" max="10" />
+          <button type="button" class="remove-btn" onclick="removeEditPosition(this)">Remove</button>
+        `;
+        positionsList.appendChild(positionItem);
+      }
+      
+      showEditTeamPopup();
     }
-  });
-}
 
-function addPositionRow() {
-  const tbody = document.getElementById("positions-body");
-  const row = document.createElement("tr");
-
-  row.innerHTML = `
-    <td><input type="text" class="pos-name" style="width: 100%; padding: 6px;" required /></td>
-    <td><input type="number" class="pos-qty" min="1" style="width: 80px; padding: 6px;" required /></td>
-    <td style="text-align: center;"><input type="checkbox" class="pos-assign" /></td>
-    <td style="text-align: center;"><button type="button" onclick="this.closest('tr').remove()">❌</button></td>
-  `;
-
-  tbody.appendChild(row);
-}
-
-initPage();
-</script>
-<button onclick="showTeamForm()" id="floating-add-button" title="Add Team">
-  +
-</button>
-
+    // Initialize the page
+    initPage();
+  </script>
 </body>
 </html>

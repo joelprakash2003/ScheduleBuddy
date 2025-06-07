@@ -3,11 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Org Page</title>
+  <title>Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css" />
   <style>
+    :root {
+      --font-brand: 'Poppins', sans-serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -18,7 +24,80 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      background-color: #f5f5f5;
+      background-color: #f4f6f8;
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .brand {
+      font-family: var(--font-brand);
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--brand-color);
+    }
+
+    .nav-links button {
+      font-family: var(--font-body);
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .nav-links button.active {
+      background-color: var(--brand-color);
+      color: white;
+    }
+
+    .nav-links button:hover {
+      transform: translateY(-1px);
+    }    .main-content {
+      flex: 1;
+      padding: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .main-content h2 {
+      font-family: var(--font-body);
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 24px;
+      font-size: 1.75rem;
+    }
+
+    .org-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+    }
+
+    .org-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 16px;
+    }
+
+    .org-id {
+      color: #4a5568;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .message {
+      text-align: center;
+      color: #4a5568;
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 24px 0;
+      margin: 0;
     }
 
     .user-icon {
@@ -36,153 +115,145 @@
 
     .user-icon svg:hover {
       fill: var(--brand-hover);
-    }
-
-        .tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: max-content;
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 6px 10px;
-  position: absolute;
-  z-index: 1001;
-  bottom: 70px;
-  right: 0;
-  opacity: 0;
-  transition: opacity 0.2s;
-  white-space: nowrap;
-  font-size: 14px;
-  transform: translateY(-12px);
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-       #floating-add-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
+    }    .schedule-availability-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
       background-color: var(--brand-color);
       color: white;
-      font-size: 32px;
-      line-height: 0;
       border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 1rem;
       cursor: pointer;
-      transition: background-color 0.2s ease;
-      z-index: 1000;
-    }
-    
-    #floating-add-button:hover {
-      background-color: var(--brand-hover);
-}
-    #team-scheduler-button {
+      transition: all 0.2s ease;
+      margin: 0 0 32px 0;
       position: fixed;
-      bottom: 24px;
-      right: 92px; 
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: #10b981; 
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      left: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
-    #team-scheduler-button:hover {
-      background-color: #059669;
-    }
-    #calendar {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-#calendar-popup {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3100;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  width: 90%;
-  max-width: 1000px;
-  height: 600px;
-  overflow: hidden;
-}
 
-#calendar {
-  height: 100%;
-}
-#calendar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.2);
-  z-index: 3000;
-  display: none;
-}
+    .schedule-availability-btn:hover {
+      background-color: var(--brand-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    #calendar {
+      max-width: 1000px;
+      margin: 0 auto;
+      font-family: var(--font-body);
+    }
+
+    #calendar-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3100;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 1000px;
+      height: 600px;
+      overflow: hidden;
+    }
+
+    #calendar {
+      height: 100%;
+    }
+
+    #calendar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.2);
+      z-index: 3000;
+      display: none;
+    }
+
+    .user-popup {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      min-width: 220px;
+    }
+
+    .user-popup strong {
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    .user-popup button {
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+
+    .content-area {
+      margin-top: 64px; /* Space for the fixed button */
+    }
   </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="brand" onclick="window.location.href='/user-organizations'">ScheduleBuddy</div>
     <div class="nav-links">
-      <button onclick="goToPage('main-org')">Dashboard</button>
+      <button onclick="goToPage('main-org')" class="active">Dashboard</button>
       <button onclick="goToPage('org-services')">Services</button>
       <button onclick="goToPage('org-teams')">Teams</button>
       <button onclick="goToPage('org-people')">People</button>
       <button onclick="goToPage('org-messages')">Messages</button>
       <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
-      <div class="user-icon" id="user-icon-container" style="position: relative;">
+      <div class="user-icon" id="user-icon-container">
         <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
         </svg>
-        <div id="user-popup" style="display:none; position:absolute; top:40px; right:0; background:white; border:1px solid #ccc; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); min-width:200px;">
+        <div id="user-popup" class="user-popup" style="display:none; position:absolute; top:40px; right:0;">
           <p style="margin-bottom:4px;"><strong id="popup-name"></strong></p>
           <p id="popup-email" style="margin-bottom:12px; font-size:14px; color:#555;"></p>
-          <button onclick="signOut()" style="padding:6px 12px; border:none; background-color:#e74c3c; color:white; border-radius:4px; cursor:pointer;">Sign Out</button>
+          <button onclick="signOut()" style="width:100%; padding:8px; border:none; background-color:#e74c3c; color:white; border-radius:6px; cursor:pointer;">Sign Out</button>
         </div>
       </div>
     </div>
   </nav>
-
   <div class="main-content" id="main-content">
+    <button class="schedule-availability-btn" onclick="showCalendar()">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+        <path fill="currentColor" d="M19 3h-1V2c0-.6-.4-1-1-1s-1 .4-1 1v1H8V2c0-.6-.4-1-1-1s-1 .4-1 1v1H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+      </svg>
+      Schedule Your Availability
+    </button>
     <p class="message">Loading organization...</p>
-      
   </div>
+
   <div id="calendar-overlay">
-  <div id="calendar-popup">
-  <p style="font-weight: bold; margin-bottom: 16px;">Please click on the dates you are unavailable</p>
+    <div id="calendar-popup">
+      <p style="font-weight: bold; margin-bottom: 16px; font-family: var(--font-body);">Please click on the dates you are unavailable</p>
       <div id="calendar"></div>
-</div>
-</div>
-<script>
-  function navigateTo(section) {
+    </div>
+  </div>
+  <script>
+    // Mark the current page as active in the nav
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPath = window.location.pathname.split('/').pop() || 'main-org';
+      const navButtons = document.querySelectorAll('.nav-links button');
+      navButtons.forEach(button => {
+        if (button.textContent.toLowerCase() === 'dashboard' && currentPath === 'main-org') {
+          button.classList.add('active');
+        } else if (button.onclick && button.onclick.toString().includes(currentPath)) {
+          button.classList.add('active');
+        }
+      });
+    });
     const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
-  }
-  const mainContent = document.getElementById('main-content');
 const userEmail = localStorage.getItem("user_email");
 const firstName = localStorage.getItem("user_first_name") || "";
 const lastName = localStorage.getItem("user_last_name") || "";
@@ -224,7 +295,16 @@ function goToPage(page) {
 }
 
 async function loadUserDashboard() {
-  mainContent.innerHTML = `<p class="message">Loading your upcoming services...</p>`;
+  mainContent.innerHTML = `
+    <button class="schedule-availability-btn" onclick="showCalendar()">
+      <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+        <path fill="currentColor" d="M19 3h-1V2c0-.6-.4-1-1-1s-1 .4-1 1v1H8V2c0-.6-.4-1-1-1s-1 .4-1 1v1H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+      </svg>
+      Schedule Your Availability
+    </button>
+    <div>
+      <p class="message">Loading your upcoming services...</p>
+    </div>`;
 
   try {
     const [servicesRes, usersRes] = await Promise.all([
@@ -265,14 +345,21 @@ async function loadUserDashboard() {
 
         return null;
       })
-      .filter(Boolean);
+      .filter(Boolean);    let content = `      <div>
+        <button class="schedule-availability-btn" onclick="showCalendar()">
+          <svg viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+            <path fill="currentColor" d="M19 3h-1V2c0-.6-.4-1-1-1s-1 .4-1 1v1H8V2c0-.6-.4-1-1-1s-1 .4-1 1v1H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+          </svg>
+          Schedule Your Availability
+        </button>
+        <div class="content-area">`;
 
     if (upcomingAssignedServices.length === 0) {
-      mainContent.innerHTML = `<p class="message">You are not scheduled for any upcoming services.</p>`;
+      content += `<p class="message">You are not scheduled for any upcoming services.</p>`;
+      mainContent.innerHTML = content;
       return;
-    }
-
-    mainContent.innerHTML = `<h2>Your Upcoming Schedule</h2>`;
+    }    content += `<h2>Your Upcoming Schedule</h2></div></div>`;
+    mainContent.innerHTML = content;
 
     upcomingAssignedServices.forEach(service => {
       const card = document.createElement("div");
@@ -428,13 +515,6 @@ function removeInabilityDateFromDatabase(dateStr) {
   });
 }
 </script>
-<div class="tooltip">
-  <button onclick="showCalendar()" id="floating-add-button" style="display: block;">
-    <svg class="icon" viewBox="0 0 24 24">
-      <path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5zm0 4h14v12H5V7zm2-4h2v2H7V3zm8 0h2v2h-2V3z"/>
-    </svg>
-  </button>
-  <span class="tooltiptext">Schedule Your Availability</span>
-</div>
 </body>
 </html>
+

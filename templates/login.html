@@ -4,152 +4,257 @@
   <meta charset="UTF-8" />
   <title>Login</title>
   <link rel="stylesheet" href="/static/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --font-brand: 'Poppins', sans-serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
     body {
       background-color: #f4f6f8;
       margin: 0;
       padding: 0;
-    }
-    .login-container {
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      font-family: var(--font-body);
+      color: #2d3748;
+      -webkit-font-smoothing: antialiased;
     }
-    .login-form {
-      background-color: #ffffff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding: 20px;
+    }
+
+    .app-title {
+      font-family: var(--font-brand);
+      font-size: 2.2rem;
+      color: var(--brand-color);
+      font-weight: 600;
+      margin: 0 0 24px 0;
+    }
+
+    .login-container {
       width: 100%;
       max-width: 400px;
     }
-    .login-form h2 {
-      text-align: center;
-      margin-bottom: 24px;
-      color: #333;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      color: #333;
-    }
-    .form-group input[type="text"] {
+
+    .login-form {
+      background-color: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
       box-sizing: border-box;
-      font-size: 16px;
-    }
-    input[readonly] {
-      background-color: #f0f0f0;
-      color: #888;
+      transition: all 0.3s ease;
     }
 
-    /* Only hide the OTP box by default. Remove #email-controls from here. */
+    .login-form h2 {
+      text-align: center;
+      margin-bottom: 32px;
+      color: #1a2433;
+      font-size: 1.75rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #2d3748;
+      font-size: 0.95rem;
+    }
+
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      box-sizing: border-box;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      background-color: #fff;
+      font-family: var(--font-body);
+    }
+
+    .form-group input[type="text"]:focus {
+      outline: none;
+      border-color: var(--brand-color);
+      box-shadow: 0 0 0 3px rgba(16, 36, 92, 0.15);
+    }
+
+    input[readonly] {
+      background-color: #f8fafc !important;
+      color: #4a5568 !important;
+      border-color: #e2e8f0 !important;
+    }
+
+    .small-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .small-buttons button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-color: #edf2f7;
+      color: #2d3748;
+      font-family: var(--font-body);
+    }
+
+    .small-buttons button:hover {
+      background-color: #e2e8f0;
+      transform: translateY(-1px);
+    }
+
     #otp-group {
       display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .message {
-      font-size: 14px;
-      margin-top: 10px;
+      font-size: 0.875rem;
+      margin: 16px 0;
+      padding: 12px;
+      border-radius: 8px;
       text-align: center;
+      background-color: #f7fafc;
+      font-weight: 500;
     }
+
     .message.success {
-      color: green;
+      background-color: #f0fff4;
+      color: #2f855a;
+      border: 1px solid #c6f6d5;
     }
+
     .message.error {
-      color: red;
+      background-color: #fff5f5;
+      color: #c53030;
+      border: 1px solid #fed7d7;
     }
+
     .submit-btn {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       background-color: var(--brand-color);
       border: none;
       color: #fff;
       font-weight: 600;
-      border-radius: 8px;
+      font-size: 1rem;
+      border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 6px rgba(16, 36, 92, 0.12);
+      font-family: var(--font-body);
     }
+
     .submit-btn:hover {
       background-color: var(--brand-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px rgba(16, 36, 92, 0.18);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(16, 36, 92, 0.12);
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="login-form">
-      <h2>Login</h2>
+  <div class="main-container">
+    <h1 class="app-title">ScheduleBuddy</h1>
+    <div class="login-container">
+      <div class="login-form">
+        <h2>Login</h2>
 
-      <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        {# hidden “stage” field: will be "request_otp" initially, then becomes "verify_otp" after OTP is requested #}
-        <input type="hidden" name="stage" value="{{ stage }}" />
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          {# hidden “stage” field: will be "request_otp" initially, then becomes "verify_otp" after OTP is requested #}
+          <input type="hidden" name="stage" value="{{ stage }}" />
 
-        <div class="form-group" id="email-group">
-          <label for="email">Email</label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            required
-            value="{{ email }}"
-            {% if readonly_email %}readonly{% endif %}
-          />
-        </div>
-
-        {# Show these only when show_email_controls=True, with an inline style override #}
-        {% if show_email_controls %}
-          <div id="email-controls"
-               class="small-buttons"
-               style="display:flex; justify-content:flex-end; gap:12px; margin-top:6px;">
-            <button type="submit" name="stage" value="request_otp">Edit Email</button>
-            <button type="submit" name="stage" value="request_otp">Resend OTP</button>
+          <div class="form-group" id="email-group">
+            <label for="email">Email</label>
+            <input
+              type="text"
+              id="email"
+              name="email"
+              required
+              value="{{ email }}"
+              {% if readonly_email %}readonly{% endif %}
+            />
           </div>
-        {% endif %}
 
-        {# OTP field is hidden by default via CSS. If show_otp_group=True, inline style shows it #}
-        <div class="form-group" id="otp-group"
-             {% if show_otp_group %}
-               style="display:block;"
-             {% else %}
-               style="display:none;"
-             {% endif %}>
-          <label for="otp">One-Time Password</label>
-          <input type="text" id="otp" name="otp" value="{{ otp|default:'' }}" />
-        </div>
+          {# Show these only when show_email_controls=True, with an inline style override #}
+          {% if show_email_controls %}
+            <div id="email-controls"
+                 class="small-buttons"
+                 style="display:flex; justify-content:flex-end; gap:12px; margin-top:6px;">
+              <button type="submit" name="stage" value="request_otp">Edit Email</button>
+              <button type="submit" name="stage" value="request_otp">Resend OTP</button>
+            </div>
+          {% endif %}
 
-        {# “New user” fields show up only if show_new_user_fields=True #}
-        {% if show_new_user_fields %}
-          <div class="form-group">
-            <label for="first_name">First Name</label>
-            <input type="text" id="first_name" name="first_name" value="{{ first_name|default:'' }}" />
+          {# OTP field is hidden by default via CSS. If show_otp_group=True, inline style shows it #}
+          <div class="form-group" id="otp-group"
+               {% if show_otp_group %}
+                 style="display:block;"
+               {% else %}
+                 style="display:none;"
+               {% endif %}>
+            <label for="otp">One-Time Password</label>
+            <input type="text" id="otp" name="otp" value="{{ otp|default:'' }}" />
           </div>
-          <div class="form-group">
-            <label for="last_name">Last Name</label>
-            <input type="text" id="last_name" name="last_name" value="{{ last_name|default:'' }}" />
-          </div>
-          <div class="form-group">
-            <label for="church">Church</label>
-            <input type="text" id="church" name="church" value="{{ church|default:'' }}" />
-          </div>
-        {% endif %}
 
-        <div id="message" class="message {% if message_class %}{{ message_class }}{% endif %}">
-          {{ message }}
-        </div>
+          {# “New user” fields show up only if show_new_user_fields=True #}
+          {% if show_new_user_fields %}
+            <div class="form-group">
+              <label for="first_name">First Name</label>
+              <input type="text" id="first_name" name="first_name" value="{{ first_name|default:'' }}" />
+            </div>
+            <div class="form-group">
+              <label for="last_name">Last Name</label>
+              <input type="text" id="last_name" name="last_name" value="{{ last_name|default:'' }}" />
+            </div>
+            <div class="form-group">
+              <label for="church">Church</label>
+              <input type="text" id="church" name="church" value="{{ church|default:'' }}" />
+            </div>
+          {% endif %}
 
-        <button id="submit-btn" class="submit-btn" type="submit">
-          {{ button_text }}
-        </button>
-      </form>
+          <div id="message" class="message {% if message_class %}{{ message_class }}{% endif %}">
+            {{ message }}
+          </div>
+
+          <button id="submit-btn" class="submit-btn" type="submit">
+            {{ button_text }}
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </body>

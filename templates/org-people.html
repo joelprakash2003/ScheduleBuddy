@@ -3,9 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Org Page</title>
+  <title>People - ScheduleBuddy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/styles.css" />
   <style>
+    :root {
+      --font-brand: 'Poppins', sans-serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --brand-color: #10245c;
+      --brand-hover: #0c1b48;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -16,9 +24,68 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      background-color: #f5f5f5;
+      background-color: #f4f6f8;
+      font-family: var(--font-body);
+      color: #2d3748;
+      -webkit-font-smoothing: antialiased;
     }
 
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-family: var(--font-brand);
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--brand-color);
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links button {
+      font-family: var(--font-body);
+      font-weight: 500;
+      background: none;
+      border: none;
+      padding: 10px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      color: #4a5568;
+    }
+
+    .nav-links button:hover {
+      background: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    .nav-links button.active {
+      background-color: var(--brand-color);
+      color: white;
+    }
+
+    .nav-links .back-btn {
+      background: var(--brand-color);
+      color: #fff;
+    }
+
+    .nav-links .back-btn:hover {
+      background: var(--brand-hover);
+    }
 
     .user-icon {
       display: flex;
@@ -39,60 +106,460 @@
 
     .main-content {
       flex: 1;
-      padding: 40px;
+      padding: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-family: var(--font-body);
+      font-weight: 600;
+      color: #1a202c;
+      font-size: 1.75rem;
+      margin: 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background-color: var(--brand-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-btn:hover {
+      background-color: var(--brand-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .people-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 1400px) {
+      .people-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      }
+    }
+
+    @media (max-width: 1200px) {
+      .people-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .people-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .person-card {
+      background: white;
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      min-height: 280px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .person-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .person-card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .person-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--brand-color), var(--brand-hover));
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .person-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    .person-details {
+      padding: 0 24px;
+      flex: 1;
+    }
+
+    .person-detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #f8fafc;
+    }
+
+    .person-detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-icon {
+      width: 40px;
+      height: 40px;
+      background: #f8fafc;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .detail-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--brand-color);
+    }
+
+    .detail-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .detail-primary {
+      font-weight: 600;
+      color: #1a202c;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .detail-secondary {
+      color: #64748b;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .person-card-footer {
+      padding: 16px 24px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .person-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #10b981;
+      font-weight: 500;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    .edit-hint {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-style: italic;
     }
 
     .message {
-      font-size: 18px;
-      color: #333;
+      text-align: center;
+      color: #4a5568;
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-top: 48px;
     }
 
-    .org-card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: white;
-      padding: 16px;
-      margin-bottom: 16px;
-      cursor: pointer;
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
-      transition: background-color 0.2s;
-    }
-
-    .org-card:hover {
-      background-color: #f0f0f0;
-    }
-
-    .org-name {
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .org-id {
-      font-size: 14px;
-      color: #555;
-      margin-top: 4px;
-    }
-           #floating-add-button {
+    /* Popup Styles */
+    .popup-overlay {
+      display: none;
       position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background-color: var(--brand-color);
-      color: white;
-      font-size: 32px;
-      line-height: 0;
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
       z-index: 1000;
+      justify-content: center;
+      align-items: center;
     }
-    
-    #floating-add-button:hover {
-      background-color: var(--brand-hover);
-}
+
+    .popup-content {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      width: 90%;
+      max-width: 800px;  /* Changed from 700px to 800px */
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .popup-title {
+      font-family: var(--font-body);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin: 0;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #718096;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+      background: #f7fafc;
+      color: #2d3748;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 8px;
+      color: #2d3748;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      color: #2d3748;
+      font-family: var(--font-body);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--brand-color);
+      box-shadow: 0 0 0 3px rgba(16, 36, 92, 0.15);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+
+    .btn-secondary {
+      background: #edf2f7;
+      color: #4a5568;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-primary {
+      background: var(--brand-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-hover);
+      transform: translateY(-1px);
+    }
+
+    .user-popup {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      min-width: 220px;
+      z-index: 2000; /* Add high z-index */
+    }
+
+    .user-popup strong {
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    .user-popup button {
+      font-family: var(--font-body);
+      font-weight: 500;
+    }
+
+    .positions-list {
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .position-tag {
+      display: inline-block;
+      background: #f0f9ff;
+      color: #0369a1;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin: 2px;
+    }
+
+    .teams-list {
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .team-permission-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .team-permission-item:last-child {
+      border-bottom: none;
+    }
+
+    .team-name {
+      flex: 1;
+      font-weight: 500;
+      color: #2d3748;
+    }
+
+    .permission-select {
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        padding: 20px;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .action-buttons {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .people-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .popup-content {
+        padding: 24px;
+        margin: 20px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -102,704 +569,754 @@
       <button onclick="goToPage('main-org')">Dashboard</button>
       <button onclick="goToPage('org-services')">Services</button>
       <button onclick="goToPage('org-teams')">Teams</button>
-      <button onclick="goToPage('org-people')">People</button>
+      <button onclick="goToPage('org-people')" class="active">People</button>
       <button onclick="goToPage('org-messages')">Messages</button>
       <button class="back-btn" onclick="window.location.href='/user-organizations'">My organizations</button>
-      <div class="user-icon" id="user-icon-container" style="position: relative;">
+      <div class="user-icon" id="user-icon-container" style="position: relative; z-index: 1500;">
         <svg id="user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
         </svg>
-        <div id="user-popup" style="display:none; position:absolute; top:40px; right:0; background:white; border:1px solid #ccc; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); min-width:200px;">
+        <div id="user-popup" class="user-popup" style="display:none; position:absolute; top:40px; right:0;">
           <p style="margin-bottom:4px;"><strong id="popup-name"></strong></p>
           <p id="popup-email" style="margin-bottom:12px; font-size:14px; color:#555;"></p>
-          <button onclick="signOut()" style="padding:6px 12px; border:none; background-color:#e74c3c; color:white; border-radius:4px; cursor:pointer;">Sign Out</button>
+          <button onclick="signOut()" style="width:100%; padding:8px; border:none; background-color:#e74c3c; color:white; border-radius:6px; cursor:pointer;">Sign Out</button>
         </div>
       </div>
     </div>
   </nav>
 
   <div class="main-content" id="main-content">
-    <p class="message">Loading people...</p>
-  </div>
-<script>
-  function navigateTo(section) {
-    const mainContent = document.getElementById('main-content');
-    mainContent.innerHTML = `<h2>${section.charAt(0).toUpperCase() + section.slice(1)}</h2><p>Coming soon...</p>`;
-  }
-  const mainContent = document.getElementById('main-content');
-const userEmail = localStorage.getItem("user_email");
-const firstName = localStorage.getItem("user_first_name") || "";
-const lastName = localStorage.getItem("user_last_name") || "";
-
-const userIcon = document.getElementById('user-icon');
-const userPopup = document.getElementById('user-popup');
-const popupName = document.getElementById('popup-name');
-const popupEmail = document.getElementById('popup-email');
-
-popupName.textContent = `${firstName} ${lastName}`;
-popupEmail.textContent = userEmail;
-
-userIcon.addEventListener('click', (e) => {
-  e.stopPropagation();
-  userPopup.style.display = userPopup.style.display === 'none' ? 'block' : 'none';
-});
-
-document.addEventListener('click', (e) => {
-  if (!document.getElementById('user-icon-container').contains(e.target)) {
-    userPopup.style.display = 'none';
-  }
-});
-
-function signOut() {
-  localStorage.removeItem("user_email");
-  localStorage.removeItem("user_first_name");
-  localStorage.removeItem("user_last_name");
-  window.location.href = "https://schedulebuddy.onrender.com/";
-}
-const urlParams = new URLSearchParams(window.location.search);
-  const orgId = urlParams.get("org");
-
-function goToPage(page) {
-  if (!orgId) {
-    alert("Organization ID is missing.");
-    return;
-  }
-  window.location.href = `/${page}?org=${orgId}`;
-}
-async function renderPeoplePage({ isOwner, isOrgAdmin, adminTeams }) {
-  mainContent.innerHTML = `
-    <h2>People</h2>
-    <input type="text" id="people-search" placeholder="Search by name or email..." style="padding: 8px; width: 100%; max-width: 400px; margin: 16px 0; border: 1px solid #ccc; border-radius: 6px;" />
-    <div id="people-grid" style="display: flex; flex-wrap: wrap; gap: 16px;"></div>
-    <div id="pending-grid" style="margin-top: 40px;"></div>
-  `;
-
-  const container = document.getElementById("people-grid");
-  const pendingContainer = document.getElementById("pending-grid");
-  const searchInput = document.getElementById("people-search");
-
-  let users = [];
-
-  try {
-    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
-    users = await res.json();
-
-    if (!Array.isArray(users) || users.length === 0) {
-      container.innerHTML = `<p style="color: #555;">No users found in this organization.</p>`;
-      return;
-    }
-
-    const confirmedUsers = users.filter(u => !(u.positions || []).includes("pending"));
-    const pendingUsers = users.filter(u => (u.positions || []).includes("pending"));
-
-    renderUserCards(confirmedUsers);
-    renderPendingCards(pendingUsers);
-
-    searchInput.addEventListener("input", () => {
-      const q = searchInput.value.toLowerCase().trim();
-
-      const filteredConfirmed = confirmedUsers.filter(u => {
-        const fullName = `${u.first_name} ${u.last_name}`.toLowerCase();
-        const email = u.email.toLowerCase();
-        const positions = (u.positions || []).join(" ").toLowerCase();
-        return fullName.includes(q) || email.includes(q) || positions.includes(q);
-      });
-
-      renderUserCards(filteredConfirmed);
-    });
-  } catch (err) {
-    container.innerHTML = `<p style="color: red;">Failed to load users: ${err.message}</p>`;
-  }
-
-  function renderUserCards(userList) {
-    container.innerHTML = "";
-
-    userList.forEach(user => {
-      const fullName = `${user.first_name} ${user.last_name}`;
-      const email = user.email;
-      const positions = Array.isArray(user.positions) && user.positions.length
-        ? user.positions.join(", ")
-        : "No assigned positions";
-
-      const card = document.createElement("div");
-      card.style = `
-        background: white;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 16px;
-        width: 240px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      `;
-
-      card.innerHTML = `
-        <div style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">${fullName}</div>
-        <div style="font-size: 14px; color: #555; margin-bottom: 8px;">${email}</div>
-        <div style="font-size: 13px; color: #333;"><strong>Positions:</strong><br>${positions}</div>
-      `;
-
-      card.onclick = async () => {
-        const teamRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`);
-        const allTeams = await teamRes.json();
-        const visibleTeams = isOwner || isOrgAdmin
-          ? allTeams
-          : allTeams.filter(team => adminTeams.includes(team.team_name));
-
-        showUserModal(user, visibleTeams, { isOwner, isOrgAdmin, adminTeams });
-      };
-
-      container.appendChild(card);
-    });
-  }
-
-  function renderPendingCards(pendingList) {
-    if (pendingList.length === 0) {
-      pendingContainer.innerHTML = "";
-      return;
-    }
-
-    pendingContainer.innerHTML = `
-      <h3>Pending Invites</h3>
-      <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px;">
-        ${pendingList.map(user => `
-          <div style="background:#fff; padding:16px; border-radius:8px; border:1px solid #ccc; width:240px;">
-            <div><strong>${user.first_name} ${user.last_name}</strong></div>
-            <div style="color:#555">${user.email}</div>
-            <div style="color:#999; font-size:12px;">Pending invite</div>
-          </div>
-        `).join("")}
-      </div>
-    `;
-  }
-}
-
-async function initPage() {
-  let userOrgData = null;
-  let currentUser = null;
-
-  try {
-    const [orgRes, usersRes] = await Promise.all([
-      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`),
-      fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`)
-    ]);
-
-    userOrgData = await orgRes.json();
-    const allUsers = await usersRes.json();
-    currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
-
-    const isOwner = userOrgData?.owner?.email === userEmail;
-    const isOrgAdmin = currentUser?.org_admin === true;
-    const adminTeams = (currentUser?.team_permissions || [])
-      .filter(p => p.permissions.includes("Admin"))
-      .map(p => p.team_name);
-
-    if (isOwner || isOrgAdmin || adminTeams.length > 0) {
-      renderPeoplePage({ isOwner, isOrgAdmin, adminTeams });
-    } else {
-      mainContent.innerHTML = `<h2>Access Denied</h2><p>You do not have permission to view this page.</p>`;
-    }
-  } catch (err) {
-    console.error("Failed to fetch user/org data:", err.message);
-    mainContent.innerHTML = `<h2>Error</h2><p>Could not load user permissions.</p>`;
-  }
-}
-
-
-function showUserModal(user, teams, context) {
-  const { isOwner, isOrgAdmin, adminTeams } = context;
-  const modal = document.createElement("div");
-  modal.id = "user-modal";
-  modal.style = `
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-  `;
-
-  const isSelf = user.email === userEmail;
-
-  fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`)
-    .then(res => res.json())
-    .then(org => {
-      const isOwner = org.owner?.email === userEmail;
-      const viewingOwner = org.owner?.email === user.email;
-
-      const content = document.createElement("div");
-      content.style = `
-        background: white;
-        border-radius: 10px;
-        padding: 24px;
-        width: 90%;
-        max-width: 800px;
-        max-height: 90vh;
-        overflow-y: auto;
-        position: relative;
-      `;
-
-      content.innerHTML = `
-        <button style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; cursor:pointer;">❌</button>
-
-        <h2>Edit User</h2>
-
-        <div style="margin-bottom: 16px;">
-          <label>First Name</label><br>
-          <input type="text" value="${user.first_name}" style="width:100%; padding:8px; margin-top:4px;">
-        </div>
-
-        <div style="margin-bottom: 16px;">
-          <label>Last Name</label><br>
-          <input type="text" value="${user.last_name}" style="width:100%; padding:8px; margin-top:4px;">
-        </div>
-
-        <div style="margin-bottom: 24px;">
-          <label>Email</label><br>
-          <input type="text" value="${user.email}" style="width:100%; padding:8px; margin-top:4px;">
-        </div>
-
-        <h3>Org Permissions</h3>
-        <label>
-          <input type="checkbox" ${user.org_admin ? "checked" : ""}>
-          Org Admin
-        </label><br/>
-        ${viewingOwner ? `
-          <label>
-            <input type="checkbox" checked disabled>
-            Owner
-          </label>
-        ` : ""}
-        ${isOwner && !viewingOwner ? `
-          <div style="margin-top: 12px;">
-            <button onclick="initiateOwnershipTransfer('${user.email}', '${user.first_name}', '${user.last_name}')" 
-                    style="background: #f97316; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
-              Transfer Ownership
-            </button>
-          </div>
-        ` : ""}
-        
-        <h3 style="margin-top: 24px;">Team Positions</h3>
-<div style="display: flex; flex-direction: column; gap: 16px;">
-  ${teams.map(team => `
-    <div style="border: 1px solid #ccc; border-radius: 6px; padding: 12px;">
-      <div style="font-weight: bold; margin-bottom: 8px;">${team.team_name}</div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        ${team.positions.map(p => `
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee;">
-            <span>${p.position_name}</span>
-            <input type="checkbox"
-            ${user.positions?.includes(p.position_name) ? "checked" : ""} 
-            onchange="handlePositionToggle('${user.email}', '${p.position_name}', this.checked)">
-          </div>
-        `).join("")}
-      </div>
-    </div>
-  `).join("")}
-</div>
-
-        <h3 style="margin-top: 24px;">Team Permissions</h3>
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-          ${teams.map(team => {
-            const teamPerms = (user.team_permissions || [])
-  .find(tp => tp.team_name.toLowerCase() === team.team_name.toLowerCase())
-  ?.permissions || [];
-        
-            return `
-              <div style="border: 1px solid #ccc; border-radius: 6px; padding: 12px;">
-                <div style="font-weight: bold; margin-bottom: 8px;">${team.team_name}</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-                  ${["Admin", "Scheduler", "Messenger", "Viewer"].map(perm => `
-                    <label>
-                      <input type="checkbox" ${teamPerms.map(p => p.toLowerCase()).includes(perm.toLowerCase()) ? "checked" : ""}
-                             onchange="handlePermissionToggle('${user.email}', '${team.team_name}', '${perm}', this.checked)">
-                      ${perm}
-                    </label>
-                  `).join("")}
-                </div>
-              </div>
-            `;
-          }).join("")}
-        </div>
-      `;
-
-      content.querySelector("button").addEventListener("click", () => modal.remove());
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) modal.remove();
-      });
-
-      modal.appendChild(content);
-      document.body.appendChild(modal);
-    });
-}
-
-async function handlePositionToggle(email, position, isChecked) {
-  try {
-    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
-    const users = await res.json();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (!user) {
-      throw new Error("User not found.");
-    }
-
-    user.positions = user.positions || [];
-    if (isChecked) {
-      if (!user.positions.includes(position)) {
-        user.positions.push(position);
-      }
-    } else {
-      user.positions = user.positions.filter(p => p !== position);
-    }
-
-    const updateRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users/${email}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(user)
-    });
-
-    if (!updateRes.ok) {
-      throw new Error("Failed to update user positions.");
-    }
-
-    console.log(`${isChecked ? "Added" : "Removed"} ${position} for ${email}`);
-  } catch (err) {
-    alert(err.message);
-  }
-}
-
-function togglePermission(user, teamName, permission) {
-  const teamPerms = user.team_permissions || [];
-  const existing = teamPerms.find(tp => tp.team_name === teamName);
-
-  if (existing) {
-    if (existing.permissions.includes(permission)) {
-      existing.permissions = existing.permissions.filter(p => p !== permission);
-    } else {
-      existing.permissions.push(permission);
-    }
-  } else {
-    teamPerms.push({ team_name: teamName, permissions: [permission] });
-  }
-
-  user.team_permissions = teamPerms;
-}
-
-async function handlePermissionToggle(email, teamName, permission, isChecked) {
-  try {
-    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
-    const users = await res.json();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-    if (!user) throw new Error("User not found.");
-
-    user.team_permissions = user.team_permissions || [];
-    const existing = user.team_permissions.find(tp => tp.team_name === teamName);
-
-    if (existing) {
-      if (isChecked && !existing.permissions.includes(permission)) {
-        existing.permissions.push(permission);
-      } else if (!isChecked) {
-        existing.permissions = existing.permissions.filter(p => p !== permission);
-      }
-      if (existing.permissions.length === 0) {
-        user.team_permissions = user.team_permissions.filter(tp => tp.team_name !== teamName);
-      }
-    } else if (isChecked) {
-      user.team_permissions.push({ team_name: teamName, permissions: [permission] });
-    }
-
-    const updateRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users/${email}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user)
-    });
-
-    if (!updateRes.ok) throw new Error("Failed to update team permissions.");
-
-    console.log(`${isChecked ? "Granted" : "Removed"} ${permission} for ${teamName}`);
-  } catch (err) {
-    alert(+ err.message);
-  }
-}
-
-async function initiateOwnershipTransfer(newOwnerEmail, newOwnerFirst, newOwnerLast) {
-  const confirm = window.confirm(`Transfer ownership to ${newOwnerFirst} ${newOwnerLast} (${newOwnerEmail})?\nAn OTP will be sent to the current owner's email.`);
-  if (!confirm) return;
-
-  try {
-    const res = await fetch("https://api.worshipbuddy.org/auth/request-otp/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userEmail }),
-    });
-
-    if (!res.ok) throw new Error("Failed to send OTP.");
-    const otp = prompt("Enter the OTP sent to your email:");
-
-    if (!otp) return;
-
-    const verifyRes = await fetch("https://api.worshipbuddy.org/auth/verify-otp/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userEmail, otp }),
-    });
-
-    const verifyData = await verifyRes.json();
-    if (!verifyRes.ok) throw new Error(verifyData.detail || "OTP verification failed.");
-
-    const updateRes = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        owner: {
-          first_name: newOwnerFirst,
-          last_name: newOwnerLast,
-          email: newOwnerEmail
-        }
-      })
-    });
-
-    if (!updateRes.ok) throw new Error("Failed to transfer ownership.");
-    alert("Ownership transferred successfully.");
-    window.location.reload();
-  } catch (err) {
-    alert(err.message);
-  }
-}
-
-initPage();
-
-  
-function showCalendar() {
-  document.getElementById("import-modal").style.display = "none";
-}
-
-function showImportModal() {
-  document.getElementById("import-modal").style.display = "flex";
-}
-
-function closeImportModal() {
-  document.getElementById("import-modal").style.display = "none";
-}
-
-function addRow() {
-  const row = `
-    <tr>
-      <td><input type="text" /></td>
-      <td><input type="text" /></td>
-      <td><input type="email" /></td>
-      <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
-    </tr>
-  `;
-  document.querySelector("#import-table tbody").insertAdjacentHTML("beforeend", row);
-}
-
-function removeRow(btn) {
-  btn.closest("tr").remove();
-}
-
-function handleFileImport(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet);
-
-    const tbody = document.querySelector("#import-table tbody");
-    tbody.innerHTML = '';
-
-    rows.forEach(row => {
-      const first = row["First Name"] || "";
-      const last = row["Last Name"] || "";
-      const email = row["Email"] || "";
-
-      const tr = `
-        <tr>
-          <td><input type="text" value="${first}" /></td>
-          <td><input type="text" value="${last}" /></td>
-          <td><input type="email" value="${email}" /></td>
-          <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
-        </tr>
-      `;
-      tbody.insertAdjacentHTML("beforeend", tr);
-    });
-
-    document.getElementById("manual-entry-section").style.display = "block";
-  };
-
-  reader.readAsArrayBuffer(file);
-}
-  
-  let manualMode = false;
-
-function toggleImportMode(event) {
-  event.preventDefault();
-  manualMode = !manualMode;
-
-  document.getElementById("file-upload-section").style.display = manualMode ? "none" : "block";
-  document.getElementById("manual-entry-section").style.display = manualMode ? "block" : "none";
-  document.getElementById("toggle-import-link").textContent = manualMode ? "Import from file instead" : "Enter manually instead";
-}
-
-async function submitImport() {
-  const rows = document.querySelectorAll("#import-table tbody tr");
-  const users = [];
-
-  for (let row of rows) {
-    const inputs = row.querySelectorAll("input");
-    const [first_name, last_name, email] = [...inputs].map(i => i.value.trim());
-
-    if (!first_name || !last_name || !email) continue;
-    users.push({ first_name, last_name, email });
-  }
-
-  if (users.length === 0) {
-    alert("No valid users to invite.");
-    return;
-  }
-
-  const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/invite`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(users)
-  });
-
-  if (!res.ok) {
-    alert("Failed to send invitations.");
-    return;
-  }
-
-  alert("Invitations sent successfully.");
-  closeImportModal();
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  const dropZone = document.getElementById("file-upload-section");
-  const fileInput = document.getElementById("import-file");
-  const dropLabel = document.getElementById("drop-label");
-
-  dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropZone.style.backgroundColor = "#eef";
-  });
-
-  dropZone.addEventListener("dragleave", () => {
-    dropZone.style.backgroundColor = "";
-  });
-
-  dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropZone.style.backgroundColor = "";
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      fileInput.files = e.dataTransfer.files;
-      handleFileImport({ target: { files: [file] } });
-    }
-  });
-
-  dropLabel.addEventListener("click", () => {
-    fileInput.click();
-  });
-});
-
-dropZone.addEventListener("dragleave", () => {
-  dropZone.style.backgroundColor = "";
-});
-
-dropZone.addEventListener("drop", (e) => {
-  e.preventDefault();
-  dropZone.style.backgroundColor = "";
-  const file = e.dataTransfer.files[0];
-  if (file) {
-    fileInput.files = e.dataTransfer.files;
-    handleFileImport({ target: { files: [file] } });
-  }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const dropZone = document.getElementById("file-upload-section");
-  const fileInput = document.getElementById("import-file");
-  const dropLabel = document.getElementById("drop-label");
-
-  dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropZone.style.backgroundColor = "#eef";
-  });
-
-  dropZone.addEventListener("dragleave", () => {
-    dropZone.style.backgroundColor = "";
-  });
-
-  dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropZone.style.backgroundColor = "";
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      fileInput.files = e.dataTransfer.files;
-      handleFileImport({ target: { files: [file] } });
-    }
-  });
-
-  dropLabel.addEventListener("click", () => {
-    fileInput.click();
-  });
-});
-</script>
-  
-<div class="tooltip">
-  <button onclick="showImportModal()" id="floating-add-button">+</button>
-</div>
-<div id="import-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.4); z-index: 2000; justify-content: center; align-items: center;">
-  <div style="background: white; padding: 24px; border-radius: 8px; width: 90%; max-width: 800px; position: relative;">
-    <button onclick="closeImportModal()" style="position: absolute; top: 10px; right: 10px; font-size: 18px;">❌</button>
-    <h2>Import People</h2>
-
-    <div id="file-upload-section">
-  <label for="import-file" id="drop-label" style="display: block; border: 2px dashed #aaa; padding: 40px; text-align: center; cursor: pointer;">
-    Drag and drop or click to select a file<br/><small>(CSV or Excel)</small>
-  </label>
-  <input type="file" id="import-file" accept=".csv, .xlsx" style="display: none;" onchange="handleFileImport(event)" />
-</div>
-
-    <div id="manual-entry-section" style="display: none; margin-top: 20px;">
-      <table id="import-table" style="width: 100%; border-collapse: collapse; margin-top: 12px;">
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><input type="text" /></td>
-            <td><input type="text" /></td>
-            <td><input type="email" /></td>
-            <td><button onclick="removeRow(this)"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6v-2h8v2m1 0v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></td>
-          </tr>
-        </tbody>
-      </table>
-      <button onclick="addRow()" style="margin-top: 12px; display:flex; align-items:center; gap:4px;">
-        <svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14m7-7H5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-        Add Row
+    <div class="action-buttons" style="position: fixed; left: 16px; top: 100px; z-index: 100; display: flex; gap: 12px;">
+      <button class="action-btn" onclick="showImportPeoplePopup()" id="import-people-btn" style="display: none;">
+        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px;">
+          <path fill="currentColor" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+        </svg>
+        Import People
       </button>
     </div>
 
-    <p style="margin-top: 16px;">
-      <a href="#" onclick="toggleImportMode(event)" id="toggle-import-link">Enter manually instead</a>
-    </p>
+    <div class="page-header" style="margin-bottom: 24px;">
+      <!-- Empty header or remove entirely -->
+    </div>
 
-    <button onclick="submitImport()" style="margin-top: 16px; background: var(--brand-color); color: white; border: none; padding: 8px 16px; border-radius: 4px;">Submit</button>
+    <div class="people-grid" id="people-container" style="padding-top: 60px;">
+      <p class="message">Loading people...</p>
+    </div>
   </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- Import People Popup -->
+  <div id="import-people-popup" class="popup-overlay">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2 class="popup-title">Import People</h2>
+        <button class="close-btn" onclick="closeImportPeoplePopup()">×</button>
+      </div>
+    
+      <!-- File Import View -->
+      <div id="file-import-view">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div id="drop-zone" style="border: 2px dashed #e2e8f0; border-radius: 12px; padding: 40px; background: #f8fafc; cursor: pointer; transition: all 0.2s ease;">
+            <svg viewBox="0 0 24 24" style="width: 48px; height: 48px; margin: 0 auto 16px; fill: #94a3b8;">
+              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+            </svg>
+            <h3 style="color: #4a5568; margin-bottom: 8px;">Drop your CSV or Excel file here</h3>
+            <p style="color: #9ca3af; margin-bottom: 16px;">or click to browse files</p>
+            <input type="file" id="file-input" accept=".csv,.xlsx,.xls" style="display: none;" />
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-input').click()">
+              Choose File
+            </button>
+          </div>
+        </div>
+      
+        <div style="text-align: center; margin: 24px 0;">
+          <span style="color: #9ca3af;">or</span>
+        </div>
+      
+        <div style="text-align: center;">
+          <button type="button" class="btn btn-primary" onclick="switchToManualEntry()">
+            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; margin-right: 8px;">
+              <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            Enter Manually Instead
+          </button>
+        </div>
+      
+        <div id="file-preview" style="display: none; margin-top: 24px;">
+          <h4 style="margin-bottom: 12px; color: #1a202c;">File Preview:</h4>
+          <div id="preview-content" style="max-height: 200px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background: #f8fafc;"></div>
+          <div class="popup-buttons">
+            <button type="button" class="btn btn-secondary" onclick="clearFile()">Clear</button>
+            <button type="button" class="btn btn-primary" onclick="processFileImport()">Import People</button>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Manual Entry View -->
+      <div id="manual-entry-view" style="display: none;">
+        <div style="margin-bottom: 16px;">
+          <button type="button" class="btn btn-secondary" onclick="switchToFileImport()" style="margin-bottom: 16px;">
+            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; margin-right: 8px;">
+              <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Back to File Import
+          </button>
+        </div>
+
+        <form id="manual-entry-form">
+          <div style="margin-bottom: 16px;">
+            <h4 style="color: #1a202c; margin-bottom: 12px;">Add People Manually</h4>
+            <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+              <div style="background: #f8fafc; padding: 12px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 12px; font-weight: 600; color: #4a5568;">
+                <div style="flex: 1;">First Name</div>
+                <div style="flex: 1;">Last Name</div>
+                <div style="flex: 1;">Email</div>
+              </div>
+              <div id="manual-entries-container">
+                <div class="manual-entry-row" style="padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; gap: 12px; align-items: center;">
+                  <input type="text" class="first-name-input" placeholder="First name" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+                  <input type="text" class="last-name-input" placeholder="Last name" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+                  <input type="email" class="email-input" placeholder="Email address" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+                  <button type="button" class="delete-row-btn" onclick="deleteManualRow(this)" style="width: 40px; height: 40px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <button type="button" class="btn btn-secondary" onclick="addManualRow()" style="margin-top: 12px;">
+            <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-right: 6px;">
+              <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            Add Row
+          </button>
+          
+          <div class="popup-buttons">
+            <button type="button" class="btn btn-secondary" onclick="closeImportPeoplePopup()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Import People</button>
+          </div>
+          <p id="manual-import-message" style="margin-top: 12px; text-align: center;"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Person Popup -->
+  <div id="edit-person-popup" class="popup-overlay">
+    <div class="popup-content">
+      <div class="popup-header">
+        <h2 class="popup-title">Edit Person</h2>
+        <button class="close-btn" onclick="closeEditPersonPopup()">×</button>
+      </div>
+      <form id="edit-person-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editEmail">Email Address</label>
+            <input type="email" id="editEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="editFirstName">First Name</label>
+            <input type="text" id="editFirstName" required />
+          </div>
+          <div class="form-group">
+            <label for="editLastName">Last Name</label>
+            <input type="text" id="editLastName" required />
+          </div>
+          <div class="form-group">
+            <label for="editPhone">Phone Number</label>
+            <input type="tel" id="editPhone" />
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="editIsOrgAdmin" />
+          <label for="editIsOrgAdmin">Organization Administrator</label>
+        </div>
+        
+        <div class="form-group">
+          <label>Positions</label>
+          <div class="positions-list" id="edit-positions-list">
+            <!-- Positions will be populated here -->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Team Permissions</label>
+          <div class="teams-list" id="edit-teams-list">
+            <!-- Teams will be populated here -->
+          </div>
+        </div>
+
+        <div class="popup-buttons">
+          <button type="button" class="btn btn-secondary" onclick="closeEditPersonPopup()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Person</button>
+        </div>
+        <p id="edit-person-message" style="margin-top: 12px; text-align: center;"></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    const mainContent = document.getElementById('main-content');
+    const userEmail = localStorage.getItem("user_email");
+    const firstName = localStorage.getItem("user_first_name") || "";
+    const lastName = localStorage.getItem("user_last_name") || "";
+    const urlParams = new URLSearchParams(window.location.search);
+    const orgId = urlParams.get("org");
+
+    let currentUser = null;
+    let isOwner = false;
+    let isOrgAdmin = false;
+    let userTeamPermissions = [];
+    let currentEditingPerson = null;
+    let allTeams = [];
+    let allPositions = [];
+
+    // User popup functionality
+    const userIcon = document.getElementById('user-icon');
+    const userPopup = document.getElementById('user-popup');
+    const popupName = document.getElementById('popup-name');
+    const popupEmail = document.getElementById('popup-email');
+
+    popupName.textContent = `${firstName} ${lastName}`;
+    popupEmail.textContent = userEmail;
+
+    userIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userPopup.style.display = userPopup.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!document.getElementById('user-icon-container').contains(e.target)) {
+        userPopup.style.display = 'none';
+      }
+    });
+
+    function signOut() {
+      localStorage.removeItem("user_email");
+      localStorage.removeItem("user_first_name");
+      localStorage.removeItem("user_last_name");
+      window.location.href = "https://schedulebuddy.onrender.com/";
+    }
+
+    function goToPage(page) {
+      if (!orgId) {
+        alert("Organization ID is missing.");
+        return;
+      }
+      window.location.href = `/${page}?org=${orgId}`;
+    }
+
+    // Initialize page
+    async function initPage() {
+      try {
+        const [orgRes, usersRes, teamsRes] = await Promise.all([
+          fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}`),
+          fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`),
+          fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/teams`)
+        ]);
+
+        const org = await orgRes.json();
+        const allUsers = await usersRes.json();
+        allTeams = await teamsRes.json();
+        
+        // Extract all unique positions from teams
+        allPositions = [...new Set(allTeams.flatMap(team => 
+          team.positions?.map(pos => pos.position_name) || []
+        ))];
+
+        currentUser = allUsers.find(u => u.email.toLowerCase() === userEmail.toLowerCase());
+        isOwner = org.owner?.email === userEmail;
+        isOrgAdmin = currentUser?.org_admin === true;
+        userTeamPermissions = currentUser?.team_permissions || [];
+
+        const showImportPeople = isOwner || isOrgAdmin;
+        document.getElementById("import-people-btn").style.display = showImportPeople ? "flex" : "none";
+
+        loadPeople({ isOwner, isOrgAdmin });
+      } catch (err) {
+        console.error("Failed to determine user permissions:", err.message);
+        loadPeople({ isOwner: false, isOrgAdmin: false });
+      }
+    }
+
+    // Load people
+    async function loadPeople({ isOwner, isOrgAdmin }) {
+      if (!orgId) {
+        document.getElementById('people-container').innerHTML = '<p class="message">No org ID provided.</p>';
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`);
+        const people = await res.json();
+
+        const container = document.getElementById('people-container');
+        container.innerHTML = '';
+
+        if (!people.length) {
+          container.innerHTML = `<p class="message">No people found. Import your first team member to get started.</p>`;
+          return;
+        }
+
+        people.forEach(person => {
+          const card = document.createElement('div');
+          card.className = 'person-card';
+
+          const positionCount = person.positions?.length || 0;
+          const positionNames = person.positions?.join(', ') || 'No positions assigned';
+          const teamCount = person.team_permissions?.length || 0;
+          const teamNames = person.team_permissions?.map(tp => tp.team_name).join(', ') || 'No teams assigned';
+
+          // Determine role badge
+          let roleBadge = 'Member';
+          let roleColor = '#10b981';
+          if (person.email === userEmail && isOwner) {
+            roleBadge = 'Owner';
+            roleColor = '#f59e0b';
+          } else if (person.org_admin) {
+            roleBadge = 'Admin';
+            roleColor = '#ef4444';
+          }
+
+          card.innerHTML = `
+            <div class="person-card-header">
+              <div class="person-badge" style="background: ${roleColor};">
+                <svg viewBox="0 0 24 24" style="width: 16px; height: 16px;">
+                  <path fill="currentColor" d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+                </svg>
+                ${roleBadge}
+              </div>
+              <h3 class="person-title">${person.first_name} ${person.last_name}</h3>
+            </div>
+            
+            <div class="person-details">
+              <div class="person-detail-row">
+                <div class="detail-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                  </svg>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-primary">Email</div>
+                  <div class="detail-secondary">${person.email}</div>
+                </div>
+              </div>
+
+              <div class="person-detail-row">
+                <div class="detail-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-primary">Positions (${positionCount})</div>
+                  <div class="detail-secondary">${positionNames}</div>
+                </div>
+              </div>
+
+              <div class="person-detail-row">
+                <div class="detail-icon">
+                  <svg viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M16 7c0-2.21-1.79-4-4-4S8 4.79 8 7s1.79 4 4 4 4-1.79 4-4zm-4 6c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z"/>
+                    <circle fill="currentColor" cx="18.5" cy="8.5" r="2.5"/>
+                    <path fill="currentColor" d="M24 16v3h-6v-3c0-1.25 2.27-2.5 6-2.5z"/>
+                  </svg>
+                </div>
+                <div class="detail-content">
+                  <div class="detail-primary">Teams (${teamCount})</div>
+                  <div class="detail-secondary">${teamNames}</div>
+                </div>
+              </div>
+
+              ${person.phone ? `
+                <div class="person-detail-row">
+                  <div class="detail-icon">
+                    <svg viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                  </div>
+                  <div class="detail-content">
+                    <div class="detail-primary">Phone</div>
+                    <div class="detail-secondary">${person.phone}</div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="person-card-footer">
+              <div class="person-status">
+                <div class="status-indicator"></div>
+                <span>Active</span>
+              </div>
+              <div class="edit-hint">Click to edit</div>
+            </div>
+          `;
+
+          const hasAccess = isOwner || isOrgAdmin;
+
+          if (hasAccess) {
+            card.onclick = () => {
+              editPerson(person);
+            };
+          } else {
+            card.style.cursor = "not-allowed";
+            card.style.opacity = "0.6";
+            card.querySelector('.edit-hint').style.display = 'none';
+          }
+
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error(err);
+        document.getElementById('people-container').innerHTML = '<p class="message">Failed to load people.</p>';
+      }
+    }
+
+    // Update the function names and add new functionality
+    function showImportPeoplePopup() {
+      document.getElementById('import-people-popup').style.display = 'flex';
+      switchToFileImport();
+    }
+
+    function closeImportPeoplePopup() {
+      document.getElementById('import-people-popup').style.display = 'none';
+      clearFile();
+      clearManualEntries();
+      document.getElementById('manual-import-message').textContent = '';
+    }
+
+    function switchToFileImport() {
+      document.getElementById('file-import-view').style.display = 'block';
+      document.getElementById('manual-entry-view').style.display = 'none';
+    }
+
+    function switchToManualEntry() {
+      document.getElementById('file-import-view').style.display = 'none';
+      document.getElementById('manual-entry-view').style.display = 'block';
+    }
+
+    function addManualRow() {
+      const container = document.getElementById('manual-entries-container');
+      const newRow = document.createElement('div');
+      newRow.className = 'manual-entry-row';
+      newRow.style = 'padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; gap: 12px; align-items: center;';
+      newRow.innerHTML = `
+  <input type="text" class="first-name-input" placeholder="First name" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+  <input type="text" class="last-name-input" placeholder="Last name" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+  <input type="email" class="email-input" placeholder="Email address" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+  <button type="button" class="delete-row-btn" onclick="deleteManualRow(this)" style="width: 40px; height: 40px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;">
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+    </svg>
+  </button>
+`;
+      container.appendChild(newRow);
+    }
+
+    function deleteManualRow(button) {
+      const container = document.getElementById('manual-entries-container');
+      if (container.children.length > 1) {
+        button.parentElement.remove();
+      } else {
+        alert('At least one row is required.');
+      }
+    }
+
+    function clearManualEntries() {
+      const container = document.getElementById('manual-entries-container');
+      container.innerHTML = `
+  <div class="manual-entry-row" style="padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; gap: 12px; align-items: center;">
+    <input type="text" class="first-name-input" placeholder="First name" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+    <input type="text" class="last-name-input" placeholder="Last name" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+    <input type="email" class="email-input" placeholder="Email address" required style="flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.9rem;" />
+    <button type="button" class="delete-row-btn" onclick="deleteManualRow(this)" style="width: 40px; height: 40px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+      <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </svg>
+    </button>
+  </div>
+`;
+    }
+
+    // File handling functions
+    function clearFile() {
+      document.getElementById('file-input').value = '';
+      document.getElementById('file-preview').style.display = 'none';
+      document.getElementById('preview-content').innerHTML = '';
+    }
+
+    function processFileImport() {
+      alert('File import functionality would process the uploaded file here');
+      closeImportPeoplePopup();
+    }
+
+    // Update the manual entry form submission
+    document.getElementById('manual-entry-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const msg = document.getElementById("manual-import-message");
+      msg.textContent = "Importing people...";
+      msg.style.color = "#4a5568";
+
+      const rows = document.querySelectorAll('.manual-entry-row');
+      const people = [];
+      
+      rows.forEach(row => {
+        const firstName = row.querySelector('.first-name-input').value.trim();
+        const lastName = row.querySelector('.last-name-input').value.trim();
+        const email = row.querySelector('.email-input').value.trim();
+        
+        if (firstName && lastName && email) {
+          people.push({
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            positions: [],
+            org_admin: false
+          });
+        }
+      });
+
+      if (people.length === 0) {
+        msg.textContent = "Please add at least one person.";
+        msg.style.color = "#e53e3e";
+        return;
+      }
+
+      try {
+        // Import people one by one
+        for (const person of people) {
+          const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(person)
+          });
+          
+          if (!res.ok) {
+            console.error(`Failed to import ${person.email}`);
+          }
+        }
+        
+        msg.textContent = `Successfully imported ${people.length} people!`;
+        msg.style.color = "#10b981";
+        
+        setTimeout(() => {
+          closeImportPeoplePopup();
+          loadPeople({ isOwner, isOrgAdmin });
+        }, 1500);
+      } catch (err) {
+        msg.textContent = "Failed to import people.";
+        msg.style.color = "#e53e3e";
+      }
+    });
+
+    // Add drag and drop functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const dropZone = document.getElementById('drop-zone');
+      const fileInput = document.getElementById('file-input');
+
+      dropZone.addEventListener('click', () => fileInput.click());
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = '#10245c';
+        dropZone.style.backgroundColor = '#f0f9ff';
+      });
+
+      dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = '#e2e8f0';
+        dropZone.style.backgroundColor = '#f8fafc';
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = '#e2e8f0';
+        dropZone.style.backgroundColor = '#f8fafc';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFileSelect(files[0]);
+        }
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleFileSelect(e.target.files[0]);
+        }
+      });
+
+      function handleFileSelect(file) {
+        if (file.type === 'text/csv' || file.name.endsWith('.csv') || 
+            file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+            file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+          
+          document.getElementById('preview-content').innerHTML = `
+            <p><strong>File:</strong> ${file.name}</p>
+            <p><strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+            <p><strong>Type:</strong> ${file.type || 'Unknown'}</p>
+            <p style="margin-top: 12px; color: #10b981;">✓ File ready for import</p>
+          `;
+          document.getElementById('file-preview').style.display = 'block';
+        } else {
+          alert('Please select a CSV or Excel file.');
+          fileInput.value = '';
+        }
+      }
+    });
+
+    // Edit person function
+    function editPerson(person) {
+      currentEditingPerson = person;
+      
+      // Populate form fields
+      document.getElementById('editEmail').value = person.email;
+      document.getElementById('editFirstName').value = person.first_name;
+      document.getElementById('editLastName').value = person.last_name;
+      document.getElementById('editPhone').value = person.phone || '';
+      document.getElementById('editIsOrgAdmin').checked = person.org_admin || false;
+      
+      // Load positions and teams
+      loadPositionsForEdit(person.positions || []);
+      loadTeamsForEdit(person.team_permissions || []);
+      
+      showEditPersonPopup();
+    }
+
+// Edit person popup functions
+function showEditPersonPopup() {
+  document.getElementById('edit-person-popup').style.display = 'flex';
+}
+
+function closeEditPersonPopup() {
+  document.getElementById('edit-person-popup').style.display = 'none';
+  document.getElementById('edit-person-form').reset();
+  document.getElementById('edit-person-message').textContent = '';
+  currentEditingPerson = null;
+}
+
+// Load positions for edit form
+function loadPositionsForEdit(userPositions) {
+  const container = document.getElementById('edit-positions-list');
+  container.innerHTML = '';
+  
+  if (allPositions.length === 0) {
+    container.innerHTML = '<p style="color: #9ca3af; font-style: italic;">No positions available</p>';
+    return;
+  }
+  
+  allPositions.forEach(position => {
+    const isChecked = userPositions.includes(position);
+    const label = document.createElement('label');
+    label.style.display = 'block';
+    label.style.marginBottom = '8px';
+    label.innerHTML = `
+      <input type="checkbox" value="${position}" ${isChecked ? 'checked' : ''} style="margin-right: 8px;" />
+      <span class="position-tag">${position}</span>
+    `;
+    container.appendChild(label);
+  });
+}
+
+// Load teams for edit form
+function loadTeamsForEdit(userTeamPermissions) {
+  const container = document.getElementById('edit-teams-list');
+  container.innerHTML = '';
+  
+  if (allTeams.length === 0) {
+    container.innerHTML = '<p style="color: #9ca3af; font-style: italic;">No teams available</p>';
+    return;
+  }
+  
+  allTeams.forEach(team => {
+    const userPermission = userTeamPermissions.find(tp => tp.team_name === team.team_name);
+    const currentPermissions = userPermission ? userPermission.permissions : [];
+    
+    const permissionItem = document.createElement('div');
+    permissionItem.className = 'team-permission-item';
+    permissionItem.innerHTML = `
+      <div class="team-name">${team.team_name}</div>
+      <select class="permission-select" data-team="${team.team_name}" multiple style="height: 80px;">
+        <option value="Viewer" ${currentPermissions.includes('Viewer') ? 'selected' : ''}>Viewer</option>
+        <option value="Messenger" ${currentPermissions.includes('Messenger') ? 'selected' : ''}>Messenger</option>
+        <option value="Scheduler" ${currentPermissions.includes('Scheduler') ? 'selected' : ''}>Scheduler</option>
+        <option value="Admin" ${currentPermissions.includes('Admin') ? 'selected' : ''}>Admin</option>
+      </select>
+    `;
+    container.appendChild(permissionItem);
+  });
+}
+
+// Handle edit person form submission
+document.getElementById('edit-person-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const msg = document.getElementById("edit-person-message");
+  msg.textContent = "Updating person...";
+  msg.style.color = "#4a5568";
+
+  // Get selected positions
+  const selectedPositions = Array.from(document.querySelectorAll('#edit-positions-list input:checked'))
+    .map(input => input.value);
+
+  // Get team permissions
+  const teamPermissions = [];
+  document.querySelectorAll('#edit-teams-list .permission-select').forEach(select => {
+    const teamName = select.dataset.team;
+    const permissions = Array.from(select.selectedOptions).map(option => option.value);
+    if (permissions.length > 0) {
+      teamPermissions.push({
+        team_name: teamName,
+        permissions: permissions
+      });
+    }
+  });
+
+  const payload = {
+    email: document.getElementById("editEmail").value,
+    first_name: document.getElementById("editFirstName").value,
+    last_name: document.getElementById("editLastName").value,
+    phone: document.getElementById("editPhone").value,
+    org_admin: document.getElementById("editIsOrgAdmin").checked,
+    positions: selectedPositions,
+    team_permissions: teamPermissions
+  };
+
+  try {
+    const res = await fetch(`https://api.worshipbuddy.org/schedulebuddy/organizations/${orgId}/users/${currentEditingPerson._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("Failed to update person.");
+    
+    msg.textContent = "Person updated successfully!";
+    msg.style.color = "#10b981";
+    
+    setTimeout(() => {
+      closeEditPersonPopup();
+      loadPeople({ isOwner, isOrgAdmin });
+    }, 1500);
+  } catch (err) {
+    msg.textContent = err.message;
+    msg.style.color = "#e53e3e";
+  }
+});
+
+// Close popups when clicking outside
+document.querySelectorAll('.popup-overlay').forEach(popup => {
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) {
+      popup.style.display = 'none';
+    }
+  });
+});
+
+    // Initialize the page
+    initPage();
+  </script>
 </body>
 </html>
